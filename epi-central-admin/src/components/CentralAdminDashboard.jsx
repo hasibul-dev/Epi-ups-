@@ -20,9 +20,12 @@ import {
   Clock,
   ShieldCheck,
   Sparkles,
+  Download,
+  Upload,
 } from 'lucide-react';
 import UserManagementModal from './UserManagementModal.jsx';
 import ResetPasswordModal from './ResetPasswordModal.jsx';
+import { centralStore } from '../services/centralStorage.js';
 
 export default function CentralAdminDashboard({ onLaunchDept }) {
   const { token, user: currentUser } = useCentralAuth();
@@ -183,6 +186,50 @@ export default function CentralAdminDashboard({ onLaunchDept }) {
           </p>
         </div>
         <div className="admin-hero-actions">
+          <button
+            className="btn-action-secondary"
+            onClick={() => {
+              try {
+                centralStore.exportDatabase();
+                setAlertNotice({ type: 'success', msg: 'Central Admin browser database exported successfully.' });
+              } catch (e) {
+                alert('Export failed: ' + e.message);
+              }
+            }}
+            title="Download JSON backup of all accounts and audit logs"
+          >
+            <Download size={15} />
+            <span>Export Backup</span>
+          </button>
+          <label
+            className="btn-action-secondary"
+            style={{ cursor: 'pointer', margin: 0 }}
+            title="Restore database from JSON backup file"
+          >
+            <Upload size={15} />
+            <span>Import Backup</span>
+            <input
+              type="file"
+              accept=".json"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                  try {
+                    const res = centralStore.importDatabase(evt.target.result);
+                    setAlertNotice({ type: 'success', msg: `Backup restored! Loaded ${res.userCount} accounts.` });
+                    loadData();
+                  } catch (err) {
+                    alert('Import error: ' + err.message);
+                  }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+              }}
+            />
+          </label>
           <button
             className="btn-action-secondary"
             onClick={loadData}

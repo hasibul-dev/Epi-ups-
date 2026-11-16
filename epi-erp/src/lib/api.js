@@ -1,3 +1,5 @@
+import { erpStorageRouter } from '../services/erpStorage.js';
+
 const BASE = import.meta.env.VITE_API_URL || '/api';
 let token = localStorage.getItem('epi_token') || '';
 let refreshToken = localStorage.getItem('epi_refresh_token') || '';
@@ -69,6 +71,16 @@ async function performRefresh() {
 }
 
 async function request(method, path, body, params, isRetry = false) {
+  // Try browser-local double-entry storage engine first
+  try {
+    const localResult = await erpStorageRouter(method, path, body, params);
+    if (localResult !== undefined) {
+      return localResult;
+    }
+  } catch (err) {
+    throw err;
+  }
+
   const currentToken = getToken();
   let res;
   try {

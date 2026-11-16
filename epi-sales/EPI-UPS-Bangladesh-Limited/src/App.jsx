@@ -45,13 +45,40 @@ export default function App() {
     return Boolean(unlocked);
   });
 
-  const CENTRAL_URL = import.meta.env.VITE_CENTRAL_URL || 'http://localhost:5050';
+  const CENTRAL_URL = import.meta.env.VITE_CENTRAL_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5050' : (typeof window !== 'undefined' ? window.location.origin : ''));
 
   // Central Management Single Sign-On (SSO) listener & ticket exchange
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ssoTicket = params.get('sso_ticket');
     if (ssoTicket) {
+      // Direct client-side ticket resolution for browser-local persistence
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(ssoTicket))));
+        if (decoded && decoded.user) {
+          const u = decoded.user;
+          const hasAccess = u.role === 'superadmin' || (Array.isArray(u.departments) && u.departments.includes('sales'));
+          if (hasAccess) {
+            localStorage.setItem('epi_ups_auth_remember', 'true');
+            localStorage.setItem('epi_ups_auth_unlocked', 'true');
+            localStorage.setItem('epi_ups_auth_token', 'sales-sso-' + Date.now());
+            localStorage.setItem('epi_ups_username', u.userId || u.name);
+            localStorage.setItem('epi_central_user', JSON.stringify(u));
+            setCentralUser(u);
+            setIsUnlocked(true);
+            setPermissionDenied(false);
+            store.refreshDb();
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return;
+          } else {
+            setCentralUser(u);
+            setPermissionDenied(true);
+            setIsUnlocked(false);
+            return;
+          }
+        }
+      } catch (_) {}
+
       fetch(`${CENTRAL_URL}/api/auth/sso-exchange?ticket=${encodeURIComponent(ssoTicket)}&dept=sales`)
         .then((res) => res.json())
         .then((data) => {

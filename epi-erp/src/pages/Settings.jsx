@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ErrorBox, Form, Loading, PageHeader, Card, useApi, useToast } from '../components/ui.jsx';
 import { api } from '../lib/api.js';
 import { useAuth } from '../lib/auth.jsx';
+import { erpStore } from '../services/erpStorage.js';
 
 export default function Settings() {
   const { can } = useAuth();
@@ -31,6 +32,53 @@ export default function Settings() {
           { name: 'defaultVatRate', label: 'Default VAT %', type: 'number', min: 0 }, { name: 'vatRatesText', label: 'VAT rates offered (comma separated)', hint: 'e.g. 0, 5, 7.5, 10, 15' },
         ]} /></Card>
       )}
+      <div style={{ marginTop: 24 }}>
+        <Card title="Browser-Local Data Storage & Backup">
+          <p className="muted" style={{ marginBottom: 16 }}>
+            All double-entry financial records, chart of accounts, invoices, expenses, payroll, and fixed assets are stored securely in your browser's local storage with zero cloud database dependency. You can export a full JSON backup to keep your accounts backed up offline or transfer them between computers.
+          </p>
+          <div className="row" style={{ gap: 12 }}>
+            <button
+              type="button"
+              className="btn primary"
+              onClick={() => {
+                try {
+                  erpStore.exportDatabase();
+                  toast('Accounts database exported successfully');
+                } catch (e) {
+                  toast(e.message, 'err');
+                }
+              }}
+            >
+              Export Local Backup (JSON)
+            </button>
+            <label className="btn" style={{ cursor: 'pointer', margin: 0 }}>
+              Import Backup (JSON)
+              <input
+                type="file"
+                accept=".json"
+                style={{ display: 'none' }}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = (evt) => {
+                    try {
+                      erpStore.importDatabase(evt.target.result);
+                      toast('Accounts database successfully restored from backup');
+                      reload();
+                    } catch (err) {
+                      toast(err.message, 'err');
+                    }
+                  };
+                  reader.readAsText(file);
+                  e.target.value = '';
+                }}
+              />
+            </label>
+          </div>
+        </Card>
+      </div>
     </>
   );
 }

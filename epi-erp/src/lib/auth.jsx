@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
     }
   });
   const [ready, setReady] = useState(false);
-  const CENTRAL_URL = import.meta.env.VITE_CENTRAL_URL || 'http://localhost:5050';
+  const CENTRAL_URL = import.meta.env.VITE_CENTRAL_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5050' : (typeof window !== 'undefined' ? window.location.origin : ''));
 
   const logout = useCallback(() => {
     clearTokens();
@@ -30,6 +30,55 @@ export function AuthProvider({ children }) {
     const params = new URLSearchParams(window.location.search);
     const ssoTicket = params.get('sso_ticket');
     if (ssoTicket) {
+      // Direct client-side ticket resolution for browser-local persistence
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(ssoTicket))));
+        if (decoded && decoded.user) {
+          const u = decoded.user;
+          const isSuper = u.role === 'superadmin';
+          const hasAccess = isSuper || (Array.isArray(u.departments) && u.departments.includes('accounts'));
+          if (hasAccess) {
+            const assignedRole = isSuper ? 'admin' : (u.departmentRoles?.accounts || 'accountant');
+            const accountsUser = {
+              id: u.id || u.userId,
+              userId: u.userId || u.id,
+              name: u.name,
+              email: u.email || `${u.userId}@epiups.com.bd`,
+              role: assignedRole,
+              departments: u.departments || ['accounts'],
+              departmentRoles: u.departmentRoles || {},
+              isSuperAdmin: isSuper,
+              permissions: {
+                dashboard: ['read', 'write', 'void'],
+                accounts: ['read', 'write', 'void'],
+                journal: ['read', 'write', 'void'],
+                banking: ['read', 'write', 'void'],
+                sales: ['read', 'write', 'void'],
+                purchase: ['read', 'write', 'void'],
+                payments: ['read', 'write', 'void'],
+                expenses: ['read', 'write', 'void'],
+                inventory: ['read', 'write', 'void'],
+                vat: ['read', 'write', 'void'],
+                payroll: ['read', 'write', 'void'],
+                assets: ['read', 'write', 'void'],
+                reports: ['read', 'write', 'void'],
+                users: isSuper ? ['read', 'write', 'void'] : [],
+                audit: ['read'],
+                settings: ['read', 'write'],
+              },
+            };
+            const localToken = 'erp-token-' + Date.now();
+            setToken(localToken);
+            localStorage.setItem('epi_user', JSON.stringify(accountsUser));
+            localStorage.setItem('epi_central_user', JSON.stringify(u));
+            setUser(accountsUser);
+            setReady(true);
+            window.history.replaceState({}, document.title, window.location.pathname);
+            return;
+          }
+        }
+      } catch (_) {}
+
       fetch(`${CENTRAL_URL}/api/auth/sso-exchange?ticket=${encodeURIComponent(ssoTicket)}&dept=accounts`)
         .then((res) => res.json())
         .then((data) => {

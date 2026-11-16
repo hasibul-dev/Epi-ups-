@@ -76,12 +76,34 @@ function Shell() {
   })
   const [authError, setAuthError] = useState('')
   const { s } = useApp()
-  const CENTRAL_URL = import.meta.env.VITE_CENTRAL_URL || 'http://localhost:5050'
+  const CENTRAL_URL = import.meta.env.VITE_CENTRAL_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5050' : (typeof window !== 'undefined' ? window.location.origin : ''))
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const ssoTicket = params.get('sso_ticket')
     if (ssoTicket) {
+      // Direct client-side ticket resolution for browser-local persistence
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(ssoTicket))))
+        if (decoded && decoded.user) {
+          const u = decoded.user
+          const hasAccess = u.role === 'superadmin' || (Array.isArray(u.departments) && u.departments.includes('service'))
+          if (hasAccess) {
+            localStorage.setItem('epi_service_auth_token', 'service-sso-' + Date.now())
+            localStorage.setItem('epi_service_user', JSON.stringify(u))
+            setServiceUser(u)
+            setSsoAuthorized(true)
+            setAuthError('')
+            window.history.replaceState({}, document.title, window.location.pathname)
+            return
+          } else {
+            setSsoAuthorized(false)
+            setAuthError('Access Denied: Service department permission required.')
+            return
+          }
+        }
+      } catch (_) {}
+
       fetch(`${CENTRAL_URL}/api/auth/sso-exchange?ticket=${encodeURIComponent(ssoTicket)}&dept=service`)
         .then((res) => res.json())
         .then((data) => {

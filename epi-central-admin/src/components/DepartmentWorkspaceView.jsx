@@ -100,15 +100,19 @@ export default function DepartmentWorkspaceView({ department, onBack }) {
   }, [department, token]);
 
   const getDeptBaseUrl = () => {
+    const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     switch (department) {
       case 'sales':
-        return import.meta.env.VITE_SALES_URL || `http://localhost:${config.port}`;
+        if (import.meta.env.VITE_SALES_URL) return import.meta.env.VITE_SALES_URL;
+        return isLocalhost ? `http://localhost:${config.port}` : `${window.location.origin}/sales`;
       case 'service':
-        return import.meta.env.VITE_SERVICE_URL || `http://localhost:${config.port}`;
+        if (import.meta.env.VITE_SERVICE_URL) return import.meta.env.VITE_SERVICE_URL;
+        return isLocalhost ? `http://localhost:${config.port}` : `${window.location.origin}/service`;
       case 'accounts':
-        return import.meta.env.VITE_ACCOUNTS_URL || `http://localhost:${config.port}`;
+        if (import.meta.env.VITE_ACCOUNTS_URL) return import.meta.env.VITE_ACCOUNTS_URL;
+        return isLocalhost ? `http://localhost:${config.port}` : `${window.location.origin}/accounts`;
       default:
-        return `http://localhost:${config.port}`;
+        return isLocalhost ? `http://localhost:${config.port}` : window.location.origin;
     }
   };
 
