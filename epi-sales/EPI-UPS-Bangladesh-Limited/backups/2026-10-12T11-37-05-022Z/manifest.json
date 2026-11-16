@@ -1,0 +1,406 @@
+{
+  "createdAt": "2026-10-12T11:37:05.740Z",
+  "databases": {
+    "mycrm": {
+      "collections": {
+        "history": {
+          "count": 1,
+          "sizeBytes": 659,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\mycrm\\history.json",
+          "sha256": "4fb325a693cd2b6438c472dfa56d246d766da46f88c046aa46faaa113ac0602e",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "id": 1
+              },
+              "name": "id_1",
+              "unique": true
+            },
+            {
+              "v": 2,
+              "key": {
+                "date": 1
+              },
+              "name": "date_1"
+            }
+          ]
+        },
+        "work": {
+          "count": 1,
+          "sizeBytes": 326,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\mycrm\\work.json",
+          "sha256": "5ab0b7d8db0c35f515675fbbe231226b6312fdca92df4a12df68dc1d858a20f4",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "id": 1
+              },
+              "name": "id_1",
+              "unique": true
+            },
+            {
+              "v": 2,
+              "key": {
+                "date": 1
+              },
+              "name": "date_1"
+            },
+            {
+              "v": 2,
+              "key": {
+                "clientId": 1
+              },
+              "name": "clientId_1"
+            }
+          ]
+        },
+        "newWork": {
+          "count": 0,
+          "sizeBytes": 2,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\mycrm\\newWork.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "id": 1
+              },
+              "name": "id_1",
+              "unique": true
+            },
+            {
+              "v": 2,
+              "key": {
+                "date": 1
+              },
+              "name": "date_1"
+            }
+          ]
+        },
+        "office": {
+          "count": 0,
+          "sizeBytes": 2,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\mycrm\\office.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "date": 1
+              },
+              "name": "date_1",
+              "unique": true
+            }
+          ]
+        },
+        "settings": {
+          "count": 0,
+          "sizeBytes": 2,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\mycrm\\settings.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "key": 1
+              },
+              "name": "key_1",
+              "unique": true
+            }
+          ]
+        },
+        "clients": {
+          "count": 1,
+          "sizeBytes": 706,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\mycrm\\clients.json",
+          "sha256": "e35f769253df12554d8e06b10ed3a78a28130381c60215134b1e9af6bbdac877",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "id": 1
+              },
+              "name": "id_1",
+              "unique": true
+            },
+            {
+              "v": 2,
+              "key": {
+                "nextDate": 1
+              },
+              "name": "nextDate_1"
+            },
+            {
+              "v": 2,
+              "key": {
+                "category": 1
+              },
+              "name": "category_1"
+            }
+          ]
+        }
+      },
+      "totalDocuments": 3
+    },
+    "epi_ups_crm": {
+      "collections": {
+        "office": {
+          "count": 0,
+          "sizeBytes": 2,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\epi_ups_crm\\office.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "date": 1
+              },
+              "name": "date_1",
+              "unique": true
+            }
+          ]
+        },
+        "history": {
+          "count": 0,
+          "sizeBytes": 2,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\epi_ups_crm\\history.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "id": 1
+              },
+              "name": "id_1",
+              "unique": true
+            },
+            {
+              "v": 2,
+              "key": {
+                "date": 1
+              },
+              "name": "date_1"
+            }
+          ]
+        },
+        "work": {
+          "count": 0,
+          "sizeBytes": 2,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\epi_ups_crm\\work.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "id": 1
+              },
+              "name": "id_1",
+              "unique": true
+            },
+            {
+              "v": 2,
+              "key": {
+                "date": 1
+              },
+              "name": "date_1"
+            },
+            {
+              "v": 2,
+              "key": {
+                "clientId": 1
+              },
+              "name": "clientId_1"
+            }
+          ]
+        },
+        "newWork": {
+          "count": 0,
+          "sizeBytes": 2,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\epi_ups_crm\\newWork.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "id": 1
+              },
+              "name": "id_1",
+              "unique": true
+            },
+            {
+              "v": 2,
+              "key": {
+                "date": 1
+              },
+              "name": "date_1"
+            }
+          ]
+        },
+        "retention_logs": {
+          "count": 3,
+          "sizeBytes": 1754,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\epi_ups_crm\\retention_logs.json",
+          "sha256": "a51c25377941ed8d4b20436c94bb244e01508e466620d6f22534c00c5344fd69",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            }
+          ]
+        },
+        "clients": {
+          "count": 1,
+          "sizeBytes": 469,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\epi_ups_crm\\clients.json",
+          "sha256": "79af1b480601bea1b12b892c67aecfd10eb73f6b7ebc701cd25962e7ab0a791c",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "id": 1
+              },
+              "name": "id_1",
+              "unique": true
+            },
+            {
+              "v": 2,
+              "key": {
+                "nextDate": 1
+              },
+              "name": "nextDate_1"
+            },
+            {
+              "v": 2,
+              "key": {
+                "category": 1
+              },
+              "name": "category_1"
+            }
+          ]
+        },
+        "__atlas_verification__": {
+          "count": 0,
+          "sizeBytes": 2,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\epi_ups_crm\\__atlas_verification__.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            }
+          ]
+        },
+        "settings": {
+          "count": 0,
+          "sizeBytes": 2,
+          "file": "backups\\2026-10-12T11-37-05-022Z\\epi_ups_crm\\settings.json",
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "indexes": [
+            {
+              "v": 2,
+              "key": {
+                "_id": 1
+              },
+              "name": "_id_"
+            },
+            {
+              "v": 2,
+              "key": {
+                "key": 1
+              },
+              "name": "key_1",
+              "unique": true
+            }
+          ]
+        }
+      },
+      "totalDocuments": 4
+    }
+  },
+  "verified": true
+}

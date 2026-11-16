@@ -1,0 +1,11 @@
+const nf = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+export const money = (n) => (n === undefined || n === null || n === '' ? '' : `${Number(n) < 0 ? '-' : ''}৳${nf.format(Math.abs(Number(n)))}`);
+export const num = (n) => (n === undefined || n === null ? '' : nf.format(Number(n)));
+export const qty = (n) => (n === undefined || n === null ? '' : new Intl.NumberFormat('en-US', { maximumFractionDigits: 3 }).format(Number(n)));
+export const fmtDate = (d) => (d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '');
+export const fmtDateTime = (d) => (d ? new Date(d).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '');
+export const today = () => new Date().toISOString().slice(0, 10);
+export const isoDate = (d) => (d ? new Date(d).toISOString().slice(0, 10) : '');
+export const monthStart = () => { const d = new Date(); return new Date(Date.UTC(d.getFullYear(), d.getMonth(), 1)).toISOString().slice(0, 10); };
+export const thisMonth = () => new Date().toISOString().slice(0, 7);
+export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : '');

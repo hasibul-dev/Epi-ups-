@@ -1,0 +1,227 @@
+[
+  {
+    "id": "audit_1794821541971_y0qx",
+    "timestamp": "2026-11-16T09:32:21.971Z",
+    "action": "PASSWORD_CHANGED",
+    "performedBy": "test_sales_emp_1794821541487",
+    "targetUserId": "test_sales_emp_1794821541487",
+    "details": "User changed their own password.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794821541638_thkg",
+    "timestamp": "2026-11-16T09:32:21.638Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "test_sales_emp_1794821541487",
+    "targetUserId": "test_sales_emp_1794821541487",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794821541566_4db3",
+    "timestamp": "2026-11-16T09:32:21.566Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "test_superadmin_1794821541483",
+    "targetUserId": "test_superadmin_1794821541483",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794813534238_i41m",
+    "timestamp": "2026-11-16T07:18:54.238Z",
+    "action": "PASSWORD_CHANGED",
+    "performedBy": "test_sales_emp_1794813533754",
+    "targetUserId": "test_sales_emp_1794813533754",
+    "details": "User changed their own password.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794813533905_nt8g",
+    "timestamp": "2026-11-16T07:18:53.905Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "test_sales_emp_1794813533754",
+    "targetUserId": "test_sales_emp_1794813533754",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794813533833_qzxd",
+    "timestamp": "2026-11-16T07:18:53.833Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "test_superadmin_1794813533751",
+    "targetUserId": "test_superadmin_1794813533751",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809512782_guqw",
+    "timestamp": "2026-11-16T06:11:52.783Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809489198_t4yc",
+    "timestamp": "2026-11-16T06:11:29.198Z",
+    "action": "LOGOUT",
+    "performedBy": "shanto",
+    "targetUserId": "shanto",
+    "details": "User logged out of EPI Central Management System.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809316097_qerp",
+    "timestamp": "2026-11-16T06:08:36.097Z",
+    "action": "PASSWORD_CHANGED",
+    "performedBy": "verifier_sales_1794809315565",
+    "targetUserId": "verifier_sales_1794809315565",
+    "details": "User changed their own password.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809315727_ytf9",
+    "timestamp": "2026-11-16T06:08:35.727Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "verifier_sales_1794809315565",
+    "targetUserId": "verifier_sales_1794809315565",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809315649_pij8",
+    "timestamp": "2026-11-16T06:08:35.649Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "verifier_admin_1794809315562",
+    "targetUserId": "verifier_admin_1794809315562",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809288184_7el8",
+    "timestamp": "2026-11-16T06:08:08.184Z",
+    "action": "PASSWORD_CHANGED",
+    "performedBy": "verifier_sales_1794809287693",
+    "targetUserId": "verifier_sales_1794809287693",
+    "details": "User changed their own password.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809287845_12rq",
+    "timestamp": "2026-11-16T06:08:07.845Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "verifier_sales_1794809287693",
+    "targetUserId": "verifier_sales_1794809287693",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809287773_r14q",
+    "timestamp": "2026-11-16T06:08:07.773Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "verifier_admin_1794809287690",
+    "targetUserId": "verifier_admin_1794809287690",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809246763_xcug",
+    "timestamp": "2026-11-16T06:07:26.763Z",
+    "action": "PASSWORD_CHANGED",
+    "performedBy": "verifier_sales_1794809246263",
+    "targetUserId": "verifier_sales_1794809246263",
+    "details": "User changed their own password.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809246416_zdh0",
+    "timestamp": "2026-11-16T06:07:26.416Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "verifier_sales_1794809246263",
+    "targetUserId": "verifier_sales_1794809246263",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809246342_8nwi",
+    "timestamp": "2026-11-16T06:07:26.342Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "verifier_admin_1794809246260",
+    "targetUserId": "verifier_admin_1794809246260",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809116690_j9bx",
+    "timestamp": "2026-11-16T06:05:16.690Z",
+    "action": "LOGIN_FAILED",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Failed login attempt: Incorrect password.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794809047085_3d92",
+    "timestamp": "2026-11-16T06:04:07.085Z",
+    "action": "LOGIN_FAILED",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Failed login attempt: Incorrect password.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794806871193_flq9",
+    "timestamp": "2026-11-16T05:27:51.193Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "shanto",
+    "targetUserId": "shanto",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794806859602_11sc",
+    "timestamp": "2026-11-16T05:27:39.602Z",
+    "action": "LOGOUT",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "User logged out of EPI Central Management System.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794806856237_jnrq",
+    "timestamp": "2026-11-16T05:27:36.237Z",
+    "action": "USER_CREATED",
+    "performedBy": "admin",
+    "targetUserId": "shanto",
+    "details": "Created employee shantomia (shanto) with access to [sales].",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794806720606_cve4",
+    "timestamp": "2026-11-16T05:25:20.606Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794806658020_jsb3",
+    "timestamp": "2026-11-16T05:24:18.020Z",
+    "action": "LOGOUT",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "User logged out of EPI Central Management System.",
+    "ip": "127.0.0.1"
+  },
+  {
+    "id": "audit_1794806575100_2u5x",
+    "timestamp": "2026-11-16T05:22:55.100Z",
+    "action": "INITIAL_SETUP",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Super Admin account successfully initialized via secure setup.",
+    "ip": "127.0.0.1"
+  }
+]

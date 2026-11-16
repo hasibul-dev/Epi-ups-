@@ -1,0 +1,61 @@
+[
+  {
+    "id": "emp_1794806856236_574ux",
+    "userId": "shanto",
+    "name": "shantomia",
+    "email": "",
+    "passwordHash": "$2b$12$5dz/a9rRgk6p1cYPCmnZ/eU3AN9cY5HUy7WXDBx2qQG.fxRXvzTEW",
+    "role": "employee",
+    "departments": [
+      "sales"
+    ],
+    "departmentRoles": {},
+    "status": "active",
+    "createdAt": "2026-11-16T05:27:36.236Z",
+    "updatedAt": "2026-11-16T05:27:36.236Z",
+    "createdBy": "admin",
+    "lastLogin": "2026-11-16T05:27:51.192Z",
+    "loginHistory": [
+      {
+        "timestamp": "2026-11-16T05:27:51.192Z",
+        "ip": "127.0.0.1",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
+      }
+    ]
+  },
+  {
+    "id": "emp_1794806575099_b3zx3",
+    "userId": "admin",
+    "name": "shanto",
+    "email": "shanto@epi-ups.com",
+    "passwordHash": "$2b$12$p82a1PUsoU2ThT8whg8cS.yvW.dxwzCeGRng9wPDJEmtxctnVc6vm",
+    "role": "superadmin",
+    "departments": [
+      "service",
+      "sales",
+      "accounts"
+    ],
+    "departmentRoles": {
+      "sales": "admin",
+      "service": "admin",
+      "accounts": "admin"
+    },
+    "status": "active",
+    "createdAt": "2026-11-16T05:22:55.099Z",
+    "updatedAt": "2026-11-16T05:22:55.099Z",
+    "createdBy": "initial-setup",
+    "lastLogin": "2026-11-16T06:11:52.781Z",
+    "loginHistory": [
+      {
+        "timestamp": "2026-11-16T06:11:52.781Z",
+        "ip": "127.0.0.1",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
+      },
+      {
+        "timestamp": "2026-11-16T05:25:20.605Z",
+        "ip": "127.0.0.1",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
+      }
+    ]
+  }
+]
