@@ -1,8 +1,32 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd epi-central-admin && npm run build",
-  "outputDirectory": "epi-central-admin/dist",
+  "buildCommand": "node scripts/build-unified.js",
+  "outputDirectory": "dist",
   "rewrites": [
+    {
+      "source": "/sales/(.*)",
+      "destination": "/sales/index.html"
+    },
+    {
+      "source": "/sales",
+      "destination": "/sales/index.html"
+    },
+    {
+      "source": "/service/(.*)",
+      "destination": "/service/index.html"
+    },
+    {
+      "source": "/service",
+      "destination": "/service/index.html"
+    },
+    {
+      "source": "/accounts/(.*)",
+      "destination": "/accounts/index.html"
+    },
+    {
+      "source": "/accounts",
+      "destination": "/accounts/index.html"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"

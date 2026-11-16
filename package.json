@@ -7,8 +7,9 @@
   "scripts": {
     "start": "node start-all.js",
     "dev": "node start-all.js",
-    "build": "npm run build:all",
-    "test:central": "cd epi-central-admin && node tests/test_step1.js",
-    "build:all": "cd epi-central-admin && npm run build && cd ../epi-sales/EPI-UPS-Bangladesh-Limited && npm run build && cd ../../epi-service && npm run build && cd ../epi-erp && npm run build"
+    "build": "node scripts/build-unified.js",
+    "build:unified": "node scripts/build-unified.js",
+    "build:all": "cd epi-central-admin && npm run build && cd ../epi-sales/EPI-UPS-Bangladesh-Limited && npm run build && cd ../../epi-service && npm run build && cd ../epi-erp && npm run build",
+    "test:central": "cd epi-central-admin && node tests/test_step1.js"
   }
 }
