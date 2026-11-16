@@ -5,9 +5,9 @@
 import fs from 'fs';
 import path from 'path';
 import { EventEmitter } from 'events';
-import bcrypt from '../epi-central-admin/node_modules/bcryptjs/index.js';
-import centralApp from '../epi-central-admin/server/app.js';
-import { initDatabase as initCentralDb, UsersDAO } from '../epi-central-admin/server/db.js';
+import bcrypt from 'bcryptjs';
+import centralApp from '../server/index.js';
+import { initDatabase as initCentralDb, UsersDAO } from '../server/db/centralDb.js';
 
 function invoke(app, { method = 'GET', url = '/', headers = {}, body = null }) {
   return new Promise((resolve, reject) => {

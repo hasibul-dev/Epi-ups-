@@ -3,13 +3,41 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "EPI Centralized Management System for Sales, Service and Accounts",
+  "description": "EPI Centralized Management System — Unified Enterprise Application for Admin, Sales, Service, and Accounts ERP",
   "scripts": {
-    "start": "node start-all.js",
-    "dev": "node start-all.js",
-    "build": "node scripts/build-unified.js",
-    "build:unified": "node scripts/build-unified.js",
-    "build:all": "cd epi-central-admin && npm run build && cd ../epi-sales/EPI-UPS-Bangladesh-Limited && npm run build && cd ../../epi-service && npm run build && cd ../epi-erp && npm run build",
-    "test:central": "cd epi-central-admin && node tests/test_step1.js"
+    "dev": "concurrently \"node server/index.js\" \"vite\"",
+    "dev:ui": "vite",
+    "dev:server": "node server/index.js",
+    "build": "vite build",
+    "start": "node server/index.js",
+    "test": "node tests/test_rbac_and_central_login.js",
+    "test:storage": "node tests/test_browser_local_storage.js",
+    "test:server": "node tests/test_unified_server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^18.0.7",
+    "exceljs": "^4.4.0",
+    "express": "^5.0.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
+    "lucide-react": "^1.57.0",
+    "mongodb": "^6.21.0",
+    "mongoose": "^8.8.4",
+    "morgan": "^1.10.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "recharts": "^2.15.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "concurrently": "^9.1.2",
+    "vite": "^5.4.0"
   }
 }

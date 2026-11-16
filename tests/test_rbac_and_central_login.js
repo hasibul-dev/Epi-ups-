@@ -41,7 +41,7 @@ global.navigator = {
 };
 
 // Import centralStore
-const { centralStore } = await import('../epi-central-admin/src/services/centralStorage.js');
+const { centralStore } = await import('../src/modules/admin/services/centralStorage.js');
 
 console.log('======================================================================');
 console.log('   EPI CENTRALIZED LOGIN & ROLE-BASED ACCESS CONTROL (RBAC) TESTS     ');

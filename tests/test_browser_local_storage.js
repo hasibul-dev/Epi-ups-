@@ -2,8 +2,8 @@
  * Automated Verification: EPI Browser-Local Storage & Cross-Department SSO Engine
  */
 
-import { centralStore } from '../epi-central-admin/src/services/centralStorage.js';
-import { erpStore } from '../epi-erp/src/services/erpStorage.js';
+import { centralStore } from '../src/modules/admin/services/centralStorage.js';
+import { erpStore } from '../src/modules/erp/services/erpStorage.js';
 
 // Polyfill minimal browser globals for Node test environment
 if (typeof localStorage === 'undefined') {

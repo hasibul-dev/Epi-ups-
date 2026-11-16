@@ -40,6 +40,9 @@ Thumbs.db
 ehthumbs.db
 [Dd]esktop.ini
 
+# Pre-unification local backup
+_backup_pre_unification/
+
 # IDE & Editor Settings
 .vscode/
 .idea/
