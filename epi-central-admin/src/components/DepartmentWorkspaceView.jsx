@@ -103,16 +103,13 @@ export default function DepartmentWorkspaceView({ department, onBack }) {
     const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     switch (department) {
       case 'sales':
-        if (import.meta.env.VITE_SALES_URL) return import.meta.env.VITE_SALES_URL;
-        return isLocalhost ? `http://localhost:${config.port}` : `${window.location.origin}/sales`;
+        return import.meta.env.VITE_SALES_URL || (isLocalhost ? `http://localhost:${config.port}` : 'https://epi-sales.vercel.app');
       case 'service':
-        if (import.meta.env.VITE_SERVICE_URL) return import.meta.env.VITE_SERVICE_URL;
-        return isLocalhost ? `http://localhost:${config.port}` : `${window.location.origin}/service`;
+        return import.meta.env.VITE_SERVICE_URL || (isLocalhost ? `http://localhost:${config.port}` : 'https://epi-service.vercel.app');
       case 'accounts':
-        if (import.meta.env.VITE_ACCOUNTS_URL) return import.meta.env.VITE_ACCOUNTS_URL;
-        return isLocalhost ? `http://localhost:${config.port}` : `${window.location.origin}/accounts`;
+        return import.meta.env.VITE_ACCOUNTS_URL || (isLocalhost ? `http://localhost:${config.port}` : 'https://epi-erp.vercel.app');
       default:
-        return isLocalhost ? `http://localhost:${config.port}` : window.location.origin;
+        return isLocalhost ? `http://localhost:${config.port}` : 'https://epi-central-admin.vercel.app';
     }
   };
 

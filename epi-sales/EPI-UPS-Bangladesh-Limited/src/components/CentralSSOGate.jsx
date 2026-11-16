@@ -2,7 +2,7 @@ import React from 'react';
 import { ShieldAlert, ArrowRight, Lock, ExternalLink } from 'lucide-react';
 
 export default function CentralSSOGate({ user, permissionDenied }) {
-  const centralUrl = import.meta.env.VITE_CENTRAL_URL || 'http://localhost:5050';
+  const centralUrl = import.meta.env.VITE_CENTRAL_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5050' : 'https://epi-central-admin.vercel.app');
 
   if (permissionDenied && user) {
     return (
