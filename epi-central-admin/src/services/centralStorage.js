@@ -1,3 +1,5 @@
+import bcrypt from 'bcryptjs';
+
 /**
  * EPI CENTRALIZED MANAGEMENT SYSTEM — Browser-Local Storage Engine
  * 
@@ -5,7 +7,31 @@
  * Eliminates external MongoDB/cloud database requirement entirely.
  * All employee accounts, credentials, departments, audit logs, and SSO tickets
  * persist directly in the user's browser with full JSON backup & restore support.
+ * Passwords are cryptographically hashed using standard bcrypt algorithm.
  */
+
+// Safe bcrypt helpers
+function hashPassword(password) {
+  try {
+    return bcrypt.hashSync(String(password), 10);
+  } catch (e) {
+    return bcrypt.hashSync(String(password), 8);
+  }
+}
+
+function verifyPassword(password, hash) {
+  try {
+    if (!hash) return false;
+    // Standard bcrypt hash verification
+    if (hash.startsWith('$2a$') || hash.startsWith('$2b$') || hash.startsWith('$2y$')) {
+      return bcrypt.compareSync(String(password), hash);
+    }
+    // Backward compatibility for old plain text during automatic migration
+    return hash === password;
+  } catch (e) {
+    return false;
+  }
+}
 
 const STORAGE_KEYS = {
   USERS: 'epi_central_users_v1',
@@ -15,11 +41,11 @@ const STORAGE_KEYS = {
   TICKETS: 'epi_central_sso_tickets_v1',
 };
 
-// Initial default Super Admin account (configured locally in browser)
+// Initial default Super Admin account (bcrypt hashed: 'password123')
 const DEFAULT_SUPERADMIN = {
   id: 'usr-admin-01',
   userId: 'admin',
-  password: 'password123', // Default local password
+  passwordHash: '$2b$10$KalKOUb5ySkL5cNzchRM0OlFkdSGnCkkgzjgTcScWQxxViI0sXknK',
   name: 'Super Administrator',
   email: 'admin@epiups.com.bd',
   role: 'superadmin',
@@ -30,49 +56,53 @@ const DEFAULT_SUPERADMIN = {
     accounts: 'admin',
   },
   status: 'active',
+  loginHistory: [],
   createdAt: new Date().toISOString(),
   lastLogin: null,
 };
 
-// Default initial employee accounts for out-of-the-box readiness
+// Default initial employee accounts for out-of-the-box readiness (bcrypt hashed: 'password123')
 const DEFAULT_INITIAL_USERS = [
   DEFAULT_SUPERADMIN,
   {
     id: 'usr-sales-01',
     userId: 'sales1',
-    password: 'password123',
+    passwordHash: '$2b$10$KalKOUb5ySkL5cNzchRM0OlFkdSGnCkkgzjgTcScWQxxViI0sXknK',
     name: 'Sales Manager',
     email: 'sales@epiups.com.bd',
     role: 'manager',
     departments: ['sales'],
     departmentRoles: { sales: 'manager' },
     status: 'active',
+    loginHistory: [],
     createdAt: new Date().toISOString(),
     lastLogin: null,
   },
   {
     id: 'usr-service-01',
     userId: 'service1',
-    password: 'password123',
+    passwordHash: '$2b$10$KalKOUb5ySkL5cNzchRM0OlFkdSGnCkkgzjgTcScWQxxViI0sXknK',
     name: 'Service Lead Engineer',
     email: 'service@epiups.com.bd',
-    role: 'manager',
+    role: 'engineer',
     departments: ['service'],
-    departmentRoles: { service: 'manager' },
+    departmentRoles: { service: 'engineer' },
     status: 'active',
+    loginHistory: [],
     createdAt: new Date().toISOString(),
     lastLogin: null,
   },
   {
     id: 'usr-accounts-01',
     userId: 'accounts1',
-    password: 'password123',
+    passwordHash: '$2b$10$KalKOUb5ySkL5cNzchRM0OlFkdSGnCkkgzjgTcScWQxxViI0sXknK',
     name: 'Chief Accountant',
     email: 'accounts@epiups.com.bd',
     role: 'accountant',
     departments: ['accounts'],
     departmentRoles: { accounts: 'accountant' },
     status: 'active',
+    loginHistory: [],
     createdAt: new Date().toISOString(),
     lastLogin: null,
   },
@@ -89,6 +119,26 @@ class CentralStorageEngine {
       const existingUsers = localStorage.getItem(STORAGE_KEYS.USERS);
       if (!existingUsers) {
         localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(DEFAULT_INITIAL_USERS));
+      } else {
+        // Automatically migrate any legacy records: hash plain passwords, ensure loginHistory
+        try {
+          const parsed = JSON.parse(existingUsers);
+          let modified = false;
+          for (const u of parsed) {
+            if (u.password && !u.passwordHash) {
+              u.passwordHash = hashPassword(u.password);
+              delete u.password;
+              modified = true;
+            }
+            if (!Array.isArray(u.loginHistory)) {
+              u.loginHistory = [];
+              modified = true;
+            }
+          }
+          if (modified) {
+            localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(parsed));
+          }
+        } catch (_) {}
       }
 
       const existingAudit = localStorage.getItem(STORAGE_KEYS.AUDIT);
@@ -100,7 +150,7 @@ class CentralStorageEngine {
             userId: 'system',
             userName: 'System Initialization',
             action: 'INITIALIZE',
-            details: 'Central Admin browser-local data storage initialized successfully',
+            details: 'Central Admin browser-local data storage initialized successfully with bcrypt security',
             ip: '127.0.0.1 (Local Browser)',
           },
         ];
@@ -163,7 +213,7 @@ class CentralStorageEngine {
         userName: userName || 'Unknown User',
         action: String(action || 'ACTION').toUpperCase(),
         details: String(details || ''),
-        ip: 'Local Browser',
+        ip: (typeof window !== 'undefined' && window.location.hostname) ? window.location.hostname : '127.0.0.1 (Browser)',
       });
       // Cap at 500 logs to preserve browser storage
       if (logs.length > 500) logs.length = 500;
@@ -205,17 +255,27 @@ class CentralStorageEngine {
     if (!userId || !password) {
       throw new Error('User ID and Password are required');
     }
+    if (String(password).length < 8) {
+      throw new Error('Password must be at least 8 characters long');
+    }
     const users = this.getUsers().filter((u) => u.role !== 'superadmin');
     const adminUser = {
       id: 'usr-admin-' + Date.now(),
       userId: userId.trim(),
-      password: password,
+      passwordHash: hashPassword(password),
       name: (name || 'Super Administrator').trim(),
       email: (email || `${userId}@epiups.com.bd`).trim(),
       role: 'superadmin',
       departments: ['sales', 'service', 'accounts'],
       departmentRoles: { sales: 'admin', service: 'admin', accounts: 'admin' },
       status: 'active',
+      loginHistory: [
+        {
+          timestamp: new Date().toISOString(),
+          ip: (typeof window !== 'undefined' && window.location.hostname) ? window.location.hostname : '127.0.0.1 (Browser)',
+          userAgent: (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent : 'Web Browser',
+        }
+      ],
       createdAt: new Date().toISOString(),
       lastLogin: new Date().toISOString(),
     };
@@ -226,11 +286,11 @@ class CentralStorageEngine {
     config.setupComplete = true;
     this.saveConfig(config);
 
-    this.addAudit(adminUser.userId, adminUser.name, 'INITIAL_SETUP', 'Super Admin account initialized locally in browser storage');
+    this.addAudit(adminUser.userId, adminUser.name, 'INITIAL_SETUP', 'Super Admin account initialized with bcrypt password hashing');
 
     const token = this.generateSessionToken(adminUser);
     const safeUser = this.sanitizeUser(adminUser);
-    return { success: true, token, user: safeUser };
+    return { success: true, token, user: safeUser, redirectDepartment: 'dashboard' };
   }
 
   login(userId, password) {
@@ -248,22 +308,52 @@ class CentralStorageEngine {
       throw new Error('Account is deactivated. Contact Super Admin.');
     }
 
-    // Direct password match (or default fallback)
-    if (found.password !== password && password !== 'password123' && password !== 'admin123') {
+    // Verify bcrypt password hash
+    const passOk = verifyPassword(password, found.passwordHash || found.password);
+    if (!passOk) {
       throw new Error('Invalid User ID or Password.');
     }
 
-    // Update lastLogin
-    found.lastLogin = new Date().toISOString();
+    // Upgrade to bcrypt hash if was stored as legacy plain
+    if (found.password && !found.passwordHash) {
+      found.passwordHash = hashPassword(found.password);
+      delete found.password;
+    }
+
+    // Record login entry in history
+    if (!Array.isArray(found.loginHistory)) {
+      found.loginHistory = [];
+    }
+    const loginEntry = {
+      timestamp: new Date().toISOString(),
+      ip: (typeof window !== 'undefined' && window.location.hostname) ? window.location.hostname : '127.0.0.1 (Browser)',
+      userAgent: (typeof navigator !== 'undefined' && navigator.userAgent) ? navigator.userAgent : 'Web Browser',
+    };
+    found.loginHistory.unshift(loginEntry);
+    if (found.loginHistory.length > 50) found.loginHistory.length = 50;
+    found.lastLogin = loginEntry.timestamp;
     this.saveUsers(users);
 
-    this.addAudit(found.userId, found.name, 'USER_LOGIN', `User signed into Central Admin via browser-local session`);
+    this.addAudit(found.userId, found.name, 'USER_LOGIN', `User signed into Central Admin via browser session`);
+
+    // Compute direct department redirection
+    let redirectDepartment = 'dashboard';
+    if (found.role === 'superadmin') {
+      redirectDepartment = 'dashboard';
+    } else if (Array.isArray(found.departments)) {
+      if (found.departments.length === 1) {
+        redirectDepartment = found.departments[0];
+      } else {
+        redirectDepartment = 'dashboard';
+      }
+    }
 
     const token = this.generateSessionToken(found);
     return {
       success: true,
       token,
       user: this.sanitizeUser(found),
+      redirectDepartment,
     };
   }
 
@@ -308,23 +398,31 @@ class CentralStorageEngine {
 
   sanitizeUser(user) {
     if (!user) return null;
-    const { password, ...safe } = user;
+    const { password, passwordHash, ...safe } = user;
     return safe;
   }
 
   // --- SSO Tickets ---
   createSsoTicket(department, user) {
     if (!user) throw new Error('User required for SSO ticket');
+    const targetDept = String(department || '').toLowerCase();
+    
+    // Enforce department authorization when generating ticket
+    const isSuper = user.role === 'superadmin';
+    const hasDept = isSuper || (Array.isArray(user.departments) && user.departments.includes(targetDept));
+    if (!hasDept) {
+      throw new Error(`Unauthorized: User does not have permission for ${targetDept} department.`);
+    }
+
     const ticketId = 'sso_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
     const payload = {
       ticketId,
-      department: String(department || '').toLowerCase(),
+      department: targetDept,
       user: this.sanitizeUser(user),
       createdAt: Date.now(),
       exp: Date.now() + 5 * 60 * 1000, // 5 min validity
     };
 
-    // Store in browser memory/storage
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.TICKETS);
       const tickets = raw ? JSON.parse(raw) : {};
@@ -332,9 +430,7 @@ class CentralStorageEngine {
       localStorage.setItem(STORAGE_KEYS.TICKETS, JSON.stringify(tickets));
     } catch (_) {}
 
-    // Encoded ticket string contains entire payload as base64 for instant client-side resolution
-    const ticketString = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-    return ticketString;
+    return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
   }
 
   exchangeSsoTicket(ticketString, targetDept) {
@@ -344,7 +440,6 @@ class CentralStorageEngine {
       const raw = decodeURIComponent(escape(atob(ticketString)));
       payload = JSON.parse(raw);
     } catch {
-      // Try local map lookup
       try {
         const rawMap = localStorage.getItem(STORAGE_KEYS.TICKETS);
         const map = rawMap ? JSON.parse(rawMap) : {};
@@ -359,7 +454,7 @@ class CentralStorageEngine {
     const { user, department } = payload;
     const isSuper = user.role === 'superadmin';
     const deptMatch = !department || department === targetDept || isSuper;
-    const userHasDept = isSuper || (user.departments && user.departments.includes(targetDept));
+    const userHasDept = isSuper || (Array.isArray(user.departments) && user.departments.includes(targetDept));
 
     if (!deptMatch || !userHasDept) {
       throw new Error(`Unauthorized: User does not have permission for ${targetDept} department.`);
@@ -379,21 +474,64 @@ class CentralStorageEngine {
     const users = this.getUsers();
     const totalUsers = users.length;
     const activeUsers = users.filter((u) => u.status === 'active').length;
+    const inactiveUsers = users.filter((u) => u.status === 'inactive').length;
     const departmentCounts = {
       sales: users.filter((u) => u.status === 'active' && (u.role === 'superadmin' || u.departments?.includes('sales'))).length,
       service: users.filter((u) => u.status === 'active' && (u.role === 'superadmin' || u.departments?.includes('service'))).length,
       accounts: users.filter((u) => u.status === 'active' && (u.role === 'superadmin' || u.departments?.includes('accounts'))).length,
     };
+
+    // Gather recent logins across users
+    const allLogins = [];
+    for (const u of users) {
+      if (Array.isArray(u.loginHistory)) {
+        for (const entry of u.loginHistory) {
+          allLogins.push({
+            userId: u.userId,
+            name: u.name,
+            timestamp: entry.timestamp,
+            ip: entry.ip,
+            userAgent: entry.userAgent,
+          });
+        }
+      }
+    }
+    allLogins.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
     return {
       success: true,
-      stats: { totalUsers, activeUsers, departmentCounts },
+      stats: {
+        totalEmployees: totalUsers,
+        activeEmployees: activeUsers,
+        inactiveEmployees: inactiveUsers,
+        serviceUsers: departmentCounts.service,
+        salesUsers: departmentCounts.sales,
+        accountsUsers: departmentCounts.accounts,
+        recentLogins: allLogins.slice(0, 15),
+        recentActivities: this.getAuditLogs().slice(0, 15),
+      },
     };
   }
 
   listUsers() {
     return {
       success: true,
-      users: this.getUsers().map((u) => this.sanitizeUser(u)),
+      users: this.getUsers().map((u) => ({
+        ...this.sanitizeUser(u),
+        loginCount: Array.isArray(u.loginHistory) ? u.loginHistory.length : 0,
+      })),
+    };
+  }
+
+  getUserLoginHistory(id) {
+    const users = this.getUsers();
+    const user = users.find((u) => u.id === id || u.userId === id);
+    if (!user) throw new Error('User not found');
+    return {
+      success: true,
+      userId: user.userId,
+      name: user.name,
+      history: Array.isArray(user.loginHistory) ? user.loginHistory : [],
     };
   }
 
@@ -401,6 +539,9 @@ class CentralStorageEngine {
     const { userId, password, name, email, role, departments, departmentRoles } = data;
     if (!userId || !password) {
       throw new Error('User ID and Password are required');
+    }
+    if (String(password).length < 8) {
+      throw new Error('Password must be at least 8 characters long');
     }
     const cleanUserId = userId.trim().toLowerCase();
     const users = this.getUsers();
@@ -412,13 +553,14 @@ class CentralStorageEngine {
     const newUser = {
       id: 'usr-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
       userId: userId.trim(),
-      password,
+      passwordHash: hashPassword(password),
       name: (name || userId).trim(),
       email: (email || `${userId}@epiups.com.bd`).trim(),
       role: role || 'employee',
       departments: Array.isArray(departments) ? departments : [],
       departmentRoles: departmentRoles || {},
       status: 'active',
+      loginHistory: [],
       createdAt: new Date().toISOString(),
       lastLogin: null,
     };
@@ -478,14 +620,15 @@ class CentralStorageEngine {
   }
 
   resetPassword(id, newPassword, currentAdmin) {
-    if (!newPassword || newPassword.length < 6) {
-      throw new Error('Password must be at least 6 characters');
+    if (!newPassword || newPassword.length < 8) {
+      throw new Error('Password must be at least 8 characters long');
     }
     const users = this.getUsers();
     const u = users.find((x) => x.id === id);
     if (!u) throw new Error('User not found');
 
-    u.password = newPassword;
+    u.passwordHash = hashPassword(newPassword);
+    delete u.password;
     this.saveUsers(users);
     this.addAudit(
       currentAdmin?.userId || 'admin',
@@ -524,13 +667,14 @@ class CentralStorageEngine {
     if (data.name) u.name = data.name.trim();
     if (data.email) u.email = data.email.trim();
     if (data.newPassword) {
-      if (data.currentPassword && u.password !== data.currentPassword) {
+      if (data.currentPassword && !verifyPassword(data.currentPassword, u.passwordHash || u.password)) {
         throw new Error('Current password does not match.');
       }
-      if (data.newPassword.length < 6) {
-        throw new Error('New password must be at least 6 characters.');
+      if (data.newPassword.length < 8) {
+        throw new Error('New password must be at least 8 characters long.');
       }
-      u.password = data.newPassword;
+      u.passwordHash = hashPassword(data.newPassword);
+      delete u.password;
     }
 
     this.saveUsers(users);
@@ -703,6 +847,14 @@ export function installCentralFetchInterceptor() {
               return createJsonResponse({ error: 'Forbidden: Super Admin only' }, 403);
             }
             return createJsonResponse(centralStore.resetPassword(resetMatch[1], body.newPassword, currentUser));
+          }
+
+          const historyMatch = path.match(/^\/api\/admin\/users\/([^\/]+)\/login-history$/);
+          if (historyMatch && method === 'GET') {
+            if (currentUser.role !== 'superadmin') {
+              return createJsonResponse({ error: 'Forbidden: Super Admin only' }, 403);
+            }
+            return createJsonResponse(centralStore.getUserLoginHistory(historyMatch[1]));
           }
 
           if (path === '/api/admin/audit') {

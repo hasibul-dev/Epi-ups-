@@ -304,6 +304,24 @@ router.patch('/users/:id/status', async (req, res) => {
   }
 });
 
+// View employee login history
+router.get('/users/:id/login-history', async (req, res) => {
+  try {
+    const targetUser = await UsersDAO.findById(req.params.id);
+    if (!targetUser) {
+      return res.status(404).json({ success: false, error: 'Employee account not found.' });
+    }
+    res.json({
+      success: true,
+      userId: targetUser.userId,
+      name: targetUser.name,
+      history: Array.isArray(targetUser.loginHistory) ? targetUser.loginHistory : [],
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Delete an employee account
 router.delete('/users/:id', async (req, res) => {
   try {

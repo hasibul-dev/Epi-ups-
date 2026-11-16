@@ -93,6 +93,7 @@ export function CentralAuthProvider({ children }) {
 
     const authToken = data.token;
     const authUser = data.user;
+    const redirectDepartment = data.redirectDepartment || 'dashboard';
 
     if (remember) {
       localStorage.setItem('epi_central_token', authToken);
@@ -103,7 +104,7 @@ export function CentralAuthProvider({ children }) {
     setToken(authToken);
     setUser(authUser);
     setNeedsSetup(false);
-    return authUser;
+    return { user: authUser, redirectDepartment };
   };
 
   // Initial Super Admin setup handler

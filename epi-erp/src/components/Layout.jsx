@@ -71,7 +71,7 @@ export default function Layout() {
               </div>
             );
           })}
-          
+
           <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
             <h4>Central Control</h4>
             <a href={centralUrl} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', color: '#38bdf8', textDecoration: 'none', fontSize: 13.5, fontWeight: 600 }}>

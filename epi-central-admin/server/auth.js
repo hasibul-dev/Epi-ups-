@@ -175,9 +175,22 @@ router.post('/login', async (req, res) => {
 
     const token = signUserToken(user);
 
+    // Compute automatic department redirection
+    let redirectDepartment = 'dashboard';
+    if (user.role === 'superadmin') {
+      redirectDepartment = 'dashboard';
+    } else if (Array.isArray(user.departments)) {
+      if (user.departments.length === 1) {
+        redirectDepartment = user.departments[0];
+      } else {
+        redirectDepartment = 'dashboard';
+      }
+    }
+
     res.json({
       success: true,
       token,
+      redirectDepartment,
       user: {
         id: user.id,
         userId: user.userId,

@@ -9,7 +9,9 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
   const [userId, setUserId] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('employee');
   const [password, setPassword] = useState('');
+  const [changePassword, setChangePassword] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [status, setStatus] = useState('active');
   const [copied, setCopied] = useState(false);
@@ -21,15 +23,19 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
       setUserId(userToEdit.userId || '');
       setName(userToEdit.name || '');
       setEmail(userToEdit.email || '');
+      setRole(userToEdit.role || 'employee');
       setDepartments(userToEdit.departments || []);
       setStatus(userToEdit.status || 'active');
       setPassword('');
+      setChangePassword(false);
     } else {
       setUserId('');
       setName('');
       setEmail('');
+      setRole('employee');
       setDepartments(['sales']); // Default suggestion
       setStatus('active');
+      setChangePassword(true);
       generateStrongPassword();
     }
   }, [userToEdit]);
@@ -98,6 +104,10 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
       setError('Password must be at least 8 characters long.');
       return;
     }
+    if (isEditing && changePassword && (!password || password.length < 8)) {
+      setError('New password must be at least 8 characters long.');
+      return;
+    }
 
     try {
       setSubmitting(true);
@@ -111,6 +121,7 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
         userId: userId.trim(),
         name: name.trim(),
         email: email.trim(),
+        role,
         departments,
         status,
       };
@@ -133,7 +144,23 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
         throw new Error(data.error || 'Failed to save user account.');
       }
 
-      onSaved(data.user, !isEditing ? password : null);
+      // If editing and password reset requested
+      if (isEditing && changePassword && password) {
+        const passRes = await fetch(`/api/admin/users/${userToEdit.id}/reset-password`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ newPassword: password }),
+        });
+        const passData = await passRes.json();
+        if (!passRes.ok || !passData.success) {
+          throw new Error(passData.error || 'User updated, but failed to reset password.');
+        }
+      }
+
+      onSaved(data.user, (!isEditing || changePassword) ? password : null);
       onClose();
     } catch (err) {
       setError(err.message || 'Operation failed.');
@@ -202,23 +229,59 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
             </div>
           </div>
 
-          <div className="form-group-field">
-            <label className="form-label">Official Email (Optional)</label>
-            <input
-              type="email"
-              className="text-input"
-              placeholder="e.g. employee@epiups.com.bd"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={submitting}
-            />
+          <div className="form-row-2">
+            <div className="form-group-field">
+              <label className="form-label">Official Email (Optional)</label>
+              <input
+                type="email"
+                className="text-input"
+                placeholder="e.g. employee@epiups.com.bd"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={submitting}
+              />
+            </div>
+
+            <div className="form-group-field">
+              <label className="form-label">
+                <Shield size={14} /> System Role & Designation
+              </label>
+              <select
+                className="text-input"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                disabled={submitting || (isEditing && userToEdit.role === 'superadmin')}
+              >
+                <option value="employee">Standard Employee</option>
+                <option value="manager">Department Manager</option>
+                <option value="engineer">Service Engineer</option>
+                <option value="accountant">Accounts / Accountant</option>
+                <option value="superadmin">Super Administrator (Full System Access)</option>
+              </select>
+            </div>
           </div>
 
-          {!isEditing && (
+          {isEditing && (
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 13, cursor: 'pointer', color: '#38bdf8' }}>
+                <input
+                  type="checkbox"
+                  checked={changePassword}
+                  onChange={(e) => {
+                    setChangePassword(e.target.checked);
+                    if (e.target.checked && !password) generateStrongPassword();
+                  }}
+                />
+                <span>Change / Set New Password for this employee</span>
+              </label>
+            </div>
+          )}
+
+          {(!isEditing || changePassword) && (
             <div className="form-group-field">
               <div className="field-header-split">
                 <label className="form-label">
-                  Temporary Password <span className="req">*</span>
+                  <KeyRound size={14} /> {isEditing ? 'New Password' : 'Temporary Password'} <span className="req">*</span>
                 </label>
                 <button
                   type="button"
@@ -235,7 +298,7 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
                   placeholder="Minimum 8 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required
+                  required={!isEditing || changePassword}
                   disabled={submitting}
                 />
                 {password && (
@@ -250,7 +313,7 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
                 )}
               </div>
               <span className="field-hint">
-                Password is encrypted with bcrypt upon creation.
+                Password will be cryptographically hashed using standard bcrypt before saving.
               </span>
             </div>
           )}

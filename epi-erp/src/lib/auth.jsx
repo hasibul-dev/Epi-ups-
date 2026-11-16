@@ -14,6 +14,8 @@ export function AuthProvider({ children }) {
     }
   });
   const [ready, setReady] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
+  const [deniedUser, setDeniedUser] = useState(null);
   const CENTRAL_URL = import.meta.env.VITE_CENTRAL_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5050' : 'https://epi-central-admin.vercel.app');
 
   const logout = useCallback(() => {
@@ -72,8 +74,15 @@ export function AuthProvider({ children }) {
             localStorage.setItem('epi_user', JSON.stringify(accountsUser));
             localStorage.setItem('epi_central_user', JSON.stringify(u));
             setUser(accountsUser);
+            setAccessDenied(false);
+            setDeniedUser(null);
             setReady(true);
             window.history.replaceState({}, document.title, window.location.pathname);
+            return;
+          } else {
+            setAccessDenied(true);
+            setDeniedUser(u);
+            setReady(true);
             return;
           }
         }
@@ -117,11 +126,20 @@ export function AuthProvider({ children }) {
             localStorage.setItem('epi_user', JSON.stringify(accountsUser));
             localStorage.setItem('epi_central_user', JSON.stringify(data.user));
             setUser(accountsUser);
+            setAccessDenied(false);
+            setDeniedUser(null);
             setReady(true);
             window.history.replaceState({}, document.title, window.location.pathname);
+          } else {
+            setAccessDenied(true);
+            setDeniedUser(data.user || null);
+            setReady(true);
           }
         })
-        .catch((e) => console.warn('SSO ticket exchange note:', e));
+        .catch((e) => {
+          console.warn('SSO ticket exchange note:', e);
+          setReady(true);
+        });
     }
 
     // Cross-tab Central Logout Listener
@@ -207,7 +225,7 @@ export function AuthProvider({ children }) {
   const can = (module, action = 'read') => !!user?.permissions?.[module]?.includes(action);
 
   return (
-    <Ctx.Provider value={{ user, ready, login, setup, logout, can }}>
+    <Ctx.Provider value={{ user, ready, login, setup, logout, can, accessDenied, deniedUser }}>
       {children}
     </Ctx.Provider>
   );

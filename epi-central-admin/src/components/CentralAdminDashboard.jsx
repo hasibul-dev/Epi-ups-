@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import UserManagementModal from './UserManagementModal.jsx';
 import ResetPasswordModal from './ResetPasswordModal.jsx';
+import LoginHistoryModal from './LoginHistoryModal.jsx';
 import { centralStore } from '../services/centralStorage.js';
 
 export default function CentralAdminDashboard({ onLaunchDept }) {
@@ -54,6 +55,7 @@ export default function CentralAdminDashboard({ onLaunchDept }) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [resetUser, setResetUser] = useState(null);
+  const [historyUser, setHistoryUser] = useState(null);
   const [alertNotice, setAlertNotice] = useState(null);
 
   // Fetch Dashboard Stats and Users list
@@ -534,6 +536,14 @@ export default function CentralAdminDashboard({ onLaunchDept }) {
                             <KeyRound size={15} />
                           </button>
 
+                          <button
+                            className="btn-table-icon"
+                            title="View Login History"
+                            onClick={() => setHistoryUser(u)}
+                          >
+                            <Clock size={15} />
+                          </button>
+
                           {!isSuper && (
                             <button
                               className={`btn-table-icon ${u.status === 'active' ? 'text-amber' : 'text-green'}`}
@@ -664,6 +674,14 @@ export default function CentralAdminDashboard({ onLaunchDept }) {
             });
             loadData();
           }}
+        />
+      )}
+
+      {/* Login History Modal */}
+      {historyUser && (
+        <LoginHistoryModal
+          user={historyUser}
+          onClose={() => setHistoryUser(null)}
         />
       )}
     </div>
