@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext.jsx'
 import Field from '../components/Field.jsx'
 import { seed, emptyState } from '../services/seed.js'
 import { sync } from '../services/domain.js'
-import { Save, Download, RotateCcw, Trash2, Database, Sliders } from 'lucide-react'
+import { Save, Download, Upload, RotateCcw, Trash2, Database, Sliders } from 'lucide-react'
 
 export default function Settings() {
   const { s, upd, setState } = useApp()
@@ -54,6 +54,34 @@ export default function Settings() {
         <button className="btn s" onClick={exportJson} title="Export full JSON backup">
           <Download size={14} /> Export JSON Backup
         </button>
+        <label className="btn s" style={{ cursor: 'pointer', margin: 0 }} title="Import full JSON backup">
+          <Upload size={14} /> Import JSON Backup
+          <input
+            type="file"
+            accept=".json"
+            style={{ display: 'none' }}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = (evt) => {
+                try {
+                  const parsed = JSON.parse(evt.target.result);
+                  if (parsed && typeof parsed === 'object') {
+                    setState(sync(parsed));
+                    alert('Service backup restored successfully!');
+                  } else {
+                    alert('Invalid service backup file format.');
+                  }
+                } catch (err) {
+                  alert('Import failed: ' + err.message);
+                }
+              };
+              reader.readAsText(file);
+              e.target.value = '';
+            }}
+          />
+        </label>
         <button
           className="btn s"
           onClick={() => window.confirm('Replace all data with fresh demo data?') && setState(seed())}

@@ -39,7 +39,7 @@ export default function Layout() {
   const { user, logout, can } = useAuth();
   const [open, setOpen] = useState(false);
   const loc = useLocation();
-  const centralUrl = import.meta.env.VITE_CENTRAL_URL || 'http://localhost:5050';
+  const centralUrl = import.meta.env.VITE_CENTRAL_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:5050' : 'https://epi-central-admin.vercel.app');
   const close = () => setOpen(false);
   const getInitials = (name) => {
     if (!name) return 'AC';
