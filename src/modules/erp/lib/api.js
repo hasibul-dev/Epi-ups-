@@ -12,7 +12,13 @@ export const setToken = (t) => {
   else localStorage.removeItem('epi_token');
 };
 
-export const getToken = () => token || localStorage.getItem('epi_token') || '';
+export const getToken = () =>
+  token ||
+  localStorage.getItem('epi_token') ||
+  localStorage.getItem('epi_central_token') ||
+  sessionStorage.getItem('epi_token') ||
+  sessionStorage.getItem('epi_central_token') ||
+  '';
 
 export const setRefreshToken = (rt) => {
   refreshToken = rt || '';

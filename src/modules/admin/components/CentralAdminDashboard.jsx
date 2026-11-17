@@ -22,6 +22,7 @@ import {
   Sparkles,
   Download,
   Upload,
+  Eye,
 } from 'lucide-react';
 import UserManagementModal from './UserManagementModal.jsx';
 import ResetPasswordModal from './ResetPasswordModal.jsx';
@@ -56,6 +57,7 @@ export default function CentralAdminDashboard({ onLaunchDept }) {
   const [editingUser, setEditingUser] = useState(null);
   const [resetUser, setResetUser] = useState(null);
   const [historyUser, setHistoryUser] = useState(null);
+  const [detailUser, setDetailUser] = useState(null);
   const [alertNotice, setAlertNotice] = useState(null);
 
   // Fetch Dashboard Stats and Users list
@@ -522,6 +524,14 @@ export default function CentralAdminDashboard({ onLaunchDept }) {
                         <div className="table-actions-group">
                           <button
                             className="btn-table-icon"
+                            title="View User Details"
+                            onClick={() => setDetailUser(u)}
+                          >
+                            <Eye size={15} />
+                          </button>
+
+                          <button
+                            className="btn-table-icon"
                             title="Edit Employee"
                             onClick={() => setEditingUser(u)}
                           >
@@ -683,6 +693,113 @@ export default function CentralAdminDashboard({ onLaunchDept }) {
           user={historyUser}
           onClose={() => setHistoryUser(null)}
         />
+      )}
+
+      {/* View User Details Modal */}
+      {detailUser && (
+        <div className="modal-backdrop" onClick={() => setDetailUser(null)}>
+          <div className="modal-box modal-md" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 540 }}>
+            <div className="modal-header">
+              <div className="modal-title-wrap">
+                <div className="modal-header-icon" style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8' }}>
+                  <UserCheck size={20} />
+                </div>
+                <div>
+                  <h3>Employee Details</h3>
+                  <p>Comprehensive account information &amp; permissions</p>
+                </div>
+              </div>
+              <button className="modal-close-btn" onClick={() => setDetailUser(null)}>
+                <XCircle size={18} />
+              </button>
+            </div>
+
+            <div style={{ padding: '20px 24px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #1a73e8, #38bdf8)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 700, color: '#fff' }}>
+                  {detailUser.name.slice(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h4 style={{ margin: '0 0 4px', fontSize: 16, color: '#fff' }}>{detailUser.name}</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: '#94a3b8' }}>
+                    <span>User ID: <strong style={{ color: '#38bdf8' }}>@{detailUser.userId}</strong></span>
+                    <span>•</span>
+                    <span>{detailUser.email}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14, marginBottom: 18 }}>
+                <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '12px 14px', borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                  <div style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>System Role</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: detailUser.role === 'superadmin' ? '#38bdf8' : '#e2e8f0', marginTop: 4 }}>
+                    {detailUser.role === 'superadmin' ? 'Super Administrator' : (detailUser.role || 'Staff Employee')}
+                  </div>
+                </div>
+
+                <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '12px 14px', borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                  <div style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Account Status</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: detailUser.status === 'active' ? '#10b981' : '#ef4444', marginTop: 4, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: detailUser.status === 'active' ? '#10b981' : '#ef4444' }} />
+                    {detailUser.status === 'active' ? 'Active & Unlocked' : 'Inactive / Suspended'}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 18 }}>
+                <div style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', fontWeight: 600, marginBottom: 8 }}>Authorized Departments</div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {detailUser.role === 'superadmin' ? (
+                    <span className="dept-pill dept-all" style={{ padding: '6px 12px', fontSize: 12 }}>Full System Access (Admin, Sales, Service, Accounts)</span>
+                  ) : (
+                    detailUser.departments && detailUser.departments.length > 0 ? (
+                      detailUser.departments.map((d) => (
+                        <span key={d} className={`dept-pill dept-${d}`} style={{ padding: '6px 12px', fontSize: 12 }}>
+                          {d.toUpperCase()} DEPARTMENT
+                        </span>
+                      ))
+                    ) : (
+                      <span className="dept-pill dept-none" style={{ padding: '6px 12px', fontSize: 12 }}>No departments assigned</span>
+                    )
+                  )}
+                </div>
+              </div>
+
+              <div style={{ background: 'rgba(255, 255, 255, 0.02)', padding: '12px 14px', borderRadius: 8, border: '1px solid rgba(255, 255, 255, 0.06)', fontSize: 12, color: '#94a3b8', lineHeight: 1.6 }}>
+                <div><strong>Created At:</strong> {detailUser.createdAt ? new Date(detailUser.createdAt).toLocaleString() : 'System initialization'}</div>
+                <div><strong>Last Login:</strong> {detailUser.lastLogin ? new Date(detailUser.lastLogin).toLocaleString() : 'Never logged in'}</div>
+                <div><strong>Security Hash:</strong> Bcrypt Salted (Cost 10)</div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 20 }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    const u = detailUser;
+                    setDetailUser(null);
+                    setResetUser(u);
+                  }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5 }}
+                >
+                  <KeyRound size={14} /> Reset Password
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    const u = detailUser;
+                    setDetailUser(null);
+                    setEditingUser(u);
+                  }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12.5 }}
+                >
+                  <Edit size={14} /> Edit Account
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

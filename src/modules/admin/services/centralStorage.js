@@ -110,6 +110,8 @@ const DEFAULT_INITIAL_USERS = [
 
 class CentralStorageEngine {
   constructor() {
+    this.memoryUsers = JSON.parse(JSON.stringify(DEFAULT_INITIAL_USERS));
+    this.memoryAudit = [];
     this.init();
   }
 
@@ -176,7 +178,12 @@ class CentralStorageEngine {
 
   // --- Helpers ---
   getUsers() {
-    if (typeof localStorage === 'undefined') return DEFAULT_INITIAL_USERS;
+    if (typeof localStorage === 'undefined') {
+      if (!this.memoryUsers) {
+        this.memoryUsers = JSON.parse(JSON.stringify(DEFAULT_INITIAL_USERS));
+      }
+      return this.memoryUsers;
+    }
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.USERS);
       return raw ? JSON.parse(raw) : DEFAULT_INITIAL_USERS;
@@ -186,15 +193,21 @@ class CentralStorageEngine {
   }
 
   saveUsers(users) {
+    this.memoryUsers = users;
     if (typeof localStorage === 'undefined') return;
     try {
       localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+      if (typeof window !== 'undefined' && window.__EPI_UNIFIED_STORE__) {
+        window.__EPI_UNIFIED_STORE__.memory.users = users;
+        window.__EPI_UNIFIED_STORE__.persist();
+      }
     } catch (e) {
       console.error('[CentralStorage] Failed to save users:', e);
     }
   }
 
   getAuditLogs() {
+    if (typeof localStorage === 'undefined') return this.memoryAudit || [];
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.AUDIT);
       return raw ? JSON.parse(raw) : [];
@@ -204,19 +217,21 @@ class CentralStorageEngine {
   }
 
   addAudit(userId, userName, action, details) {
+    const logs = this.getAuditLogs();
+    logs.unshift({
+      id: 'log-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+      at: new Date().toISOString(),
+      userId: userId || 'unknown',
+      userName: userName || 'Unknown User',
+      action: String(action || 'ACTION').toUpperCase(),
+      details: String(details || ''),
+      ip: (typeof window !== 'undefined' && window.location.hostname) ? window.location.hostname : '127.0.0.1 (Browser)',
+    });
+    // Cap at 500 logs to preserve browser storage
+    if (logs.length > 500) logs.length = 500;
+    this.memoryAudit = logs;
+    if (typeof localStorage === 'undefined') return;
     try {
-      const logs = this.getAuditLogs();
-      logs.unshift({
-        id: 'log-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
-        at: new Date().toISOString(),
-        userId: userId || 'unknown',
-        userName: userName || 'Unknown User',
-        action: String(action || 'ACTION').toUpperCase(),
-        details: String(details || ''),
-        ip: (typeof window !== 'undefined' && window.location.hostname) ? window.location.hostname : '127.0.0.1 (Browser)',
-      });
-      // Cap at 500 logs to preserve browser storage
-      if (logs.length > 500) logs.length = 500;
       localStorage.setItem(STORAGE_KEYS.AUDIT, JSON.stringify(logs));
     } catch (e) {
       console.warn('[CentralStorage] Failed to save audit log:', e);
@@ -224,6 +239,7 @@ class CentralStorageEngine {
   }
 
   getConfig() {
+    if (typeof localStorage === 'undefined') return { setupComplete: true };
     try {
       const raw = localStorage.getItem(STORAGE_KEYS.CONFIG);
       return raw ? JSON.parse(raw) : { setupComplete: true };
@@ -233,6 +249,7 @@ class CentralStorageEngine {
   }
 
   saveConfig(cfg) {
+    if (typeof localStorage === 'undefined') return;
     try {
       localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(cfg));
     } catch (e) {

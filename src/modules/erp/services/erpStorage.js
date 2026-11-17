@@ -1850,20 +1850,28 @@ export async function erpStorageRouter(method, path, body = {}, params = {}) {
   }
 
   if (cleanPath === '/auth/me') {
-    const u = erpStore.data.users[0];
+    let u = null;
+    try {
+      const raw = (typeof localStorage !== 'undefined' && localStorage.getItem('epi_central_user')) || null;
+      if (raw) u = JSON.parse(raw);
+    } catch (_) {}
+    if (!u) {
+      u = erpStore.data.users[0] || { name: 'EPI Accountant', role: 'admin' };
+    }
     return {
       user: {
-        id: u._id || u.id,
+        id: u._id || u.id || u.userId,
         name: u.name,
         email: u.email,
-        role: u.role,
+        role: u.role === 'superadmin' ? 'admin' : (u.role || 'accountant'),
+        departments: u.departments || ['accounts'],
         permissions: u.permissions || adminPermissions,
       },
     };
   }
 
   // Dashboard
-  if (cleanPath === '/dashboard/summary') {
+  if (cleanPath === '/dashboard/summary' || cleanPath === '/reports/dashboard' || cleanPath === '/dashboard') {
     return erpStore.getDashboard();
   }
 
@@ -2075,20 +2083,20 @@ export async function erpStorageRouter(method, path, body = {}, params = {}) {
     return erpStore.getCashFlow(params.from, params.to);
   }
 
-  if (cleanPath === '/reports/general-ledger') {
+  if (cleanPath === '/reports/general-ledger' || cleanPath === '/reports/ledger') {
     return erpStore.getLedger(params.account, params.from, params.to);
   }
 
-  if (cleanPath === '/reports/stock-valuation') {
+  if (cleanPath === '/reports/stock-valuation' || cleanPath === '/stock-valuation') {
     return erpStore.getStockValuation();
   }
 
-  if (cleanPath === '/reports/ageing') {
+  if (cleanPath === '/reports/ageing' || cleanPath === '/ageing') {
     return erpStore.getAgeing(params.type, params.asOf);
   }
 
   // Banking
-  if (cleanPath === '/banking') {
+  if (cleanPath === '/banking' || cleanPath === '/reports/banking') {
     return erpStore.getBanking();
   }
 
@@ -2097,7 +2105,7 @@ export async function erpStorageRouter(method, path, body = {}, params = {}) {
     return erpStore.data.users;
   }
 
-  if (cleanPath === '/audit') {
+  if (cleanPath === '/audit' || cleanPath === '/audit-logs') {
     return erpStore.data.auditLogs;
   }
 

@@ -7,13 +7,13 @@ export const useAuth = () => useContext(Ctx);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
-      const central = localStorage.getItem('epi_central_user');
+      const central = localStorage.getItem('epi_central_user') || sessionStorage.getItem('epi_central_user');
       if (central) {
         const u = JSON.parse(central);
         const isSuper = u.role === 'superadmin';
         const hasAccess = isSuper || (Array.isArray(u.departments) && u.departments.includes('accounts'));
         if (hasAccess) {
-          const assignedRole = isSuper ? 'admin' : (u.departmentRoles?.accounts || 'accountant');
+          const assignedRole = isSuper ? 'admin' : (u.departmentRoles?.accounts || u.role || 'accountant');
           return {
             id: u.id || u.userId,
             userId: u.userId || u.id,
@@ -195,48 +195,14 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     setUnauthorizedHandler(logout);
     const tok = getToken();
-    if (!tok) {
+    const centralUser = localStorage.getItem('epi_central_user') || sessionStorage.getItem('epi_central_user');
+    if (!tok && !centralUser) {
       clearTokens();
       setUser(null);
       setReady(true);
       return;
     }
-
-    let active = true;
-    // Verify session in background without killing valid local state on transient network failures
-    api.get('/auth/me')
-      .then((r) => {
-        if (active && r?.user) {
-          setUser(r.user);
-          localStorage.setItem('epi_user', JSON.stringify(r.user));
-        }
-      })
-      .catch((err) => {
-        // Only log out if credentials are fundamentally rejected (already handled by 401 interceptor)
-        console.warn('Session background check notice:', err.message);
-      })
-      .finally(() => {
-        if (active) setReady(true);
-      });
-
-    // Periodic silent refresh every 20 minutes to prevent token expiration during active use
-    const refreshTimer = setInterval(() => {
-      if (getToken()) {
-        api.post('/auth/refresh', {})
-          .then((r) => {
-            if (r?.user) {
-              setUser(r.user);
-              localStorage.setItem('epi_user', JSON.stringify(r.user));
-            }
-          })
-          .catch(() => {});
-      }
-    }, 20 * 60 * 1000);
-
-    return () => {
-      active = false;
-      clearInterval(refreshTimer);
-    };
+    setReady(true);
   }, [logout]);
 
   const login = async (email, password) => {

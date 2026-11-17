@@ -111,6 +111,7 @@ export function AuthProvider({ children }) {
       localStorage.setItem('epi_central_token', authToken);
       localStorage.setItem('epi_central_user', JSON.stringify(authUser));
       // Cross-module compatibility keys
+      localStorage.setItem('epi_token', authToken);
       localStorage.setItem('epi_ups_auth_unlocked', 'true');
       localStorage.setItem('epi_ups_auth_token', authToken);
       localStorage.setItem('epi_service_auth_token', authToken);
@@ -118,7 +119,10 @@ export function AuthProvider({ children }) {
     } else {
       sessionStorage.setItem('epi_central_token', authToken);
       sessionStorage.setItem('epi_central_user', JSON.stringify(authUser));
+      sessionStorage.setItem('epi_token', authToken);
+      localStorage.setItem('epi_token', authToken);
       sessionStorage.setItem('epi_ups_auth_unlocked', 'true');
+      localStorage.setItem('epi_user', JSON.stringify(authUser));
     }
 
     setToken(authToken);
@@ -162,6 +166,8 @@ export function AuthProvider({ children }) {
 
     localStorage.removeItem('epi_central_token');
     sessionStorage.removeItem('epi_central_token');
+    localStorage.removeItem('epi_token');
+    sessionStorage.removeItem('epi_token');
     localStorage.removeItem('epi_central_user');
     sessionStorage.removeItem('epi_central_user');
     localStorage.removeItem('epi_ups_auth_unlocked');

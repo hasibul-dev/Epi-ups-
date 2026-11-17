@@ -11,6 +11,7 @@
     "build": "vite build",
     "start": "node server/index.js",
     "test": "node tests/test_rbac_and_central_login.js",
+    "test:auth-rbac": "node tests/test_login_rbac_and_accounts_crud.js",
     "test:storage": "node tests/test_browser_local_storage.js",
     "test:server": "node tests/test_unified_server.js",
     "test:functional": "node tests/test_functional_crud_and_connections.js"

@@ -11,12 +11,12 @@ import {
   Briefcase,
   Wrench,
   Landmark,
-  Sparkles,
 } from 'lucide-react';
 
 export default function UnifiedLogin() {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [selectedDept, setSelectedDept] = useState('admin');
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(true);
@@ -24,64 +24,96 @@ export default function UnifiedLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const demoAccounts = [
+  const departments = [
     {
-      userId: 'admin',
-      password: 'password123',
-      deptName: 'Executive Admin',
+      id: 'admin',
+      name: 'Executive Admin',
       title: 'Super Administrator',
-      badge: 'Full System Access',
+      desc: 'Central control hub & user provisioning',
       icon: Shield,
       accent: '#38bdf8',
-      bg: 'rgba(56, 189, 248, 0.08)',
-      border: 'rgba(56, 189, 248, 0.3)',
+      bg: 'rgba(56, 189, 248, 0.1)',
+      border: 'rgba(56, 189, 248, 0.35)',
     },
     {
-      userId: 'sales1',
-      password: 'password123',
-      deptName: 'Sales Department',
-      title: 'Sales Executive',
-      badge: 'Clients & Quotations',
+      id: 'sales',
+      name: 'Sales Department',
+      title: 'Commercial & Sales',
+      desc: 'Clients master, follow-ups & quotations',
       icon: Briefcase,
       accent: '#34d399',
-      bg: 'rgba(52, 211, 153, 0.08)',
-      border: 'rgba(52, 211, 153, 0.3)',
+      bg: 'rgba(52, 211, 153, 0.1)',
+      border: 'rgba(52, 211, 153, 0.35)',
     },
     {
-      userId: 'service1',
-      password: 'password123',
-      deptName: 'Service Department',
-      title: 'Technical Engineer',
-      badge: 'Servicing & Orders',
+      id: 'service',
+      name: 'Service Department',
+      title: 'Technical & Engineering',
+      desc: 'Servicing, maintenance & installation',
       icon: Wrench,
       accent: '#fbbf24',
-      bg: 'rgba(251, 191, 36, 0.08)',
-      border: 'rgba(251, 191, 36, 0.3)',
+      bg: 'rgba(251, 191, 36, 0.1)',
+      border: 'rgba(251, 191, 36, 0.35)',
     },
     {
-      userId: 'accounts1',
-      password: 'password123',
-      deptName: 'Accounts & ERP',
-      title: 'Chief Accountant',
-      badge: 'Ledger & Mushak-9.1',
+      id: 'accounts',
+      name: 'Accounts & ERP',
+      title: 'Finance & Accounting',
+      desc: 'General ledger, Mushak-9.1 & invoices',
       icon: Landmark,
       accent: '#a78bfa',
-      bg: 'rgba(167, 139, 250, 0.08)',
-      border: 'rgba(167, 139, 250, 0.3)',
+      bg: 'rgba(167, 139, 250, 0.1)',
+      border: 'rgba(167, 139, 250, 0.35)',
     },
   ];
 
-  const doLogin = async (uid, pwd, rem) => {
+  const currentDeptObj = departments.find((d) => d.id === selectedDept) || departments[0];
+
+  const handleSelectDept = (deptId) => {
+    setSelectedDept(deptId);
     setError('');
+    // Note: Do NOT fill User ID or Password. User must type manually.
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (!userId.trim()) {
+      setError('Please enter your assigned User ID.');
+      return;
+    }
+    if (!password) {
+      setError('Please enter your password.');
+      return;
+    }
+
     try {
       setLoading(true);
-      const res = await login(uid.trim(), pwd, rem);
-      const target = res?.redirectDepartment;
-      if (target === 'sales') {
+      // Authenticate with centralized bcrypt credential verification
+      const res = await login(userId.trim(), password, remember);
+      const authUser = res?.user;
+
+      if (!authUser) {
+        throw new Error('Authentication failed. No user record returned.');
+      }
+
+      // Check role & department permissions for the selected department
+      const isSuper = authUser.role === 'superadmin';
+      const userDepts = authUser.departments || [];
+
+      if (!isSuper && !userDepts.includes(selectedDept)) {
+        throw new Error(
+          `Access Denied: Your account (@${authUser.userId}) is not authorized to access ${currentDeptObj.name}. Please select your assigned department or contact the Administrator.`
+        );
+      }
+
+      // Route to the selected authorized department
+      if (selectedDept === 'sales') {
         navigate('/sales');
-      } else if (target === 'service') {
+      } else if (selectedDept === 'service') {
         navigate('/service');
-      } else if (target === 'accounts') {
+      } else if (selectedDept === 'accounts') {
         navigate('/accounts');
       } else {
         navigate('/admin');
@@ -92,28 +124,9 @@ export default function UnifiedLogin() {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!userId.trim()) {
-      setError('Please enter your assigned User ID.');
-      return;
-    }
-    if (!password) {
-      setError('Please enter your password.');
-      return;
-    }
-    doLogin(userId, password, remember);
-  };
-
-  const handleQuickDemoLogin = (acc) => {
-    setUserId(acc.userId);
-    setPassword(acc.password);
-    doLogin(acc.userId, acc.password, true);
-  };
-
   return (
     <div className="login-wrapper">
-      <div className="login-card" style={{ maxWidth: 520 }}>
+      <div className="login-card" style={{ maxWidth: 540 }}>
         {/* Brand Banner */}
         <div className="login-brand-header">
           <div className="login-logo-ring">
@@ -126,104 +139,93 @@ export default function UnifiedLogin() {
 
         <div className="login-sso-badge">
           <Shield size={14} />
-          <span>Unified Single Sign-On (SSO) Portal</span>
+          <span>Department-Guarded Single Sign-On (SSO) Portal</span>
         </div>
 
-        {/* 1-Click Demo Logins Section */}
-        <div
-          style={{
-            marginBottom: 20,
-            padding: '14px',
-            background: 'rgba(255, 255, 255, 0.03)',
-            borderRadius: 10,
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-          }}
-        >
+        {/* 1. Department Selection Options */}
+        <div style={{ marginBottom: 20 }}>
           <div
             style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: '#94a3b8',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              marginBottom: 10,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: 10,
             }}
           >
-            <span
-              style={{
-                fontSize: 12,
-                fontWeight: 700,
-                color: '#94a3b8',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
-              }}
-            >
-              <Sparkles size={13} style={{ color: '#fbbf24' }} />
-              1-Click Department Quick Logins
+            <span>Step 1: Select Target Department</span>
+            <span style={{ fontSize: 11, color: currentDeptObj.accent, fontWeight: 600 }}>
+              {currentDeptObj.name}
             </span>
-            <span style={{ fontSize: 11, color: '#64748b' }}>Pre-filled & Instant</span>
           </div>
 
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: 8,
+              gap: 10,
             }}
           >
-            {demoAccounts.map((acc) => {
-              const Icon = acc.icon;
+            {departments.map((dept) => {
+              const Icon = dept.icon;
+              const isSelected = selectedDept === dept.id;
               return (
                 <button
-                  key={acc.userId}
+                  key={dept.id}
                   type="button"
-                  onClick={() => handleQuickDemoLogin(acc)}
-                  disabled={loading}
+                  onClick={() => handleSelectDept(dept.id)}
                   style={{
                     display: 'flex',
                     alignItems: 'flex-start',
-                    gap: 8,
-                    padding: '9px 10px',
-                    borderRadius: 8,
-                    background: acc.bg,
-                    border: `1px solid ${acc.border}`,
-                    cursor: loading ? 'not-allowed' : 'pointer',
+                    gap: 10,
+                    padding: '11px 12px',
+                    borderRadius: 9,
+                    background: isSelected ? dept.bg : 'rgba(255, 255, 255, 0.02)',
+                    border: isSelected
+                      ? `2px solid ${dept.accent}`
+                      : '1px solid rgba(255, 255, 255, 0.08)',
+                    cursor: 'pointer',
                     textAlign: 'left',
                     transition: 'all 0.15s ease',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                    e.currentTarget.style.filter = 'brightness(1.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.filter = 'none';
+                    boxShadow: isSelected ? `0 0 12px ${dept.border}` : 'none',
                   }}
                 >
                   <div
                     style={{
-                      background: 'rgba(0, 0, 0, 0.25)',
-                      padding: 6,
-                      borderRadius: 6,
+                      background: isSelected ? dept.border : 'rgba(255, 255, 255, 0.05)',
+                      padding: 7,
+                      borderRadius: 7,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: acc.accent,
+                      color: isSelected ? '#ffffff' : dept.accent,
                       marginTop: 2,
                     }}
                   >
-                    <Icon size={15} />
+                    <Icon size={16} />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: '#f8fafc' }}>
-                      {acc.deptName}
+                    <div
+                      style={{
+                        fontSize: 12.5,
+                        fontWeight: 700,
+                        color: isSelected ? '#ffffff' : '#e2e8f0',
+                      }}
+                    >
+                      {dept.name}
                     </div>
-                    <div style={{ fontSize: 10.5, color: '#94a3b8' }}>
-                      ID: <strong style={{ color: acc.accent }}>{acc.userId}</strong>
-                    </div>
-                    <div style={{ fontSize: 9.5, color: '#64748b', marginTop: 1 }}>
-                      {acc.badge}
+                    <div
+                      style={{
+                        fontSize: 10.5,
+                        color: isSelected ? dept.accent : '#64748b',
+                        marginTop: 2,
+                      }}
+                    >
+                      {dept.desc}
                     </div>
                   </div>
                 </button>
@@ -232,13 +234,37 @@ export default function UnifiedLogin() {
           </div>
         </div>
 
+        {/* 2. Active Department Indicator */}
+        <div
+          style={{
+            padding: '10px 14px',
+            borderRadius: 8,
+            background: currentDeptObj.bg,
+            border: `1px solid ${currentDeptObj.border}`,
+            marginBottom: 18,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: 12.5,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <currentDeptObj.icon size={16} style={{ color: currentDeptObj.accent }} />
+            <span style={{ color: '#f1f5f9' }}>
+              Signing in to: <strong style={{ color: currentDeptObj.accent }}>{currentDeptObj.name}</strong>
+            </span>
+          </div>
+          <span style={{ fontSize: 11, color: '#94a3b8' }}>Manual Credential Check</span>
+        </div>
+
         {error && (
-          <div className="login-alert-danger">
+          <div className="login-alert-danger" style={{ marginBottom: 18 }}>
             <AlertCircle size={18} />
             <span>{error}</span>
           </div>
         )}
 
+        {/* 3. Manual Authentication Form */}
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group-field">
             <label className="form-label">
@@ -247,12 +273,13 @@ export default function UnifiedLogin() {
             <input
               type="text"
               className="text-input"
-              placeholder="e.g. admin, sales1, service1, accounts1"
+              placeholder="Enter your assigned User ID"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               required
               disabled={loading}
               autoFocus
+              autoComplete="username"
             />
           </div>
 
@@ -269,6 +296,7 @@ export default function UnifiedLogin() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
+                autoComplete="current-password"
               />
               <button
                 type="button"
@@ -297,12 +325,17 @@ export default function UnifiedLogin() {
             type="submit"
             className="login-submit-btn"
             disabled={loading}
+            style={{
+              background: `linear-gradient(135deg, ${currentDeptObj.accent} 0%, #1a73e8 100%)`,
+              border: 'none',
+              boxShadow: `0 4px 14px ${currentDeptObj.border}`,
+            }}
           >
             {loading ? (
               <span>Authenticating credentials...</span>
             ) : (
               <>
-                <span>Sign In to EPI Workspace</span>
+                <span>Sign In to {currentDeptObj.name}</span>
                 <ArrowRight size={17} />
               </>
             )}
