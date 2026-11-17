@@ -34,7 +34,7 @@ import {
 function ServiceShell({ initialPage = 'dashboard' }) {
   const [page, setPage] = useState(initialPage);
   const [reportPreset, setReportPreset] = useState({ clientId: '', reportType: '' });
-  const { s } = useApp();
+  const { s, addWork, addClient } = useApp();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -113,6 +113,7 @@ function ServiceShell({ initialPage = 'dashboard' }) {
     { key: 'servicing', label: 'Servicing', icon: Wrench },
     { key: 'maintenance', label: 'Maintenance', icon: Settings2 },
     { key: 'installation', label: 'Installation', icon: Zap },
+    { key: 'general', label: 'General Work', icon: ClipboardList },
     { key: 'warranty', label: 'Warranty', icon: ShieldCheck },
     { key: 'new', label: 'Add Work Order', icon: PlusCircle },
     { key: 'history', label: 'Work History', icon: HistoryIcon },
@@ -120,9 +121,29 @@ function ServiceShell({ initialPage = 'dashboard' }) {
     { key: 'settings', label: 'Settings', icon: Sliders },
   ];
 
+  const exportServiceBackup = () => {
+    const backup = {
+      system: 'EPI Service Department',
+      exportedAt: new Date().toISOString(),
+      clients: s.clients || [],
+      works: s.works || [],
+      settings: s.settings || {},
+    };
+    const jsonStr = JSON.stringify(backup, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `EPI-Service-Backup-${TODAY()}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="service-module-root" style={{ padding: '20px 24px' }}>
-      {/* Sub-Header Navigation Tabs */}
+      {/* Sub-Header Navigation Tabs & Actions */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           {quickNav.map((btn) => {
@@ -157,6 +178,70 @@ function ServiceShell({ initialPage = 'dashboard' }) {
               </button>
             );
           })}
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <button
+            onClick={() => addWork(TODAY(), 'Servicing')}
+            className="btn btn-primary-highlight"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '7px 12px',
+              borderRadius: 8,
+              fontSize: 12.5,
+              fontWeight: 600,
+              cursor: 'pointer',
+              border: '1px solid rgba(16, 185, 129, 0.5)',
+              background: 'rgba(16, 185, 129, 0.25)',
+              color: '#34d399',
+            }}
+          >
+            <PlusCircle size={14} />
+            <span>+ Add Work</span>
+          </button>
+          <button
+            onClick={() => addClient('Sales')}
+            className="btn btn-secondary"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '7px 12px',
+              borderRadius: 8,
+              fontSize: 12.5,
+              fontWeight: 600,
+              cursor: 'pointer',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.04)',
+              color: '#cbd5e1',
+            }}
+          >
+            <Briefcase size={14} />
+            <span>+ Add Client</span>
+          </button>
+          <button
+            onClick={exportServiceBackup}
+            className="btn btn-secondary"
+            title="Download Service Database Backup (JSON)"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '7px 12px',
+              borderRadius: 8,
+              fontSize: 12,
+              fontWeight: 500,
+              cursor: 'pointer',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.04)',
+              color: '#94a3b8',
+            }}
+          >
+            <Download size={14} />
+            <span>Backup</span>
+          </button>
         </div>
       </div>
 

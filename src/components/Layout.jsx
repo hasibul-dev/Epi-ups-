@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
+import { unifiedStore } from '../services/unifiedStorage.js';
 import {
   LayoutDashboard,
   Users,
@@ -29,7 +30,12 @@ import {
   Package,
   Settings2,
   Zap,
-  ClipboardList
+  ClipboardList,
+  Database,
+  RotateCcw,
+  Download,
+  Upload,
+  Trash2,
 } from 'lucide-react';
 
 export default function Layout() {
@@ -38,6 +44,54 @@ export default function Layout() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [dataModalOpen, setDataModalOpen] = useState(false);
+
+  const handleResetDemo = async () => {
+    if (
+      window.confirm(
+        'Reset all departments to realistic commercial Bangladesh demo data? Current local records will be refreshed.'
+      )
+    ) {
+      await unifiedStore.resetDemoData();
+      alert('Demo data successfully restored across all 4 departments!');
+      window.location.reload();
+    }
+  };
+
+  const handleExportBackup = () => {
+    unifiedStore.exportFullBackup();
+  };
+
+  const handleImportBackup = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,application/json';
+    input.onchange = async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        await unifiedStore.importFullBackup(text);
+        alert('EPI System Backup successfully restored!');
+        window.location.reload();
+      } catch (err) {
+        alert('Failed to restore backup: ' + err.message);
+      }
+    };
+    input.click();
+  };
+
+  const handleClearData = () => {
+    if (
+      window.confirm(
+        'WARNING: Are you sure you want to clear local records? This removes clients, sales work, service orders, and ERP books from this browser.'
+      )
+    ) {
+      unifiedStore.clearAllData();
+      alert('Local records cleared.');
+      window.location.reload();
+    }
+  };
 
   const pathname = location.pathname;
   const isSuperAdmin = user?.role === 'superadmin';
@@ -190,8 +244,54 @@ export default function Layout() {
           </nav>
         </div>
 
-        {/* User Profile & Logout */}
-        <div className="topbar-right">
+        {/* User Profile & Logout & Data Hub */}
+        <div className="topbar-right" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            type="button"
+            onClick={handleResetDemo}
+            className="btn btn-secondary topbar-data-btn"
+            title="Reset and reload realistic Bangladesh commercial UPS demo data"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 11px',
+              borderRadius: 8,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+              border: '1px solid rgba(251, 191, 36, 0.35)',
+              background: 'rgba(251, 191, 36, 0.1)',
+              color: '#fbbf24',
+            }}
+          >
+            <RotateCcw size={13} />
+            <span>Reset Demo</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleExportBackup}
+            className="btn btn-secondary topbar-data-btn"
+            title="Download full JSON backup of all 4 departments"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 11px',
+              borderRadius: 8,
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+              background: 'rgba(56, 189, 248, 0.08)',
+              color: '#38bdf8',
+            }}
+          >
+            <Download size={13} />
+            <span>Backup</span>
+          </button>
+
           <div className="user-profile-badge" onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}>
             <div className="user-avatar-circle">
               {getInitials(user?.name)}
@@ -225,6 +325,86 @@ export default function Layout() {
                       <span key={d} className={`dept-pill dept-${d}`}>{d.toUpperCase()}</span>
                     ))
                   )}
+                </div>
+              </div>
+              <div className="dropdown-divider" />
+              <div style={{ padding: '8px 12px' }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  Database & Backup
+                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginTop: 8 }}>
+                  <button
+                    onClick={handleResetDemo}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      background: 'none',
+                      border: 'none',
+                      color: '#fbbf24',
+                      fontSize: 12.5,
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      padding: '4px 0',
+                    }}
+                  >
+                    <RotateCcw size={14} /> Reset Demo Seed Data
+                  </button>
+                  <button
+                    onClick={handleExportBackup}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      background: 'none',
+                      border: 'none',
+                      color: '#38bdf8',
+                      fontSize: 12.5,
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      padding: '4px 0',
+                    }}
+                  >
+                    <Download size={14} /> Export System Backup (.json)
+                  </button>
+                  <button
+                    onClick={handleImportBackup}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      background: 'none',
+                      border: 'none',
+                      color: '#34d399',
+                      fontSize: 12.5,
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      padding: '4px 0',
+                    }}
+                  >
+                    <Upload size={14} /> Import Backup (.json)
+                  </button>
+                  <button
+                    onClick={handleClearData}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      background: 'none',
+                      border: 'none',
+                      color: '#f87171',
+                      fontSize: 12.5,
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      padding: '4px 0',
+                    }}
+                  >
+                    <Trash2 size={14} /> Clear Local Storage
+                  </button>
                 </div>
               </div>
               <div className="dropdown-divider" />

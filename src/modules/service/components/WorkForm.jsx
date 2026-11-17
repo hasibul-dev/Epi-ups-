@@ -29,17 +29,13 @@ export default function WorkForm({ init, onSave, onClose }) {
 
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
 
-  // General Work and Installation are strictly 100% manual entry (no client dropdown or auto-fetch)
-  const isStrictlyManual = f.category === 'General' || f.category === 'Installation'
-  const isManualClient = isStrictlyManual || !f.clientId
-
   const ok = f.title.trim() && f.date
   const engineers = s.settings.engineers.split(',').map((x) => x.trim()).filter(Boolean)
 
   const handleSave = () => {
     const payload = {
       ...f,
-      clientId: isStrictlyManual ? '' : f.clientId,
+      clientId: f.clientId || '',
       clientName: f.clientName.trim(),
       clientPhone: f.clientPhone.trim(),
       clientCompany: f.clientCompany.trim(),
@@ -66,12 +62,9 @@ export default function WorkForm({ init, onSave, onClose }) {
           <select
             value={f.category}
             onChange={(e) => {
-              const newCat = e.target.value
-              const nowManual = newCat === 'General' || newCat === 'Installation'
               setF((prev) => ({
                 ...prev,
-                category: newCat,
-                clientId: nowManual ? '' : prev.clientId,
+                category: e.target.value,
               }))
             }}
           >
@@ -92,43 +85,38 @@ export default function WorkForm({ init, onSave, onClose }) {
         </Field>
       </div>
 
-      {/* Client Section: Strictly Manual for General & Installation; Optional Link for Sales/Service/Maintenance */}
+      {/* Client Section: Optional Database Link or Direct Client Details */}
       <div className="form-section">
         <div className="form-section-title">
-          {isStrictlyManual
-            ? `Client Information (Manual Data Entry — ${f.category})`
-            : 'Client Information'}
+          Client Information ({f.category})
         </div>
 
-        {!isStrictlyManual && (
-          <div className="fg" style={{ marginBottom: 10 }}>
-            <Field label="Link to Client in Database (Optional)" wide>
-              <select
-                value={f.clientId}
-                onChange={(e) => {
-                  const cid = e.target.value
-                  const c = s.clients.find((x) => x.id === cid)
-                  setF((prev) => ({
-                    ...prev,
-                    clientId: cid,
-                    // If client selected, pre-fill but keep editable
-                    clientName: c ? c.contactPerson || c.name : prev.clientName,
-                    clientCompany: c ? c.company : prev.clientCompany,
-                    clientPhone: c ? c.phone : prev.clientPhone,
-                    clientAddress: c ? c.address : prev.clientAddress,
-                  }))
-                }}
-              >
-                <option value="">— Enter Client Manually / No Database Client —</option>
-                {s.clients.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {clientTitle(c)} ({clientType(c)}) {clientContact(c) ? `— ${clientContact(c)}` : ''}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          </div>
-        )}
+        <div className="fg" style={{ marginBottom: 10 }}>
+          <Field label="Select Client from Database (Optional)" wide>
+            <select
+              value={f.clientId}
+              onChange={(e) => {
+                const cid = e.target.value
+                const c = s.clients.find((x) => x.id === cid)
+                setF((prev) => ({
+                  ...prev,
+                  clientId: cid,
+                  clientName: c ? c.contactPerson || c.name : prev.clientName,
+                  clientCompany: c ? c.company : prev.clientCompany,
+                  clientPhone: c ? c.phone : prev.clientPhone,
+                  clientAddress: c ? c.address : prev.clientAddress,
+                }))
+              }}
+            >
+              <option value="">— Enter Client Manually / No Database Client —</option>
+              {s.clients.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {clientTitle(c)} ({clientType(c)}) {clientContact(c) ? `— ${clientContact(c)}` : ''}
+                </option>
+              ))}
+            </select>
+          </Field>
+        </div>
 
         {/* Manual Client Input Fields */}
         <div className="fg">

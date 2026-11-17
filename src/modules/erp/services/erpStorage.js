@@ -133,6 +133,14 @@ class BrowserErpEngine {
       return this.createDefaultStore();
     }
     try {
+      if (typeof window !== 'undefined' && window.__EPI_UNIFIED_STORE__?.memory?.erpData?.accounts) {
+        return window.__EPI_UNIFIED_STORE__.memory.erpData;
+      }
+      const rawUnified = localStorage.getItem('epi_erp_storage_v1');
+      if (rawUnified) {
+        const parsed = JSON.parse(rawUnified);
+        if (parsed && Array.isArray(parsed.accounts)) return parsed;
+      }
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
@@ -153,15 +161,77 @@ class BrowserErpEngine {
   }
 
   save() {
+    if (typeof localStorage === 'undefined') return;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+      const json = JSON.stringify(this.data);
+      localStorage.setItem(STORAGE_KEY, json);
+      localStorage.setItem('epi_erp_storage_v1', json);
+      if (typeof window !== 'undefined' && window.__EPI_UNIFIED_STORE__) {
+        window.__EPI_UNIFIED_STORE__.memory.erpData = this.data;
+        window.__EPI_UNIFIED_STORE__.persist();
+      }
     } catch (e) {
       console.warn('[ErpStorage] Failed to save state to localStorage:', e);
     }
   }
 
+  reloadFromUnified() {
+    this.data = this.loadData();
+    this.syncCentralClients();
+  }
+
+  syncCentralClients(customClients) {
+    try {
+      let centralClients = customClients;
+      if (!centralClients) {
+        if (typeof window !== 'undefined' && window.__EPI_UNIFIED_STORE__?.memory?.clients) {
+          centralClients = window.__EPI_UNIFIED_STORE__.memory.clients;
+        } else if (typeof localStorage !== 'undefined') {
+          const raw = localStorage.getItem('epi_unified_clients_v2');
+          if (raw) centralClients = JSON.parse(raw);
+        }
+      }
+      if (!Array.isArray(centralClients) || centralClients.length === 0) return;
+
+      let changed = false;
+      for (const c of centralClients) {
+        const comp = (c.company || c.name || '').trim();
+        if (!comp) continue;
+        const exists = this.data.parties.some(
+          (p) => p.clientId === c.id || p.name.toLowerCase() === comp.toLowerCase()
+        );
+        if (!exists) {
+          this.data.parties.push({
+            _id: `party-${c.id || Date.now()}`,
+            clientId: c.id,
+            type: 'customer',
+            name: c.company ? `${c.company} (${c.name})` : c.name,
+            phone: c.phone || '',
+            email: c.email || '',
+            address: c.address || '',
+            bin: '',
+            tin: '',
+            creditLimit: 500000,
+            creditDays: 30,
+            openingBalance: 0,
+            openingDate: c.saleDate || new Date().toISOString(),
+            active: true,
+            balance: 0,
+          });
+          changed = true;
+        }
+      }
+      if (changed) {
+        this.save();
+      }
+    } catch (e) {
+      console.warn('[ErpStorage] Client sync note:', e);
+    }
+  }
+
   addAudit(action, entity, summary) {
-    const user = this.data.users[0] || { name: 'Admin', role: 'admin' };
+    const user = (this.data.users && this.data.users[0]) || { name: 'Admin', role: 'admin' };
+    if (!Array.isArray(this.data.auditLogs)) this.data.auditLogs = [];
     this.data.auditLogs.unshift({
       _id: `audit-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       at: new Date().toISOString(),
@@ -263,6 +333,7 @@ class BrowserErpEngine {
 
   // --- Parties (Customers & Suppliers) ---
   getParties(type, q) {
+    this.syncCentralClients();
     let list = this.data.parties;
     if (type) list = list.filter((p) => p.type === type);
     if (q) {
@@ -564,7 +635,8 @@ class BrowserErpEngine {
     let vatTotal = 0;
     let totalCostOfGoodsSold = 0;
 
-    const resolvedLines = (data.lines || []).map((l) => {
+    const rawLines = data.lines || data.items || [];
+    const resolvedLines = rawLines.map((l) => {
       const it = l.item ? this.data.items.find((x) => x._id === l.item) : null;
       const qty = Number(l.qty) || 1;
       const rate = Number(l.rate) || 0;
@@ -747,7 +819,8 @@ class BrowserErpEngine {
 
   createPayment(kind, data) {
     const isReceipt = kind === 'receipt';
-    const party = this.data.parties.find((p) => p._id === data.party);
+    const partyId = typeof data.party === 'object' ? data.party?._id : data.party;
+    const party = this.data.parties.find((p) => p._id === partyId);
     if (!party) throw new Error('Party is required');
 
     const account = this.findAccount(data.account);
@@ -1417,6 +1490,8 @@ class BrowserErpEngine {
     return {
       from: from || '2026-07-01',
       to: to || new Date().toISOString().slice(0, 10),
+      totalRevenue: totalIncome,
+      totalIncome,
       income: { rows: incomeRows, total: totalIncome },
       cogs: { rows: cogsRows, total: totalCogs },
       grossProfit,
@@ -1451,6 +1526,8 @@ class BrowserErpEngine {
       liabilities: { rows: liabilityRows, total: totalLiabilities },
       equity: { rows: equityRows, currentEarnings, total: totalEquity },
       totalAssets,
+      totalLiabilities,
+      totalEquity,
       totalLiabilitiesAndEquity,
       balanced,
     };

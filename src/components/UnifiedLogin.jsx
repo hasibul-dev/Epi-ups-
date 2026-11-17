@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
-import { Lock, User, KeyRound, AlertCircle, ArrowRight, Shield } from 'lucide-react';
+import {
+  Lock,
+  User,
+  KeyRound,
+  AlertCircle,
+  ArrowRight,
+  Shield,
+  Briefcase,
+  Wrench,
+  Landmark,
+  Sparkles,
+} from 'lucide-react';
 
 export default function UnifiedLogin() {
   const { login } = useAuth();
@@ -13,22 +24,58 @@ export default function UnifiedLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const demoAccounts = [
+    {
+      userId: 'admin',
+      password: 'password123',
+      deptName: 'Executive Admin',
+      title: 'Super Administrator',
+      badge: 'Full System Access',
+      icon: Shield,
+      accent: '#38bdf8',
+      bg: 'rgba(56, 189, 248, 0.08)',
+      border: 'rgba(56, 189, 248, 0.3)',
+    },
+    {
+      userId: 'sales1',
+      password: 'password123',
+      deptName: 'Sales Department',
+      title: 'Sales Executive',
+      badge: 'Clients & Quotations',
+      icon: Briefcase,
+      accent: '#34d399',
+      bg: 'rgba(52, 211, 153, 0.08)',
+      border: 'rgba(52, 211, 153, 0.3)',
+    },
+    {
+      userId: 'service1',
+      password: 'password123',
+      deptName: 'Service Department',
+      title: 'Technical Engineer',
+      badge: 'Servicing & Orders',
+      icon: Wrench,
+      accent: '#fbbf24',
+      bg: 'rgba(251, 191, 36, 0.08)',
+      border: 'rgba(251, 191, 36, 0.3)',
+    },
+    {
+      userId: 'accounts1',
+      password: 'password123',
+      deptName: 'Accounts & ERP',
+      title: 'Chief Accountant',
+      badge: 'Ledger & Mushak-9.1',
+      icon: Landmark,
+      accent: '#a78bfa',
+      bg: 'rgba(167, 139, 250, 0.08)',
+      border: 'rgba(167, 139, 250, 0.3)',
+    },
+  ];
+
+  const doLogin = async (uid, pwd, rem) => {
     setError('');
-
-    if (!userId.trim()) {
-      setError('Please enter your assigned User ID.');
-      return;
-    }
-    if (!password) {
-      setError('Please enter your password.');
-      return;
-    }
-
     try {
       setLoading(true);
-      const res = await login(userId.trim(), password, remember);
+      const res = await login(uid.trim(), pwd, rem);
       const target = res?.redirectDepartment;
       if (target === 'sales') {
         navigate('/sales');
@@ -45,9 +92,28 @@ export default function UnifiedLogin() {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!userId.trim()) {
+      setError('Please enter your assigned User ID.');
+      return;
+    }
+    if (!password) {
+      setError('Please enter your password.');
+      return;
+    }
+    doLogin(userId, password, remember);
+  };
+
+  const handleQuickDemoLogin = (acc) => {
+    setUserId(acc.userId);
+    setPassword(acc.password);
+    doLogin(acc.userId, acc.password, true);
+  };
+
   return (
     <div className="login-wrapper">
-      <div className="login-card">
+      <div className="login-card" style={{ maxWidth: 520 }}>
         {/* Brand Banner */}
         <div className="login-brand-header">
           <div className="login-logo-ring">
@@ -61,6 +127,109 @@ export default function UnifiedLogin() {
         <div className="login-sso-badge">
           <Shield size={14} />
           <span>Unified Single Sign-On (SSO) Portal</span>
+        </div>
+
+        {/* 1-Click Demo Logins Section */}
+        <div
+          style={{
+            marginBottom: 20,
+            padding: '14px',
+            background: 'rgba(255, 255, 255, 0.03)',
+            borderRadius: 10,
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 10,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 700,
+                color: '#94a3b8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+              }}
+            >
+              <Sparkles size={13} style={{ color: '#fbbf24' }} />
+              1-Click Department Quick Logins
+            </span>
+            <span style={{ fontSize: 11, color: '#64748b' }}>Pre-filled & Instant</span>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: 8,
+            }}
+          >
+            {demoAccounts.map((acc) => {
+              const Icon = acc.icon;
+              return (
+                <button
+                  key={acc.userId}
+                  type="button"
+                  onClick={() => handleQuickDemoLogin(acc)}
+                  disabled={loading}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: 8,
+                    padding: '9px 10px',
+                    borderRadius: 8,
+                    background: acc.bg,
+                    border: `1px solid ${acc.border}`,
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    textAlign: 'left',
+                    transition: 'all 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-1px)';
+                    e.currentTarget.style.filter = 'brightness(1.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.filter = 'none';
+                  }}
+                >
+                  <div
+                    style={{
+                      background: 'rgba(0, 0, 0, 0.25)',
+                      padding: 6,
+                      borderRadius: 6,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: acc.accent,
+                      marginTop: 2,
+                    }}
+                  >
+                    <Icon size={15} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#f8fafc' }}>
+                      {acc.deptName}
+                    </div>
+                    <div style={{ fontSize: 10.5, color: '#94a3b8' }}>
+                      ID: <strong style={{ color: acc.accent }}>{acc.userId}</strong>
+                    </div>
+                    <div style={{ fontSize: 9.5, color: '#64748b', marginTop: 1 }}>
+                      {acc.badge}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {error && (
@@ -78,7 +247,7 @@ export default function UnifiedLogin() {
             <input
               type="text"
               className="text-input"
-              placeholder="Enter your assigned User ID"
+              placeholder="e.g. admin, sales1, service1, accounts1"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               required

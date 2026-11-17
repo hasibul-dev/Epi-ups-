@@ -6,7 +6,7 @@ export default function useDb() {
   const [db, setDb] = useState(() => salesStorage.getData());
   const [loading, setLoading] = useState(true);
 
-  // Initialize storage engine on mount
+  // Initialize storage engine on mount and subscribe to unified store updates
   useEffect(() => {
     let mounted = true;
     salesStorage.init().then((data) => {
@@ -15,8 +15,14 @@ export default function useDb() {
         setLoading(false);
       }
     });
+    const unsubscribe = salesStorage.store.subscribe(() => {
+      if (mounted) {
+        setDb({ ...salesStorage.getData() });
+      }
+    });
     return () => {
       mounted = false;
+      unsubscribe();
     };
   }, []);
 

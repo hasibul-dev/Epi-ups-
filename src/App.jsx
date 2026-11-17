@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext.jsx';
+import { unifiedStore } from './services/unifiedStorage.js';
 import Layout from './components/Layout.jsx';
 import UnifiedLogin from './components/UnifiedLogin.jsx';
 import InitialSetup from './components/InitialSetup.jsx';
@@ -68,6 +69,10 @@ function RootRedirect() {
 
 export default function App() {
   const { user, ready, needsSetup, loading } = useAuth();
+
+  useEffect(() => {
+    unifiedStore.init();
+  }, []);
 
   if (!ready && loading) {
     return <LoadingScreen />;
