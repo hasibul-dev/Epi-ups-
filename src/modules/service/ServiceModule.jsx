@@ -142,36 +142,24 @@ function ServiceShell({ initialPage = 'dashboard' }) {
   };
 
   return (
-    <div className="service-module-root" style={{ padding: '20px 24px' }}>
+    <div className="service-module-root">
       {/* Sub-Header Navigation Tabs & Actions */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+      <div className="dept-subnav-bar">
+        <div className="dept-subnav-tabs">
           {quickNav.map((btn) => {
             const Icon = btn.icon;
             const active = page === btn.key;
             return (
               <button
                 key={btn.key}
+                type="button"
                 onClick={() => go(btn.key)}
-                className={`btn ${active ? 'btn-primary-highlight' : 'btn-secondary'}`}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '7px 12px',
-                  borderRadius: 8,
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  border: active ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)',
-                  background: active ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.04)',
-                  color: active ? '#34d399' : '#94a3b8',
-                }}
+                className={`dept-subnav-btn ${active ? 'active-service' : ''}`}
               >
-                <Icon size={14} />
+                <Icon size={13} />
                 <span>{btn.label}</span>
                 {btn.count > 0 && (
-                  <span style={{ background: '#e5192d', color: '#fff', padding: '1px 6px', borderRadius: 10, fontSize: 10, fontWeight: 700 }}>
+                  <span className="dept-subnav-badge">
                     {btn.count}
                   </span>
                 )}
@@ -180,66 +168,33 @@ function ServiceShell({ initialPage = 'dashboard' }) {
           })}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+        <div className="dept-subnav-actions">
           <button
+            type="button"
             onClick={() => addWork(TODAY(), 'Servicing')}
-            className="btn btn-primary-highlight"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '7px 12px',
-              borderRadius: 8,
-              fontSize: 12.5,
-              fontWeight: 600,
-              cursor: 'pointer',
-              border: '1px solid rgba(16, 185, 129, 0.5)',
-              background: 'rgba(16, 185, 129, 0.25)',
-              color: '#34d399',
-            }}
+            className="btn btn-primary-highlight sm"
+            style={{ padding: '5px 11px', fontSize: 11.5 }}
           >
-            <PlusCircle size={14} />
+            <PlusCircle size={13} />
             <span>+ Add Work</span>
           </button>
           <button
+            type="button"
             onClick={() => addClient('Sales')}
-            className="btn btn-secondary"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '7px 12px',
-              borderRadius: 8,
-              fontSize: 12.5,
-              fontWeight: 600,
-              cursor: 'pointer',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              background: 'rgba(255, 255, 255, 0.04)',
-              color: '#cbd5e1',
-            }}
+            className="btn btn-secondary sm"
+            style={{ padding: '5px 11px', fontSize: 11.5 }}
           >
-            <Briefcase size={14} />
+            <Briefcase size={13} />
             <span>+ Add Client</span>
           </button>
           <button
+            type="button"
             onClick={exportServiceBackup}
-            className="btn btn-secondary"
+            className="btn btn-secondary sm"
             title="Download Service Database Backup (JSON)"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '7px 12px',
-              borderRadius: 8,
-              fontSize: 12,
-              fontWeight: 500,
-              cursor: 'pointer',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              background: 'rgba(255, 255, 255, 0.04)',
-              color: '#94a3b8',
-            }}
+            style={{ padding: '5px 11px', fontSize: 11.5 }}
           >
-            <Download size={14} />
+            <Download size={13} />
             <span>Backup</span>
           </button>
         </div>

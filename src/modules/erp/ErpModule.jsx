@@ -84,19 +84,10 @@ function ErpContent() {
   ];
 
   return (
-    <div className="erp-module-root" style={{ padding: '20px 24px' }}>
+    <div className="erp-module-root">
       {/* Sub-Header Quick Navigation */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 20,
-          flexWrap: 'wrap',
-          gap: 12,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+      <div className="dept-subnav-bar">
+        <div className="dept-subnav-tabs">
           {quickNav.map((item) => {
             const Icon = item.icon;
             const isActive = item.exact
@@ -106,50 +97,24 @@ function ErpContent() {
               <NavLink
                 key={item.to}
                 to={item.to}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '7px 12px',
-                  borderRadius: 8,
-                  fontSize: 12.5,
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                  border: isActive
-                    ? '1px solid rgba(26, 115, 232, 0.4)'
-                    : '1px solid rgba(255, 255, 255, 0.08)',
-                  background: isActive
-                    ? 'rgba(26, 115, 232, 0.2)'
-                    : 'rgba(255, 255, 255, 0.04)',
-                  color: isActive ? '#38bdf8' : '#94a3b8',
-                }}
+                className={`dept-subnav-btn ${isActive ? 'active-erp' : ''}`}
               >
-                <Icon size={14} />
+                <Icon size={13} />
                 <span>{item.label}</span>
               </NavLink>
             );
           })}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="dept-subnav-actions">
           <button
+            type="button"
             onClick={() => erpStore.exportDatabase()}
-            className="btn btn-secondary"
+            className="btn btn-secondary sm"
             title="Download Accounts & Ledger JSON Backup"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '7px 12px',
-              fontSize: 12,
-              borderRadius: 8,
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              background: 'rgba(255, 255, 255, 0.04)',
-              color: '#94a3b8',
-              cursor: 'pointer',
-            }}
+            style={{ padding: '5px 11px', fontSize: 11.5 }}
           >
-            <Download size={14} />
+            <Download size={13} />
             <span>ERP Backup</span>
           </button>
         </div>
