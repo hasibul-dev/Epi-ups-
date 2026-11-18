@@ -431,6 +431,56 @@ export default function Layout() {
             </button>
           </div>
 
+          {/* Mobile Department Switcher (Visible on mobile/tablet drawer) */}
+          <div className="sidebar-mobile-depts">
+            <span className="mobile-depts-label">Switch Department</span>
+            <div className="mobile-depts-grid">
+              {isSuperAdmin && (
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) => `mobile-dept-btn ${isActive || activeDept === 'admin' ? 'active-admin' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Shield size={13} />
+                  <span>Admin</span>
+                </NavLink>
+              )}
+
+              {(isSuperAdmin || canAccessDept('sales')) && (
+                <NavLink
+                  to="/sales"
+                  className={({ isActive }) => `mobile-dept-btn ${isActive || activeDept === 'sales' ? 'active-sales' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Briefcase size={13} />
+                  <span>Sales</span>
+                </NavLink>
+              )}
+
+              {(isSuperAdmin || canAccessDept('service')) && (
+                <NavLink
+                  to="/service"
+                  className={({ isActive }) => `mobile-dept-btn ${isActive || activeDept === 'service' ? 'active-service' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Wrench size={13} />
+                  <span>Service</span>
+                </NavLink>
+              )}
+
+              {(isSuperAdmin || canAccessDept('accounts')) && (
+                <NavLink
+                  to="/accounts"
+                  className={({ isActive }) => `mobile-dept-btn ${isActive || activeDept === 'accounts' ? 'active-accounts' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Landmark size={13} />
+                  <span>ERP</span>
+                </NavLink>
+              )}
+            </div>
+          </div>
+
           <div className="sidebar-scroll">
             <nav className="sidebar-nav-list">
               {navItems.map((item, idx) => {

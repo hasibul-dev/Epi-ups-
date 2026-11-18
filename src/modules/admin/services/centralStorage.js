@@ -218,11 +218,14 @@ class CentralStorageEngine {
 
   addAudit(userId, userName, action, details) {
     const logs = this.getAuditLogs();
+    const now = new Date().toISOString();
     logs.unshift({
       id: 'log-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
-      at: new Date().toISOString(),
+      at: now,
+      timestamp: now,
       userId: userId || 'unknown',
       userName: userName || 'Unknown User',
+      performedBy: userName || userId || 'System',
       action: String(action || 'ACTION').toUpperCase(),
       details: String(details || ''),
       ip: (typeof window !== 'undefined' && window.location.hostname) ? window.location.hostname : '127.0.0.1 (Browser)',
@@ -874,7 +877,7 @@ export function installCentralFetchInterceptor() {
             return createJsonResponse(centralStore.getUserLoginHistory(historyMatch[1]));
           }
 
-          if (path === '/api/admin/audit') {
+          if (path === '/api/admin/audit' || path === '/api/admin/audit-logs' || path.startsWith('/api/admin/audit-logs')) {
             return createJsonResponse({ success: true, logs: centralStore.getAuditLogs() });
           }
 

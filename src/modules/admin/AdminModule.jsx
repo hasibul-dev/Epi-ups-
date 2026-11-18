@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import CentralAdminDashboard from './components/CentralAdminDashboard.jsx';
+import ExecutiveDashboard from './components/ExecutiveDashboard.jsx';
+import UserManagement from './components/UserManagement.jsx';
 import AuditLogsView from './components/AuditLogsView.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
-import { LayoutDashboard, ShieldCheck, ArrowRight, UserCheck } from 'lucide-react';
+import { LayoutDashboard, Users, ShieldCheck, ArrowRight, Shield } from 'lucide-react';
 
 export default function AdminModule({ initialTab = 'dashboard' }) {
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -12,9 +13,14 @@ export default function AdminModule({ initialTab = 'dashboard' }) {
   const { user } = useAuth();
 
   useEffect(() => {
-    const p = location.pathname.replace(/^\/admin\/?/, '');
-    if (p === 'audit') setActiveTab('audit');
-    else setActiveTab('dashboard');
+    const p = location.pathname.replace(/^\/admin\/?/, '').split('/')[0];
+    if (p === 'users') {
+      setActiveTab('users');
+    } else if (p === 'audit') {
+      setActiveTab('audit');
+    } else {
+      setActiveTab('dashboard');
+    }
   }, [location.pathname]);
 
   const handleLaunchDept = (dept) => {
@@ -23,94 +29,63 @@ export default function AdminModule({ initialTab = 'dashboard' }) {
     else if (dept === 'accounts') navigate('/accounts');
   };
 
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'dashboard') navigate('/admin');
+    else if (tab === 'users') navigate('/admin/users');
+    else if (tab === 'audit') navigate('/admin/audit');
+  };
+
   return (
-    <div className="admin-module-container" style={{ padding: '20px 24px' }}>
-      {/* Admin Sub-navigation header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 20,
-          flexWrap: 'wrap',
-          gap: 12,
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+    <div className="admin-module-container">
+      {/* Admin Module Sub-navigation Bar */}
+      <div className="admin-subnav-bar">
+        <div className="admin-tabs-group">
           <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`btn ${activeTab === 'dashboard' ? 'btn-primary-highlight' : 'btn-secondary'}`}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '8px 16px',
-              borderRadius: 8,
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: 'pointer',
-              border:
-                activeTab === 'dashboard'
-                  ? '1px solid rgba(26, 115, 232, 0.4)'
-                  : '1px solid rgba(255, 255, 255, 0.08)',
-              background:
-                activeTab === 'dashboard'
-                  ? 'rgba(26, 115, 232, 0.2)'
-                  : 'rgba(255, 255, 255, 0.04)',
-              color: activeTab === 'dashboard' ? '#38bdf8' : '#94a3b8',
-            }}
+            type="button"
+            onClick={() => handleTabChange('dashboard')}
+            className={`admin-subnav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
           >
             <LayoutDashboard size={15} />
-            <span>Control Center & Users</span>
+            <span>Executive Dashboard</span>
           </button>
 
           <button
-            onClick={() => setActiveTab('audit')}
-            className={`btn ${activeTab === 'audit' ? 'btn-primary-highlight' : 'btn-secondary'}`}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '8px 16px',
-              borderRadius: 8,
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: 'pointer',
-              border:
-                activeTab === 'audit'
-                  ? '1px solid rgba(26, 115, 232, 0.4)'
-                  : '1px solid rgba(255, 255, 255, 0.08)',
-              background:
-                activeTab === 'audit'
-                  ? 'rgba(26, 115, 232, 0.2)'
-                  : 'rgba(255, 255, 255, 0.04)',
-              color: activeTab === 'audit' ? '#38bdf8' : '#94a3b8',
-            }}
+            type="button"
+            onClick={() => handleTabChange('users')}
+            className={`admin-subnav-btn ${activeTab === 'users' ? 'active' : ''}`}
+          >
+            <Users size={15} />
+            <span>User Management</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleTabChange('audit')}
+            className={`admin-subnav-btn ${activeTab === 'audit' ? 'active' : ''}`}
           >
             <ShieldCheck size={15} />
-            <span>Audit Trail & Security Logs</span>
+            <span>Security & Audit Logs</span>
           </button>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#94a3b8' }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: '#10b981',
-                boxShadow: '0 0 8px rgba(16, 185, 129, 0.5)',
-              }}
-            />
-            Super Admin Session Active
-          </span>
+        <div className="admin-session-indicator">
+          <span className="session-status-dot" />
+          <span className="session-status-text">Super Admin Session</span>
         </div>
       </div>
 
-      {/* Admin Module Body */}
-      {activeTab === 'dashboard' && <CentralAdminDashboard onLaunchDept={handleLaunchDept} />}
-      {activeTab === 'audit' && <AuditLogsView />}
+      {/* Admin Module Content Pages */}
+      <div className="admin-page-render">
+        {activeTab === 'dashboard' && (
+          <ExecutiveDashboard
+            onLaunchDept={handleLaunchDept}
+            onNavigateUsers={() => handleTabChange('users')}
+          />
+        )}
+        {activeTab === 'users' && <UserManagement />}
+        {activeTab === 'audit' && <AuditLogsView />}
+      </div>
     </div>
   );
 }
