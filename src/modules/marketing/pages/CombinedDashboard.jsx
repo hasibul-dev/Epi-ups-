@@ -28,6 +28,7 @@ export default function CombinedDashboard() {
     openCampaignModal,
     openPostModal,
     openTicketModal,
+    openTaskModal,
     openTicketDetails,
   } = useMarketing();
   const navigate = useNavigate();
@@ -65,22 +66,12 @@ export default function CombinedDashboard() {
         <div className="mkt-hero-actions">
           <button
             type="button"
-            onClick={() => openCampaignModal()}
+            onClick={() => openTaskModal()}
             className="btn-mkt-primary"
-            title="Launch a new marketing campaign"
+            title="Create a new task / work item"
           >
             <Plus size={14} />
-            <span>New Campaign</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => openTicketModal()}
-            className="btn-mkt-secondary"
-            title="Log an internal IT support ticket"
-          >
-            <Ticket size={14} className="text-amber-400" />
-            <span>New IT Ticket</span>
+            <span>+ Add Work</span>
           </button>
 
           <button
@@ -90,7 +81,37 @@ export default function CombinedDashboard() {
             title="Schedule a post in editorial calendar"
           >
             <Calendar size={14} className="text-sky-400" />
-            <span>Add Post</span>
+            <span>+ Add Post</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => openCampaignModal()}
+            className="btn-mkt-secondary"
+            title="Launch a new marketing campaign"
+          >
+            <Zap size={14} className="text-emerald-400" />
+            <span>+ Add Campaign</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => openTicketModal()}
+            className="btn-mkt-secondary"
+            title="Log an internal IT support ticket"
+          >
+            <Ticket size={14} className="text-amber-400" />
+            <span>+ Add IT Ticket</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate('/marketing/marketing-reports')}
+            className="btn-mkt-secondary"
+            title="View marketing & IT performance reports"
+          >
+            <FileText size={14} className="text-slate-300" />
+            <span>Work Reports</span>
           </button>
         </div>
       </div>

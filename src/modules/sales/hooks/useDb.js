@@ -380,6 +380,51 @@ export default function useDb() {
   const exportJson = () => salesStorage.exportJsonBackup();
   const importJson = (str) => salesStorage.importJsonBackup(str);
 
+  const downloadBackup = () => {
+    try {
+      const jsonStr = salesStorage.exportJsonBackup();
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `epi-sales-backup-${today()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Failed to export backup: ' + err.message);
+    }
+  };
+
+  const importBackup = (fileOrJson) => {
+    const currentCounts = {
+      clients: (db.clients || []).length,
+      work: (db.work || []).length,
+      history: (db.history || []).length,
+    };
+    const confirmed = window.confirm(
+      `⚠️ WARNING: OVERWRITE SALES DATA\n\n` +
+      `Importing this backup will OVERWRITE your current sales records:\n` +
+      `- Current Clients: ${currentCounts.clients}\n` +
+      `- Current Work Tasks: ${currentCounts.work}\n` +
+      `- Current History: ${currentCounts.history}\n\n` +
+      `Existing records will be replaced with the data from the imported backup file.\n` +
+      `Are you sure you want to proceed?`
+    );
+    if (!confirmed) return false;
+
+    try {
+      salesStorage.importJsonBackup(fileOrJson);
+      setDb({ ...salesStorage.getData() });
+      alert('✓ Sales data successfully imported and updated in local storage!');
+      return true;
+    } catch (err) {
+      alert('Error importing backup: ' + err.message);
+      return false;
+    }
+  };
+
   return {
     db,
     loading,
@@ -422,5 +467,7 @@ export default function useDb() {
     refreshDb,
     exportJson,
     importJson,
+    downloadBackup,
+    importBackup,
   };
 }

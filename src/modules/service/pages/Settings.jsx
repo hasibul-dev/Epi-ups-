@@ -68,8 +68,17 @@ export default function Settings() {
                 try {
                   const parsed = JSON.parse(evt.target.result);
                   if (parsed && typeof parsed === 'object') {
+                    const confirmed = window.confirm(
+                      `⚠️ WARNING: OVERWRITE SERVICE DATA\n\n` +
+                      `Importing this backup will OVERWRITE your current Service department records:\n` +
+                      `- Current Clients: ${s.clients.length}\n` +
+                      `- Current Work Orders: ${s.works.length}\n\n` +
+                      `All existing Service records will be replaced with data from the selected backup.\n` +
+                      `Are you sure you want to proceed?`
+                    );
+                    if (!confirmed) return;
                     setState(sync(parsed));
-                    alert('Service backup restored successfully!');
+                    alert('✓ Service backup restored successfully!');
                   } else {
                     alert('Invalid service backup file format.');
                   }
@@ -84,17 +93,33 @@ export default function Settings() {
         </label>
         <button
           className="btn s"
-          onClick={() => window.confirm('Replace all data with fresh demo data?') && setState(seed())}
+          onClick={() => {
+            const confirmed = window.confirm(
+              `⚠️ WARNING: OVERWRITE WITH DEMO DATA\n\n` +
+              `This will REPLACE all your current Service records:\n` +
+              `- Current Clients: ${s.clients.length}\n` +
+              `- Current Work Orders: ${s.works.length}\n\n` +
+              `All existing custom records will be replaced with fresh initial demo data.\n` +
+              `Do you want to proceed?`
+            );
+            if (confirmed) setState(seed());
+          }}
           title="Reload initial demo datasets"
         >
           <RotateCcw size={14} /> Reload Demo Data
         </button>
         <button
           className="btn d"
-          onClick={() =>
-            window.confirm('Clear ALL service data (clients and work orders)? This cannot be undone!') &&
-            setState(sync({ ...emptyState(), settings: s.settings }))
-          }
+          onClick={() => {
+            const confirmed = window.confirm(
+              `🚨 CRITICAL WARNING: CLEAR ALL SERVICE DATA\n\n` +
+              `This will permanently DELETE:\n` +
+              `- All ${s.clients.length} Service Clients\n` +
+              `- All ${s.works.length} Work Orders\n\n` +
+              `This action cannot be undone! Are you absolutely sure?`
+            );
+            if (confirmed) setState(sync({ ...emptyState(), settings: s.settings }));
+          }}
           title="Clear all stored service records"
         >
           <Trash2 size={14} /> Clear All Records

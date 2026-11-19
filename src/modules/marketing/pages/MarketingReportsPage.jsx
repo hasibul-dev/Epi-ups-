@@ -22,6 +22,19 @@ export default function MarketingReportsPage() {
   const handleImportFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const confirmed = window.confirm(
+      `⚠️ WARNING: OVERWRITE MARKETING & IT DATA\n\n` +
+      `Importing this backup will OVERWRITE your current records:\n` +
+      `- Campaigns: ${campaigns.length}\n` +
+      `- Posts: ${posts.length}\n` +
+      `- Ads: ${ads.length}\n\n` +
+      `Existing records will be completely replaced by the data in the imported backup file.\n` +
+      `Are you sure you want to proceed?`
+    );
+    if (!confirmed) {
+      e.target.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (event) => {
       try {

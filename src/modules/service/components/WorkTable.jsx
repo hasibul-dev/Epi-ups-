@@ -55,35 +55,35 @@ export default function WorkTable({ list, empty = 'No work found.' }) {
             return (
               <tr key={w.id}>
                 <td>
-                  <b style={{ color: '#fff' }}>{fmt(w.date)}</b>
-                  <div className="muted" style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2, fontSize: 11.5 }}>
+                  <b style={{ color: '#fff', fontSize: '11.5px', display: 'inline' }}>{fmt(w.date)}</b>
+                  <div className="muted" style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2, fontSize: '11px' }}>
                     <Clock size={11} /> {w.time}
                   </div>
                 </td>
                 <td>
                   <span
                     onClick={() => viewWork && viewWork(w)}
-                    style={{ cursor: 'pointer', color: '#fff', fontWeight: 700 }}
+                    style={{ cursor: 'pointer', color: '#fff', fontWeight: 650, fontSize: '12px' }}
                     title="Click to view details"
                   >
                     {w.title}
                   </span>
-                  {w.auto ? <span className="bd b" style={{ marginLeft: 6 }}>Auto 3M</span> : null}
+                  {w.auto ? <span className="bd b" style={{ marginLeft: 6, fontSize: '10px' }}>Auto 3M</span> : null}
                   {w.desc && w.desc !== w.title ? (
-                    <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>{w.desc}</div>
+                    <div className="muted" style={{ fontSize: '11px', marginTop: 2 }}>{w.desc}</div>
                   ) : null}
                   {w.notes ? (
-                    <div className="muted" style={{ fontSize: 11.5, marginTop: 2, color: 'var(--text-subtle)' }}>
+                    <div className="muted" style={{ fontSize: '10.5px', marginTop: 2, color: 'var(--text-subtle)' }}>
                       Note: {w.notes}
                     </div>
                   ) : null}
                 </td>
                 <td>
                   <div>
-                    <b style={{ color: '#fff' }}>{ci.title}</b>
+                    <b style={{ color: '#fff', fontSize: '12px', display: 'inline' }}>{ci.title}</b>
                   </div>
                   {ci.sub ? (
-                    <div className="muted" style={{ fontSize: 11.5, marginTop: 2 }}>
+                    <div className="muted" style={{ fontSize: '11px', marginTop: 2 }}>
                       {ci.sub}
                     </div>
                   ) : null}

@@ -149,9 +149,34 @@ class SalesStorageEngine {
     this.persist();
   }
 
-  // --- JSON Backup Export ---
+  // --- JSON Backup Export & Import ---
   exportDatabase() {
     return this.store.exportFullBackup();
+  }
+
+  exportJsonBackup() {
+    return JSON.stringify(
+      {
+        schema: 'epi_sales_backup_v2',
+        exportedAt: new Date().toISOString(),
+        data: this.getData(),
+      },
+      null,
+      2
+    );
+  }
+
+  importJsonBackup(jsonStr) {
+    const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
+    const incomingData = parsed.data || parsed;
+    if (!this.store.memory) this.store.memory = {};
+    if (Array.isArray(incomingData.clients)) this.store.memory.salesClients = incomingData.clients;
+    if (Array.isArray(incomingData.work)) this.store.memory.salesWork = incomingData.work;
+    if (Array.isArray(incomingData.newWork)) this.store.memory.salesWork = [...(this.store.memory.salesWork || []), ...incomingData.newWork];
+    if (Array.isArray(incomingData.history)) this.store.memory.salesHistory = incomingData.history;
+    if (Array.isArray(incomingData.office)) this.store.memory.salesOffice = incomingData.office;
+    this.persist();
+    return this.getData();
   }
 }
 

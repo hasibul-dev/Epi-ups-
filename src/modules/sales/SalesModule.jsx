@@ -14,6 +14,7 @@ import ClientsMaster from './components/ClientsMaster.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import {
   Download,
+  Upload,
   Briefcase,
   UserPlus,
   CalendarPlus,
@@ -216,6 +217,42 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
             <Download size={13} />
             <span>Export Backup</span>
           </button>
+
+          <label
+            className="btn btn-secondary"
+            title="Import JSON Database Backup of Sales records"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+              padding: '6px 11px',
+              fontSize: 12,
+              borderRadius: 8,
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.04)',
+              color: '#94a3b8',
+              cursor: 'pointer',
+              margin: 0,
+            }}
+          >
+            <Upload size={13} />
+            <span>Import Backup</span>
+            <input
+              type="file"
+              accept=".json"
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (evt) => {
+                  store.importBackup(evt.target.result);
+                };
+                reader.readAsText(file);
+                e.target.value = '';
+              }}
+            />
+          </label>
         </div>
       </div>
 

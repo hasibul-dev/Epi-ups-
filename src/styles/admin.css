@@ -1116,10 +1116,19 @@ h2 {
 .card-pill.pill-gold { background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
 .card-pill.pill-sunset { background: rgba(139, 92, 246, 0.12); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.25); }
 
-.card b {
+.card.stat-card b,
+.stat-card b,
+.metric-card b,
+.card-stat-val b,
+.card-followup b,
+.card-planned b,
+.status-card b,
+.dash-metric-card b,
+.summary-stat-val b,
+.kpi-num b {
   display: block;
-  font-size: 34px;
-  margin-top: 12px;
+  font-size: 26px;
+  margin-top: 8px;
   color: #ffffff;
   font-weight: 850;
   letter-spacing: -0.03em;
@@ -2033,9 +2042,9 @@ table {
 }
 
 th, td {
-  padding: 13px 16px;
+  padding: 8px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  font-size: 13.5px;
+  font-size: 11.5px;
   vertical-align: middle;
 }
 
@@ -2892,9 +2901,18 @@ input#portal-pass:-webkit-autofill:focus {
   .card-pill {
     display: none !important;
   }
-  .card b {
-    font-size: 24px !important;
-    margin-top: 8px !important;
+  .card.stat-card b,
+  .stat-card b,
+  .metric-card b,
+  .card-stat-val b,
+  .card-followup b,
+  .card-planned b,
+  .status-card b,
+  .dash-metric-card b,
+  .summary-stat-val b,
+  .kpi-num b {
+    font-size: 20px !important;
+    margin-top: 5px !important;
   }
   .card-subtext {
     font-size: 10.5px !important;

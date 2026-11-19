@@ -59,11 +59,13 @@ export default function Layout() {
   const handleResetDemo = async () => {
     if (
       window.confirm(
-        'Reset all departments to realistic commercial Bangladesh demo data? Current local records will be refreshed.'
+        '⚠️ WARNING: OVERWRITE WITH DEMO DATA\n\n' +
+        'This will REPLACE all current records across all 5 departments with default commercial demo datasets.\n' +
+        'Are you sure you want to proceed?'
       )
     ) {
       await unifiedStore.resetDemoData();
-      alert('Demo data successfully restored across all 4 departments!');
+      alert('Demo data successfully restored across all departments!');
       window.location.reload();
     }
   };
@@ -79,10 +81,22 @@ export default function Layout() {
     input.onchange = async (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
+      const confirmed = window.confirm(
+        `⚠️ WARNING: OVERWRITE ENTIRE SYSTEM DATA\n\n` +
+        `Restoring this system backup will OVERWRITE all department data in your browser:\n` +
+        `- Executive Admin user records\n` +
+        `- Sales CRM clients & follow-ups\n` +
+        `- Service & Servicing work orders\n` +
+        `- Accounts / ERP ledgers & vouchers\n` +
+        `- Digital Marketing & IT Support records\n\n` +
+        `Existing records will be completely replaced with data from the backup file.\n` +
+        `Are you sure you want to proceed?`
+      );
+      if (!confirmed) return;
       try {
         const text = await file.text();
         await unifiedStore.importFullBackup(text);
-        alert('EPI System Backup successfully restored!');
+        alert('✓ EPI System Backup successfully restored!');
         window.location.reload();
       } catch (err) {
         alert('Failed to restore backup: ' + err.message);
@@ -185,22 +199,16 @@ export default function Layout() {
         ];
       case 'marketing':
         return [
-          { to: '/marketing', label: 'Marketing & IT Overview', icon: LayoutDashboard, end: true },
-          { to: '/marketing/marketing-dashboard', label: 'Marketing Dashboard', icon: Megaphone },
-          { to: '/marketing/campaigns', label: 'Campaigns Master', icon: Target },
-          { to: '/marketing/calendar', label: 'Content Calendar', icon: Calendar },
-          { to: '/marketing/social', label: 'Social Media (FB & LinkedIn)', icon: Share2 },
-          { to: '/marketing/ads', label: 'Ads Management', icon: DollarSign },
-          { to: '/marketing/assets', label: 'Asset Library', icon: Image },
-          { to: '/marketing/creative-requests', label: 'Creative Requests', icon: Palette },
-          { to: '/marketing/tasks', label: 'Marketing Tasks', icon: ClipboardList },
-          { to: '/marketing/marketing-reports', label: 'Campaign Reports', icon: FileText },
+          { to: '/marketing', label: 'Marketing Dashboard', icon: LayoutDashboard, end: true },
+          { to: '/marketing/tasks', label: 'Work / Task Management', icon: ClipboardList },
+          { to: '/marketing/social', label: 'Content & Social Posts', icon: Share2 },
+          { to: '/marketing/campaigns', label: 'Campaign Management', icon: Target },
+          { to: '/marketing/marketing-reports', label: 'Marketing Reports', icon: FileText },
           { to: '/marketing/it-dashboard', label: 'IT Support Dashboard', icon: Activity },
-          { to: '/marketing/tickets', label: 'IT Support Tickets', icon: Headphones },
-          { to: '/marketing/devices', label: 'Device Inventory', icon: Laptop },
-          { to: '/marketing/software', label: 'Software & Accounts', icon: ShieldCheck },
-          { to: '/marketing/maintenance', label: 'Network & Maintenance', icon: Wifi },
-          { to: '/marketing/it-reports', label: 'IT Support Reports', icon: FileCheck },
+          { to: '/marketing/tickets', label: 'IT Work Management', icon: Headphones },
+          { to: '/marketing/devices', label: 'Basic Device Management', icon: Laptop },
+          { to: '/marketing/it-history', label: 'IT Work History', icon: History },
+          { to: '/marketing/it-reports', label: 'IT Reports', icon: FileCheck },
         ];
       default:
         return [];

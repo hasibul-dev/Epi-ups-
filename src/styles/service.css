@@ -981,17 +981,27 @@ th {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  padding: 7px 10px;
+  padding: 6px 9px;
   border-bottom: 1px solid var(--border-glass);
   background: rgba(14, 22, 38, 0.85);
   white-space: nowrap;
 }
 
 td {
-  padding: 7px 10px;
+  padding: 6px 9px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  vertical-align: top;
+  vertical-align: middle;
   font-size: 11.5px;
+  line-height: 1.35;
+}
+
+.tw table b,
+.tw table strong {
+  display: inline !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  margin: 0 !important;
+  font-weight: 700 !important;
 }
 
 tr:hover td {

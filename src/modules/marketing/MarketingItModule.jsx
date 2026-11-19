@@ -15,6 +15,7 @@ import MarketingTasksPage from './pages/MarketingTasksPage.jsx';
 import MarketingReportsPage from './pages/MarketingReportsPage.jsx';
 import ItDashboard from './pages/ItDashboard.jsx';
 import ItTicketsPage from './pages/ItTicketsPage.jsx';
+import ItHistoryPage from './pages/ItHistoryPage.jsx';
 import DeviceInventoryPage from './pages/DeviceInventoryPage.jsx';
 import SoftwareAccountsPage from './pages/SoftwareAccountsPage.jsx';
 import NetworkMaintenancePage from './pages/NetworkMaintenancePage.jsx';
@@ -48,50 +49,53 @@ import {
   ShieldCheck,
   Network,
   FileCheck,
+  History,
+  Plus,
 } from 'lucide-react';
 
 const ROUTE_MAP = {
   '': 'overview',
-  'marketing-dashboard': 'mkt_dash',
-  campaigns: 'campaigns',
-  calendar: 'calendar',
-  social: 'social',
-  ads: 'ads',
-  assets: 'assets',
-  'creative-requests': 'creatives',
+  'marketing-dashboard': 'overview',
+  dashboard: 'overview',
   tasks: 'tasks',
+  social: 'social',
+  posts: 'social',
+  calendar: 'calendar',
+  campaigns: 'campaigns',
   'marketing-reports': 'mkt_rep',
   'it-dashboard': 'it_dash',
   tickets: 'tickets',
   devices: 'devices',
+  'it-history': 'it_hist',
+  history: 'it_hist',
+  'it-reports': 'it_rep',
+  ads: 'ads',
+  assets: 'assets',
+  'creative-requests': 'creatives',
   software: 'software',
   maintenance: 'maintenance',
-  'it-reports': 'it_rep',
 };
 
 const SUBNAV_TABS = [
-  { id: 'overview', label: 'Overview', path: '/marketing', icon: LayoutDashboard },
-  { id: 'mkt_dash', label: 'Marketing KPIs', path: '/marketing/marketing-dashboard', icon: Megaphone },
-  { id: 'campaigns', label: 'Campaigns', path: '/marketing/campaigns', icon: Target, badgeKey: 'activeCampaigns' },
-  { id: 'calendar', label: 'Content Calendar', path: '/marketing/calendar', icon: Calendar },
-  { id: 'social', label: 'FB & LinkedIn', path: '/marketing/social', icon: Share2 },
-  { id: 'ads', label: 'Paid Ads', path: '/marketing/ads', icon: DollarSign },
-  { id: 'assets', label: 'Asset Library', path: '/marketing/assets', icon: FolderArchive },
-  { id: 'creatives', label: 'Design Requests', path: '/marketing/creative-requests', icon: Palette },
-  { id: 'tasks', label: 'Tasks', path: '/marketing/tasks', icon: CheckSquare },
+  // Digital Marketing (5 focused modules)
+  { id: 'overview', label: 'Marketing Dashboard', path: '/marketing', icon: LayoutDashboard },
+  { id: 'tasks', label: 'Work / Task Management', path: '/marketing/tasks', icon: CheckSquare },
+  { id: 'social', label: 'Content & Social Posts', path: '/marketing/social', icon: Share2 },
+  { id: 'campaigns', label: 'Campaign Management', path: '/marketing/campaigns', icon: Target, badgeKey: 'activeCampaigns' },
   { id: 'mkt_rep', label: 'Marketing Reports', path: '/marketing/marketing-reports', icon: FileText },
-  { id: 'it_dash', label: 'IT Dashboard', path: '/marketing/it-dashboard', icon: Activity },
-  { id: 'tickets', label: 'IT Tickets', path: '/marketing/tickets', icon: Ticket, badgeKey: 'openTickets' },
-  { id: 'devices', label: 'Hardware Assets', path: '/marketing/devices', icon: Laptop },
-  { id: 'software', label: 'Software Licenses', path: '/marketing/software', icon: ShieldCheck },
-  { id: 'maintenance', label: 'Maintenance & ISP', path: '/marketing/maintenance', icon: Network },
+
+  // IT Support (5 focused modules)
+  { id: 'it_dash', label: 'IT Support Dashboard', path: '/marketing/it-dashboard', icon: Activity },
+  { id: 'tickets', label: 'IT Work Management', path: '/marketing/tickets', icon: Ticket, badgeKey: 'openTickets' },
+  { id: 'devices', label: 'Basic Device Management', path: '/marketing/devices', icon: Laptop },
+  { id: 'it_hist', label: 'IT Work History', path: '/marketing/it-history', icon: History },
   { id: 'it_rep', label: 'IT Reports', path: '/marketing/it-reports', icon: FileCheck },
 ];
 
 function MarketingItInner() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data } = useMarketing();
+  const { data, openTicketModal } = useMarketing();
 
   const rawSlug = location.pathname.replace(/^\/marketing\/?/, '').split('/')[0] || '';
   const currentTab = ROUTE_MAP[rawSlug] || 'overview';
@@ -130,6 +134,8 @@ function MarketingItInner() {
         return <ItTicketsPage />;
       case 'devices':
         return <DeviceInventoryPage />;
+      case 'it_hist':
+        return <ItHistoryPage />;
       case 'software':
         return <SoftwareAccountsPage />;
       case 'maintenance':
@@ -145,28 +151,46 @@ function MarketingItInner() {
     <div className="marketing-module-wrapper space-y-4">
       {/* Sleek Enterprise Horizontal Navigation Bar matching EPI Layout */}
       <div className="mkt-subnav-container">
-        <div className="mkt-subnav-scroll">
-          {SUBNAV_TABS.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = currentTab === tab.id;
-            const badge = tab.badgeKey ? badgeCounts[tab.badgeKey] : null;
+        <div className="mkt-subnav-scroll flex items-center justify-between">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {SUBNAV_TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = currentTab === tab.id;
+              const badge = tab.badgeKey ? badgeCounts[tab.badgeKey] : null;
 
-            return (
-              <button
-                key={tab.id}
-                onClick={() => navigate(tab.path)}
-                className={`mkt-subnav-btn ${isActive ? 'active' : ''}`}
-              >
-                <Icon size={14} />
-                <span>{tab.label}</span>
-                {badge > 0 && (
-                  <span className="mkt-subnav-badge">
-                    {badge}
-                  </span>
-                )}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => navigate(tab.path)}
+                  className={`mkt-subnav-btn ${isActive ? 'active' : ''}`}
+                >
+                  <Icon size={14} />
+                  <span>{tab.label}</span>
+                  {badge > 0 && (
+                    <span className="mkt-subnav-badge">
+                      {badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => openTicketModal()}
+            className="mkt-subnav-btn flex items-center gap-1.5 shrink-0"
+            style={{
+              background: 'rgba(245, 158, 11, 0.1)',
+              borderColor: 'rgba(245, 158, 11, 0.3)',
+              color: '#fbbf24',
+              marginLeft: 8,
+            }}
+            title="Create new IT Support Ticket"
+          >
+            <Plus size={13} />
+            <span>+ Add IT Ticket</span>
+          </button>
         </div>
       </div>
 

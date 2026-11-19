@@ -22,6 +22,19 @@ export default function ItReportsPage() {
   const handleImportFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const confirmed = window.confirm(
+      `⚠️ WARNING: OVERWRITE IT SUPPORT & INFRASTRUCTURE DATA\n\n` +
+      `Importing this backup will OVERWRITE your current records:\n` +
+      `- IT Tickets: ${tickets.length}\n` +
+      `- Registered Devices: ${devices.length}\n` +
+      `- Software Accounts: ${softwareAccounts.length}\n\n` +
+      `Existing records will be completely replaced by the data in the imported backup file.\n` +
+      `Are you sure you want to proceed?`
+    );
+    if (!confirmed) {
+      e.target.value = '';
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
