@@ -28,42 +28,50 @@ export default function UnifiedLogin() {
     {
       id: 'admin',
       name: 'Executive Admin',
+      shortName: 'Executive Admin',
       title: 'Super Administrator',
-      desc: 'Central control hub & user provisioning',
       icon: Shield,
-      accent: '#38bdf8',
-      bg: 'rgba(56, 189, 248, 0.1)',
-      border: 'rgba(56, 189, 248, 0.35)',
+      accent: '#ff4d5e',
+      bg: 'rgba(229, 25, 45, 0.12)',
+      border: 'rgba(229, 25, 45, 0.38)',
+      glow: 'rgba(229, 25, 45, 0.25)',
+      gradient: 'linear-gradient(135deg, #e5192d 0%, #ff4d5e 100%)',
     },
     {
       id: 'sales',
       name: 'Sales Department',
+      shortName: 'Sales',
       title: 'Commercial & Sales',
-      desc: 'Clients master, follow-ups & quotations',
       icon: Briefcase,
-      accent: '#34d399',
-      bg: 'rgba(52, 211, 153, 0.1)',
-      border: 'rgba(52, 211, 153, 0.35)',
+      accent: '#38bdf8',
+      bg: 'rgba(26, 115, 232, 0.12)',
+      border: 'rgba(26, 115, 232, 0.38)',
+      glow: 'rgba(26, 115, 232, 0.25)',
+      gradient: 'linear-gradient(135deg, #0052cc 0%, #1a73e8 100%)',
     },
     {
       id: 'service',
       name: 'Service Department',
+      shortName: 'Service',
       title: 'Technical & Engineering',
-      desc: 'Servicing, maintenance & installation',
       icon: Wrench,
-      accent: '#fbbf24',
-      bg: 'rgba(251, 191, 36, 0.1)',
-      border: 'rgba(251, 191, 36, 0.35)',
+      accent: '#34d399',
+      bg: 'rgba(16, 185, 129, 0.12)',
+      border: 'rgba(16, 185, 129, 0.38)',
+      glow: 'rgba(16, 185, 129, 0.25)',
+      gradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
     },
     {
       id: 'accounts',
       name: 'Accounts & ERP',
+      shortName: 'Accounts',
       title: 'Finance & Accounting',
-      desc: 'General ledger, Mushak-9.1 & invoices',
       icon: Landmark,
-      accent: '#a78bfa',
-      bg: 'rgba(167, 139, 250, 0.1)',
-      border: 'rgba(167, 139, 250, 0.35)',
+      accent: '#fbbf24',
+      bg: 'rgba(245, 158, 11, 0.12)',
+      border: 'rgba(245, 158, 11, 0.38)',
+      glow: 'rgba(245, 158, 11, 0.25)',
+      gradient: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)',
     },
   ];
 
@@ -126,7 +134,7 @@ export default function UnifiedLogin() {
 
   return (
     <div className="login-wrapper">
-      <div className="login-card" style={{ maxWidth: 540 }}>
+      <div className="login-card" style={{ maxWidth: 560 }}>
         {/* Brand Banner */}
         <div className="login-brand-header">
           <div className="login-logo-ring">
@@ -142,11 +150,11 @@ export default function UnifiedLogin() {
           <span>Department-Guarded Single Sign-On (SSO) Portal</span>
         </div>
 
-        {/* 1. Department Selection Options */}
-        <div style={{ marginBottom: 20 }}>
+        {/* 1. Department Selection Options - Single Row Desktop / 2x2 Grid Mobile */}
+        <div style={{ marginBottom: 16 }}>
           <div
             style={{
-              fontSize: 12,
+              fontSize: 11.5,
               fontWeight: 700,
               color: '#94a3b8',
               textTransform: 'uppercase',
@@ -157,19 +165,13 @@ export default function UnifiedLogin() {
               justifyContent: 'space-between',
             }}
           >
-            <span>Step 1: Select Target Department</span>
+            <span>Target Department</span>
             <span style={{ fontSize: 11, color: currentDeptObj.accent, fontWeight: 600 }}>
               {currentDeptObj.name}
             </span>
           </div>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: 10,
-            }}
-          >
+          <div className="login-dept-grid">
             {departments.map((dept) => {
               const Icon = dept.icon;
               const isSelected = selectedDept === dept.id;
@@ -178,56 +180,12 @@ export default function UnifiedLogin() {
                   key={dept.id}
                   type="button"
                   onClick={() => handleSelectDept(dept.id)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 10,
-                    padding: '11px 12px',
-                    borderRadius: 9,
-                    background: isSelected ? dept.bg : 'rgba(255, 255, 255, 0.02)',
-                    border: isSelected
-                      ? `2px solid ${dept.accent}`
-                      : '1px solid rgba(255, 255, 255, 0.08)',
-                    cursor: 'pointer',
-                    textAlign: 'left',
-                    transition: 'all 0.15s ease',
-                    boxShadow: isSelected ? `0 0 12px ${dept.border}` : 'none',
-                  }}
+                  className={`login-dept-pill ${isSelected ? `selected selected-${dept.id}` : ''}`}
+                  title={`Select ${dept.name}`}
+                  aria-pressed={isSelected}
                 >
-                  <div
-                    style={{
-                      background: isSelected ? dept.border : 'rgba(255, 255, 255, 0.05)',
-                      padding: 7,
-                      borderRadius: 7,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: isSelected ? '#ffffff' : dept.accent,
-                      marginTop: 2,
-                    }}
-                  >
-                    <Icon size={16} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div
-                      style={{
-                        fontSize: 12.5,
-                        fontWeight: 700,
-                        color: isSelected ? '#ffffff' : '#e2e8f0',
-                      }}
-                    >
-                      {dept.name}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 10.5,
-                        color: isSelected ? dept.accent : '#64748b',
-                        marginTop: 2,
-                      }}
-                    >
-                      {dept.desc}
-                    </div>
-                  </div>
+                  <Icon size={14} className="login-dept-icon" />
+                  <span className="login-dept-label">{dept.shortName}</span>
                 </button>
               );
             })}
@@ -237,24 +195,25 @@ export default function UnifiedLogin() {
         {/* 2. Active Department Indicator */}
         <div
           style={{
-            padding: '10px 14px',
-            borderRadius: 8,
+            padding: '9px 13px',
+            borderRadius: 10,
             background: currentDeptObj.bg,
             border: `1px solid ${currentDeptObj.border}`,
-            marginBottom: 18,
+            marginBottom: 16,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            fontSize: 12.5,
+            fontSize: 12,
+            transition: 'all 0.2s ease',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <currentDeptObj.icon size={16} style={{ color: currentDeptObj.accent }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+            <currentDeptObj.icon size={15} style={{ color: currentDeptObj.accent }} />
             <span style={{ color: '#f1f5f9' }}>
-              Signing in to: <strong style={{ color: currentDeptObj.accent }}>{currentDeptObj.name}</strong>
+              Target: <strong style={{ color: currentDeptObj.accent }}>{currentDeptObj.name}</strong>
             </span>
           </div>
-          <span style={{ fontSize: 11, color: '#94a3b8' }}>Manual Credential Check</span>
+          <span style={{ fontSize: 10.5, color: '#94a3b8' }}>Manual Credential Check</span>
         </div>
 
         {error && (
@@ -326,9 +285,9 @@ export default function UnifiedLogin() {
             className="login-submit-btn"
             disabled={loading}
             style={{
-              background: `linear-gradient(135deg, ${currentDeptObj.accent} 0%, #1a73e8 100%)`,
+              background: currentDeptObj.gradient || `linear-gradient(135deg, ${currentDeptObj.accent} 0%, #1a73e8 100%)`,
               border: 'none',
-              boxShadow: `0 4px 14px ${currentDeptObj.border}`,
+              boxShadow: `0 4px 14px ${currentDeptObj.glow || currentDeptObj.border}`,
             }}
           >
             {loading ? (

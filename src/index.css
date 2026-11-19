@@ -770,3 +770,136 @@ img, svg, canvas, iframe {
   }
 }
 
+/* ==========================================================================
+   UNIFIED LOGIN DEPARTMENT SELECTION PILL CARDS (4 IN 1 ROW DESKTOP / 2x2 MOBILE)
+   ========================================================================== */
+
+.login-dept-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 16px;
+  align-items: stretch;
+}
+
+.login-dept-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+  color: #94a3b8;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  min-height: 44px;
+  box-sizing: border-box;
+  text-align: center;
+  width: 100%;
+}
+
+.login-dept-pill:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #f1f5f9;
+  transform: translateY(-1px);
+}
+
+.login-dept-pill .login-dept-icon {
+  flex-shrink: 0;
+  color: inherit;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.login-dept-pill:hover .login-dept-icon {
+  transform: scale(1.08);
+}
+
+.login-dept-pill .login-dept-label {
+  font-size: 11.5px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+/* Individual Department Selected States */
+.login-dept-pill.selected-admin {
+  background: rgba(229, 25, 45, 0.14) !important;
+  border: 1.5px solid #ff4d5e !important;
+  box-shadow: 0 0 16px rgba(229, 25, 45, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.login-dept-pill.selected-admin .login-dept-icon,
+.login-dept-pill.selected-admin .login-dept-label {
+  color: #ff4d5e !important;
+  font-weight: 700;
+}
+
+.login-dept-pill.selected-sales {
+  background: rgba(26, 115, 232, 0.14) !important;
+  border: 1.5px solid #38bdf8 !important;
+  box-shadow: 0 0 16px rgba(26, 115, 232, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.login-dept-pill.selected-sales .login-dept-icon,
+.login-dept-pill.selected-sales .login-dept-label {
+  color: #38bdf8 !important;
+  font-weight: 700;
+}
+
+.login-dept-pill.selected-service {
+  background: rgba(16, 185, 129, 0.14) !important;
+  border: 1.5px solid #34d399 !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.login-dept-pill.selected-service .login-dept-icon,
+.login-dept-pill.selected-service .login-dept-label {
+  color: #34d399 !important;
+  font-weight: 700;
+}
+
+.login-dept-pill.selected-accounts {
+  background: rgba(245, 158, 11, 0.14) !important;
+  border: 1.5px solid #fbbf24 !important;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.login-dept-pill.selected-accounts .login-dept-icon,
+.login-dept-pill.selected-accounts .login-dept-label {
+  color: #fbbf24 !important;
+  font-weight: 700;
+}
+
+/* Mobile Responsive Grid: 2-column, 2-row on screens <= 580px */
+@media (max-width: 580px) {
+  .login-dept-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .login-dept-pill {
+    padding: 10px 12px;
+    min-height: 44px;
+    border-radius: 10px;
+    justify-content: center;
+  }
+
+  .login-dept-pill .login-dept-label {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px 16px !important;
+    border-radius: 16px;
+  }
+}
+
+
