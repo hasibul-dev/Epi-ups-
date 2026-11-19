@@ -143,9 +143,9 @@ function MarketingItInner() {
 
   return (
     <div className="marketing-module-wrapper space-y-4">
-      {/* Sleek Enterprise Horizontal Navigation Bar */}
-      <div className="bg-slate-900/80 backdrop-blur-md border border-slate-800/80 p-1.5 rounded-xl">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-thin py-0.5 px-0.5">
+      {/* Sleek Enterprise Horizontal Navigation Bar matching EPI Layout */}
+      <div className="mkt-subnav-container">
+        <div className="mkt-subnav-scroll">
           {SUBNAV_TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = currentTab === tab.id;
@@ -155,22 +155,12 @@ function MarketingItInner() {
               <button
                 key={tab.id}
                 onClick={() => navigate(tab.path)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all duration-150 ${
-                  isActive
-                    ? 'bg-purple-600 text-white font-semibold shadow-sm shadow-purple-600/30'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-                }`}
+                className={`mkt-subnav-btn ${isActive ? 'active' : ''}`}
               >
-                <Icon size={14} className={isActive ? 'text-white' : 'text-slate-400'} />
+                <Icon size={14} />
                 <span>{tab.label}</span>
                 {badge > 0 && (
-                  <span
-                    className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono leading-none ${
-                      isActive
-                        ? 'bg-purple-900/90 text-purple-100'
-                        : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                    }`}
-                  >
+                  <span className="mkt-subnav-badge">
                     {badge}
                   </span>
                 )}

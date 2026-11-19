@@ -38,19 +38,17 @@ export default function ContentCalendarPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Calendar className="text-purple-400" size={20} />
-            Editorial Content Planning & Calendar
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">EDITORIAL CONTENT</div>
+          <h2>Editorial Content Planning & Calendar</h2>
+          <p>
             Schedule social posts, technical articles, and promotional creatives with full review workflows
           </p>
         </div>
         <button
           onClick={() => openPostModal()}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>Schedule Post</span>
@@ -68,7 +66,7 @@ export default function ContentCalendarPage() {
                 onClick={() => setPlatformFilter(plat)}
                 className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                   platformFilter === plat
-                    ? 'bg-purple-600 text-white'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'
                 }`}
               >
@@ -83,7 +81,7 @@ export default function ContentCalendarPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-purple-500"
+            className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-sky-500"
           >
             {STATUSES.map((st) => (
               <option key={st} value={st}>
@@ -104,7 +102,7 @@ export default function ContentCalendarPage() {
           filteredPosts.map((post) => (
             <div
               key={post.id}
-              className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between space-y-4"
+              className="mkt-card flex flex-col justify-between space-y-4"
             >
               <div className="space-y-3">
                 {/* Header tag */}
@@ -114,7 +112,7 @@ export default function ContentCalendarPage() {
                       post.platform === 'LinkedIn'
                         ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
                         : post.platform === 'Facebook'
-                        ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                        ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
                         : 'bg-red-500/20 text-red-300 border border-red-500/30'
                     }`}
                   >
@@ -126,7 +124,7 @@ export default function ContentCalendarPage() {
                       post.status === 'Published'
                         ? 'bg-emerald-500/20 text-emerald-300'
                         : post.status === 'Scheduled'
-                        ? 'bg-purple-500/20 text-purple-300'
+                        ? 'bg-blue-500/20 text-blue-300'
                         : 'bg-slate-700 text-slate-300'
                     }`}
                   >
@@ -149,7 +147,7 @@ export default function ContentCalendarPage() {
                 </div>
 
                 {post.hashtags && (
-                  <div className="text-[11px] text-purple-400 font-mono line-clamp-1">
+                  <div className="text-[11px] text-sky-400 font-mono line-clamp-1">
                     {post.hashtags}
                   </div>
                 )}
@@ -165,7 +163,7 @@ export default function ContentCalendarPage() {
                     </div>
                     <div>
                       <div className="text-slate-400 text-[10px]">Engagement</div>
-                      <div className="font-semibold text-purple-300">{post.engagement}</div>
+                      <div className="font-semibold text-sky-300">{post.engagement}</div>
                     </div>
                     <div>
                       <div className="text-slate-400 text-[10px]">Inquiries</div>

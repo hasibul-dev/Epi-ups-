@@ -88,7 +88,7 @@ export default function CampaignModal() {
       <div className="mkt-modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="mkt-modal-header">
           <h3>
-            <Target size={18} style={{ color: '#c084fc' }} />
+            <Target size={18} style={{ color: '#38bdf8' }} />
             {item ? 'Edit Marketing Campaign' : 'Create New Marketing Campaign'}
           </h3>
           <button className="mkt-modal-close" onClick={closeCampaignModal}>
@@ -152,7 +152,7 @@ export default function CampaignModal() {
                     style={{
                       padding: '5px 12px',
                       fontSize: 12,
-                      borderColor: formData.platforms.includes(p) ? '#c084fc' : undefined,
+                      borderColor: formData.platforms.includes(p) ? '#38bdf8' : undefined,
                     }}
                   >
                     {p}

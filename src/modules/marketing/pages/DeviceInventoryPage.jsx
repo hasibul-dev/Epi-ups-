@@ -58,19 +58,17 @@ export default function DeviceInventoryPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Server className="text-cyan-400" size={20} />
-            Computer & Hardware Asset Inventory
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">HARDWARE & ASSET INVENTORY</div>
+          <h2>Computer & Hardware Asset Inventory</h2>
+          <p>
             Track company workstations, laptops, network routers, printers, server hardware, and warranty lifecycles
           </p>
         </div>
         <button
           onClick={() => openDeviceModal()}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-semibold shadow-lg shadow-cyan-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>Register Hardware Asset</span>

@@ -120,7 +120,7 @@ export default function DeviceModal() {
       <div className="marketing-modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="marketing-modal-header">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+            <div className="w-9 h-9 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
               <Server size={18} />
             </div>
             <div>
@@ -159,7 +159,7 @@ export default function DeviceModal() {
                 value={form.deviceTag}
                 onChange={handleChange}
                 placeholder="e.g. EPI-IT-DT-05"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
                 required
               />
             </div>
@@ -172,7 +172,7 @@ export default function DeviceModal() {
                 name="deviceType"
                 value={form.deviceType}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {DEVICE_TYPES.map((dt) => (
                   <option key={dt} value={dt}>
@@ -194,7 +194,7 @@ export default function DeviceModal() {
                 value={form.brandModel}
                 onChange={handleChange}
                 placeholder="e.g. Dell Latitude 3420 / HP ProDesk"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
                 required
               />
             </div>
@@ -209,7 +209,7 @@ export default function DeviceModal() {
                 value={form.operatingSystem}
                 onChange={handleChange}
                 placeholder="e.g. Windows 11 Pro 64-bit"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
           </div>
@@ -224,7 +224,7 @@ export default function DeviceModal() {
               value={form.specs}
               onChange={handleChange}
               placeholder="e.g. Core i5-1135G7, 16GB DDR4, 512GB NVMe SSD"
-              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
             />
           </div>
 
@@ -239,7 +239,7 @@ export default function DeviceModal() {
                 value={form.assignedTo}
                 onChange={handleChange}
                 placeholder="e.g. MD. MAHMUDUL HASAN / Shared Workstation"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
 
@@ -251,7 +251,7 @@ export default function DeviceModal() {
                 name="department"
                 value={form.department}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {DEPARTMENTS.map((d) => (
                   <option key={d} value={d}>
@@ -273,7 +273,7 @@ export default function DeviceModal() {
                 value={form.ipAddress}
                 onChange={handleChange}
                 placeholder="192.168.1.xxx"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
 
@@ -287,7 +287,7 @@ export default function DeviceModal() {
                 value={form.macAddress}
                 onChange={handleChange}
                 placeholder="XX:XX:XX:XX:XX:XX"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
           </div>
@@ -302,7 +302,7 @@ export default function DeviceModal() {
                 name="purchaseDate"
                 value={form.purchaseDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
 
@@ -315,7 +315,7 @@ export default function DeviceModal() {
                 name="warrantyExpiry"
                 value={form.warrantyExpiry}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
 
@@ -327,7 +327,7 @@ export default function DeviceModal() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {STATUS_OPTIONS.map((st) => (
                   <option key={st} value={st}>
@@ -348,7 +348,7 @@ export default function DeviceModal() {
               value={form.notes}
               onChange={handleChange}
               placeholder="e.g. Repaired fan in 2025; upgraded to 16GB RAM; primary workstation"
-              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
             />
           </div>
 
@@ -356,16 +356,16 @@ export default function DeviceModal() {
             <button
               type="button"
               onClick={closeDeviceModal}
-              className="px-4 py-2 rounded-lg border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
+              className="btn-mkt-secondary"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-xs font-medium text-white shadow-lg shadow-purple-600/20 flex items-center gap-2 transition-all"
+              className="btn-mkt-primary"
             >
               <Save size={14} />
-              {item ? 'Update Device' : 'Save Device'}
+              <span>{item ? 'Update Device' : 'Save Device'}</span>
             </button>
           </div>
         </form>

@@ -118,7 +118,7 @@ export default function AdModal() {
       <div className="marketing-modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="marketing-modal-header">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+            <div className="w-9 h-9 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
               <Target size={18} />
             </div>
             <div>
@@ -156,7 +156,7 @@ export default function AdModal() {
               value={form.name}
               onChange={handleChange}
               placeholder="e.g. FB Sponsored: Industrial Online UPS Summer Power Shield"
-              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               required
             />
           </div>
@@ -170,7 +170,7 @@ export default function AdModal() {
                 name="platform"
                 value={form.platform}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {PLATFORMS.map((p) => (
                   <option key={p} value={p}>
@@ -188,7 +188,7 @@ export default function AdModal() {
                 name="campaignId"
                 value={form.campaignId}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 <option value="">None / Standalone</option>
                 {data.campaigns.map((c) => (
@@ -207,7 +207,7 @@ export default function AdModal() {
                 name="adFormat"
                 value={form.adFormat}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {AD_FORMATS.map((f) => (
                   <option key={f} value={f}>
@@ -229,7 +229,7 @@ export default function AdModal() {
                 min="0"
                 value={form.budget}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
 
@@ -243,7 +243,7 @@ export default function AdModal() {
                 min="0"
                 value={form.dailyBudget}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
 
@@ -257,7 +257,7 @@ export default function AdModal() {
                 min="0"
                 value={form.spend}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
 
@@ -269,7 +269,7 @@ export default function AdModal() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {AD_STATUSES.map((st) => (
                   <option key={st} value={st}>
@@ -291,7 +291,7 @@ export default function AdModal() {
                 min="0"
                 value={form.impressions}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
 
@@ -305,7 +305,7 @@ export default function AdModal() {
                 min="0"
                 value={form.clicks}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
 
@@ -320,7 +320,7 @@ export default function AdModal() {
                 min="0"
                 value={form.cpc}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
 
@@ -334,7 +334,7 @@ export default function AdModal() {
                 min="0"
                 value={form.leads}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
           </div>
@@ -349,7 +349,7 @@ export default function AdModal() {
                 name="startDate"
                 value={form.startDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
 
@@ -362,7 +362,7 @@ export default function AdModal() {
                 name="endDate"
                 value={form.endDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
           </div>
@@ -377,7 +377,7 @@ export default function AdModal() {
               value={form.notes}
               onChange={handleChange}
               placeholder="e.g. Targeting industrial pin codes in Gazipur, Savar, Tongi, Narayanganj..."
-              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
             />
           </div>
 
@@ -385,16 +385,16 @@ export default function AdModal() {
             <button
               type="button"
               onClick={closeAdModal}
-              className="px-4 py-2 rounded-lg border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
+              className="btn-mkt-secondary"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-xs font-medium text-white shadow-lg shadow-purple-600/20 flex items-center gap-2 transition-all"
+              className="btn-mkt-primary"
             >
               <Save size={14} />
-              {item ? 'Update Advertisement' : 'Save Ad'}
+              <span>{item ? 'Update Advertisement' : 'Save Ad'}</span>
             </button>
           </div>
         </form>

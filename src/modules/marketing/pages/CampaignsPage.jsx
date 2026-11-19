@@ -38,19 +38,17 @@ export default function CampaignsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Megaphone className="text-purple-400" size={20} />
-            Marketing Campaign Management
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">CAMPAIGN OPERATIONS</div>
+          <h2>Marketing Campaign Management</h2>
+          <p>
             Plan, monitor and optimize industrial power solution marketing campaigns across channels
           </p>
         </div>
         <button
           onClick={() => openCampaignModal()}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>New Campaign</span>
@@ -66,7 +64,7 @@ export default function CampaignsPage() {
             placeholder="Search campaigns by name, focus product, or target audience..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500"
+            className="w-full pl-9 pr-4 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500"
           />
         </div>
 
@@ -75,7 +73,7 @@ export default function CampaignsPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-purple-500"
+            className="px-3 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-sky-500"
           >
             <option value="All">All Statuses ({campaigns.length})</option>
             <option value="Active">Active</option>
@@ -100,7 +98,7 @@ export default function CampaignsPage() {
             return (
               <div
                 key={camp.id}
-                className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all space-y-4"
+                className="mkt-card space-y-4"
               >
                 {/* Header row */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -110,7 +108,7 @@ export default function CampaignsPage() {
                       <span
                         className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${
                           camp.status === 'Active'
-                            ? 'bg-purple-500/10 text-purple-300 border-purple-500/30'
+                            ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
                             : camp.status === 'Planning'
                             ? 'bg-blue-500/10 text-blue-300 border-blue-500/30'
                             : 'bg-slate-800 text-slate-400 border-slate-700'
@@ -122,7 +120,7 @@ export default function CampaignsPage() {
                     <div className="text-xs text-slate-400 flex flex-wrap items-center gap-3">
                       <span>Objective: <strong className="text-slate-300">{camp.objective}</strong></span>
                       <span>•</span>
-                      <span>Manager: <strong className="text-purple-300">{camp.assignedEmployee}</strong></span>
+                      <span>Manager: <strong className="text-sky-300">{camp.assignedEmployee}</strong></span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
                         <Calendar size={13} className="text-slate-500" />
@@ -179,7 +177,7 @@ export default function CampaignsPage() {
                     </div>
                     <div className="w-full h-1.5 rounded-full bg-slate-700 overflow-hidden mt-1.5">
                       <div
-                        className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
+                        className="h-full bg-gradient-to-r from-blue-600 to-sky-400 rounded-full"
                         style={{ width: `${pct}%` }}
                       />
                     </div>

@@ -28,26 +28,24 @@ export default function ItDashboard() {
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Wrench className="text-amber-400" size={20} />
-            IT Support & Infrastructure Command Dashboard
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">IT OPERATIONS & HELPDESK</div>
+          <h2>IT Support & Infrastructure Command Dashboard</h2>
+          <p>
             Enterprise helpdesk tickets, hardware asset inventory, licensed software, and network uptime monitoring
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => openDeviceModal()}
-            className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition-colors"
+            className="btn-mkt-secondary"
           >
             + Register Hardware
           </button>
           <button
             onClick={() => openTicketModal()}
-            className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-semibold shadow-lg shadow-amber-600/20 flex items-center gap-1.5 transition-all"
+            className="btn-mkt-primary"
           >
             <Plus size={14} />
             <span>Create IT Ticket</span>
@@ -101,14 +99,14 @@ export default function ItDashboard() {
 
         <div
           onClick={() => navigate('/marketing/software')}
-          className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/40 transition-all cursor-pointer"
+          className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/40 transition-all cursor-pointer"
         >
           <div className="flex items-center justify-between text-slate-400 mb-2">
             <span className="text-xs">Software & Licenses</span>
-            <Shield size={16} className="text-purple-400" />
+            <Shield size={16} className="text-sky-400" />
           </div>
           <div className="text-2xl font-bold text-white">{softwareAccounts.length}</div>
-          <div className="text-[11px] text-purple-400 mt-1">Active License Pools</div>
+          <div className="text-[11px] text-sky-400 mt-1">Active License Pools</div>
         </div>
       </div>
 

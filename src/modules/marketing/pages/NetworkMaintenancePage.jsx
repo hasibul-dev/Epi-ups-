@@ -77,19 +77,18 @@ export default function NetworkMaintenancePage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Network className="text-emerald-400" size={20} />
-            Network Infrastructure & Preventive Maintenance
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      {/* Header */}
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">INFRASTRUCTURE & UPTIME</div>
+          <h2>Network Infrastructure & Preventive Maintenance</h2>
+          <p>
             Optical fiber ISP links, server room climate, backup battery health, and routine scheduled audits
           </p>
         </div>
         <button
           onClick={openAdd}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>New Maintenance Record</span>
@@ -140,7 +139,7 @@ export default function NetworkMaintenancePage() {
         <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Server size={16} className="text-purple-400" />
+              <Server size={16} className="text-sky-400" />
               <h3 className="text-sm font-semibold text-white">Server Room Climate</h3>
             </div>
             <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300">
@@ -151,7 +150,7 @@ export default function NetworkMaintenancePage() {
           <div className="space-y-1 text-xs">
             <div className="text-slate-300 font-medium">Temperature: 21.4°C • Humidity: 46%</div>
             <div className="text-slate-400 text-[11px]">Primary AC: 2.0 Ton Inverter (Running)</div>
-            <div className="text-purple-400 text-[11px] font-mono mt-1">UPS DC Bus: 218.4V (100% Charged)</div>
+            <div className="text-sky-400 text-[11px] font-mono mt-1">UPS DC Bus: 218.4V (100% Charged)</div>
           </div>
         </div>
       </div>

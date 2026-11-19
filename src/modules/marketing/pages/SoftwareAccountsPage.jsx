@@ -97,19 +97,17 @@ export default function SoftwareAccountsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Shield className="text-purple-400" size={20} />
-            Licensed Software & Corporate Email Account Pools
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">SOFTWARE & LICENSES</div>
+          <h2>Licensed Software & Corporate Email Account Pools</h2>
+          <p>
             Manage enterprise licenses, Microsoft 365, antivirus endpoints, and business domain email allocations
           </p>
         </div>
         <button
           onClick={openAdd}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>Add License Pool</span>
@@ -118,19 +116,19 @@ export default function SoftwareAccountsPage() {
 
       {/* Aggregate Overview */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+        <div className="mkt-card p-4">
           <div className="text-xs text-slate-400 mb-1">Managed Software Pools</div>
           <div className="text-xl font-bold text-white">{softwareAccounts.length}</div>
-          <div className="text-[11px] text-purple-400 mt-1">Enterprise subscriptions</div>
+          <div className="text-[11px] text-sky-400 mt-1">Enterprise subscriptions</div>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+        <div className="mkt-card p-4">
           <div className="text-xs text-slate-400 mb-1">Total Licensed Seats</div>
           <div className="text-xl font-bold text-cyan-400">{totalSeats} Seats</div>
           <div className="text-[11px] text-slate-400 mt-1">{assignedSeats} Assigned to Users</div>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+        <div className="mkt-card p-4">
           <div className="text-xs text-slate-400 mb-1">Available Free Seats</div>
           <div className="text-xl font-bold text-emerald-400">{Math.max(0, totalSeats - assignedSeats)} Seats</div>
           <div className="text-[11px] text-emerald-400 mt-1">Ready for new hires</div>
@@ -154,12 +152,12 @@ export default function SoftwareAccountsPage() {
           return (
             <div
               key={item.id}
-              className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all space-y-4"
+              className="mkt-card space-y-4"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Key size={14} className="text-purple-400" />
+                    <Key size={14} className="text-sky-400" />
                     {item.name}
                   </h3>
                   <div className="text-xs text-slate-400 mt-0.5">
@@ -193,7 +191,7 @@ export default function SoftwareAccountsPage() {
                 </div>
                 <div className="w-full h-2 rounded-full bg-slate-700 overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
+                    className="h-full bg-gradient-to-r from-blue-600 to-sky-400 rounded-full"
                     style={{ width: `${utilizationPct}%` }}
                   />
                 </div>
@@ -252,7 +250,7 @@ export default function SoftwareAccountsPage() {
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g. Microsoft 365 Business Standard / epiups.com.bd"
-                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
                 />
               </div>
 
@@ -266,7 +264,7 @@ export default function SoftwareAccountsPage() {
                     value={form.vendor}
                     onChange={(e) => setForm({ ...form, vendor: e.target.value })}
                     placeholder="e.g. Flora Limited / Microsoft"
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
                   />
                 </div>
 
@@ -279,7 +277,7 @@ export default function SoftwareAccountsPage() {
                     value={form.licenseType}
                     onChange={(e) => setForm({ ...form, licenseType: e.target.value })}
                     placeholder="e.g. Annual Cloud Subscription"
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
                   />
                 </div>
               </div>
@@ -294,7 +292,7 @@ export default function SoftwareAccountsPage() {
                     min="1"
                     value={form.totalLicenses}
                     onChange={(e) => setForm({ ...form, totalLicenses: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
                   />
                 </div>
 
@@ -307,7 +305,7 @@ export default function SoftwareAccountsPage() {
                     min="0"
                     value={form.assignedCount}
                     onChange={(e) => setForm({ ...form, assignedCount: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
                   />
                 </div>
 
@@ -320,7 +318,7 @@ export default function SoftwareAccountsPage() {
                     min="0"
                     value={form.annualCost}
                     onChange={(e) => setForm({ ...form, annualCost: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
                   />
                 </div>
               </div>
@@ -333,7 +331,7 @@ export default function SoftwareAccountsPage() {
                   type="date"
                   value={form.expiryDate}
                   onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
                 />
               </div>
 
@@ -346,7 +344,7 @@ export default function SoftwareAccountsPage() {
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   placeholder="e.g. Master admin account: admin@epiups.com.bd; renewal notice 30 days prior"
-                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
                 />
               </div>
 
@@ -360,7 +358,7 @@ export default function SoftwareAccountsPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-xs font-semibold text-white"
+                  className="btn-mkt-primary"
                 >
                   Save Software License
                 </button>

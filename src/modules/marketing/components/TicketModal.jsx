@@ -72,7 +72,7 @@ export default function TicketModal() {
       <div className="mkt-modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="mkt-modal-header">
           <h3>
-            <Headphones size={18} style={{ color: '#c084fc' }} />
+            <Headphones size={18} style={{ color: '#38bdf8' }} />
             {item ? `Edit IT Support Ticket (${formData.id})` : 'New IT Support Request'}
           </h3>
           <button className="mkt-modal-close" onClick={closeTicketModal}>

@@ -33,19 +33,17 @@ export default function SocialMediaPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Share2 className="text-purple-400" size={20} />
-            Social Media Page Management (Facebook & LinkedIn)
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">SOCIAL MEDIA OPERATIONS</div>
+          <h2>Social Media Page Management (Facebook & LinkedIn)</h2>
+          <p>
             Maintain official corporate brand presence, B2B industry outreach, and client inquiry response
           </p>
         </div>
         <button
           onClick={() => openPostModal()}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>New Social Post</span>
@@ -126,7 +124,7 @@ export default function SocialMediaPage() {
           </div>
           <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
             <div className="text-xs text-slate-400 mb-1">B2B Tender Inquiries</div>
-            <div className="text-xl font-bold text-purple-400">24</div>
+            <div className="text-xl font-bold text-sky-400">24</div>
             <div className="text-[11px] text-slate-400 mt-1">Forwarded to Sales CRM</div>
           </div>
         </div>
@@ -142,7 +140,7 @@ export default function SocialMediaPage() {
             </h2>
             <button
               onClick={() => openPostModal()}
-              className="text-xs text-purple-400 hover:text-purple-300"
+              className="text-xs text-sky-400 hover:text-sky-300 font-semibold"
             >
               + Create Post
             </button>
@@ -153,7 +151,7 @@ export default function SocialMediaPage() {
               <div
                 key={post.id}
                 onClick={() => openPostModal(post)}
-                className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer space-y-3"
+                className="mkt-card cursor-pointer space-y-3"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -168,7 +166,7 @@ export default function SocialMediaPage() {
                     className={`px-2 py-0.5 rounded text-[10px] font-semibold whitespace-nowrap ${
                       post.status === 'Published'
                         ? 'bg-emerald-500/20 text-emerald-300'
-                        : 'bg-indigo-500/20 text-indigo-300'
+                        : 'bg-sky-500/20 text-sky-300'
                     }`}
                   >
                     {post.status}
@@ -180,7 +178,7 @@ export default function SocialMediaPage() {
                 </div>
 
                 {post.hashtags && (
-                  <div className="text-[11px] text-purple-400 font-mono">
+                  <div className="text-[11px] text-sky-400 font-mono">
                     {post.hashtags}
                   </div>
                 )}
@@ -188,7 +186,7 @@ export default function SocialMediaPage() {
                 {post.status === 'Published' && (
                   <div className="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-slate-800">
                     <span>Reach: <strong className="text-white">{post.reach?.toLocaleString()}</strong></span>
-                    <span>Engagement: <strong className="text-purple-300">{post.engagement}</strong></span>
+                    <span>Engagement: <strong className="text-sky-300">{post.engagement}</strong></span>
                     <span>Direct Inquiries: <strong className="text-emerald-400">{post.inquiries}</strong></span>
                   </div>
                 )}
@@ -207,10 +205,10 @@ export default function SocialMediaPage() {
             {captions.map((cap) => (
               <div
                 key={cap.id}
-                className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2.5"
+                className="mkt-card space-y-2.5"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-xs font-semibold text-purple-300">{cap.title}</span>
+                  <span className="text-xs font-semibold text-sky-300">{cap.title}</span>
                   <button
                     onClick={() => copyToClipboard(cap.text, cap.id)}
                     className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"

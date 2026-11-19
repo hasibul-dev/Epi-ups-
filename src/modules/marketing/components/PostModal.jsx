@@ -60,7 +60,7 @@ export default function PostModal() {
       <div className="mkt-modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="mkt-modal-header">
           <h3>
-            <Share2 size={18} style={{ color: '#c084fc' }} />
+            <Share2 size={18} style={{ color: '#38bdf8' }} />
             {item ? 'Edit Social Media Post' : 'Schedule New Post'}
           </h3>
           <button className="mkt-modal-close" onClick={closePostModal}>

@@ -1,395 +1,416 @@
 /* ==========================================================================
-   EPI DIGITAL MARKETING & IT SUPPORT — CORPORATE DARK THEME STYLES
+   EPI DIGITAL MARKETING & IT SUPPORT — UNIFIED DESIGN SYSTEM
+   Matches exact EPI Centralized Application Design System, Colors, and Tokens
    ========================================================================== */
 
+/* Inherit and Harmonize with Global EPI Application Variables */
 :root {
-  --mkt-purple: #a855f7;
-  --mkt-purple-light: #c084fc;
-  --mkt-purple-dark: #7e22ce;
-  --mkt-purple-bg: rgba(168, 85, 247, 0.12);
-  --mkt-purple-border: rgba(168, 85, 247, 0.32);
-  --mkt-purple-glow: rgba(168, 85, 247, 0.25);
+  --mkt-bg: var(--navy-950, #050811);
+  --mkt-bg-surface: rgba(14, 22, 38, 0.72);
+  --mkt-bg-card: linear-gradient(135deg, rgba(14, 22, 38, 0.75) 0%, rgba(10, 16, 28, 0.75) 100%);
+  --mkt-border: rgba(255, 255, 255, 0.08);
+  --mkt-border-strong: rgba(255, 255, 255, 0.14);
+  --mkt-text: #ffffff;
+  --mkt-text-secondary: #e2e8f0;
+  --mkt-muted: #94a3b8;
+  --mkt-subtle: #64748b;
+
+  /* Official EPI Brand Accents */
+  --mkt-blue: #0052cc;
+  --mkt-blue-bright: #1a73e8;
+  --mkt-blue-light: #38bdf8;
+  --mkt-green: #10b981;
+  --mkt-green-light: #34d399;
+  --mkt-amber: #f59e0b;
+  --mkt-amber-light: #fbbf24;
+  --mkt-red: #e5192d;
+  --mkt-red-light: #f87171;
+  --mkt-cyan: #06b6d4;
+  --mkt-cyan-light: #22d3ee;
+  --mkt-purple-pill: rgba(168, 85, 247, 0.18);
+  --mkt-purple-text: #c084fc;
 }
 
-.marketing-module-root {
+/* Base Wrapper */
+.marketing-module-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  gap: 18px;
   width: 100%;
 }
 
-/* Sub-Header Navigation Bar */
-.mkt-subnav-bar {
+/* Horizontal Subnavigation Carousel / Tab Bar */
+.mkt-subnav-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 8px 16px;
-  background: rgba(10, 16, 32, 0.95);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  backdrop-filter: blur(8px);
-  gap: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.mkt-subnav-tabs {
+.mkt-subnav-scroll {
   display: flex;
   align-items: center;
   gap: 4px;
   overflow-x: auto;
   scrollbar-width: thin;
-  padding-bottom: 2px;
+  width: 100%;
 }
 
 .mkt-subnav-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 11px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 550;
+  gap: 7px;
+  padding: 6px 13px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
   color: #94a3b8;
+  text-decoration: none;
   background: transparent;
   border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
 }
 
 .mkt-subnav-btn:hover {
-  background: rgba(255, 255, 255, 0.04);
   color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.mkt-subnav-btn.active-mkt {
-  background: var(--mkt-purple-bg);
-  color: var(--mkt-purple-light);
-  border-color: var(--mkt-purple-border);
-  box-shadow: 0 0 12px var(--mkt-purple-glow);
-  font-weight: 650;
+.mkt-subnav-btn.active {
+  background: rgba(26, 115, 232, 0.18);
+  color: #38bdf8;
+  border: 1px solid rgba(26, 115, 232, 0.35);
+  font-weight: 700;
 }
 
 .mkt-subnav-badge {
   padding: 1px 6px;
   border-radius: 10px;
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
-  background: rgba(168, 85, 247, 0.25);
-  color: #e9d5ff;
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
 }
 
-.mkt-subnav-actions {
+.mkt-subnav-btn.active .mkt-subnav-badge {
+  background: rgba(56, 189, 248, 0.25);
+  color: #bae6fd;
+}
+
+/* Standard Header / Hero Banner */
+.mkt-hero-banner {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, rgba(14, 22, 38, 0.75) 0%, rgba(10, 16, 28, 0.75) 100%);
+  border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.08));
+  border-radius: 14px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-.btn-mkt-primary {
+.mkt-hero-info h2 {
+  font-size: var(--font-page-title, 20px);
+  font-weight: 750;
+  color: #ffffff;
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
+}
+
+.mkt-hero-info p {
+  font-size: var(--font-body, 13px);
+  color: #94a3b8;
+  margin: 0;
+}
+
+.mkt-hero-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  background: linear-gradient(135deg, #7e22ce 0%, #a855f7 100%);
-  color: #fff;
-  border: 1px solid rgba(168, 85, 247, 0.4);
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 750;
+  background: rgba(0, 82, 204, 0.12);
+  color: #38bdf8;
+  border: 1px solid rgba(26, 115, 232, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.mkt-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Standard Buttons matching EPI Design System */
+.btn-mkt-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, #0052cc 0%, #1a73e8 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 8px 15px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.18s ease;
-  box-shadow: 0 2px 10px rgba(126, 34, 206, 0.3);
+  box-shadow: 0 3px 12px rgba(0, 82, 204, 0.35);
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .btn-mkt-primary:hover {
-  filter: brightness(1.1);
   transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(0, 82, 204, 0.5);
+  background: linear-gradient(135deg, #1a73e8 0%, #0052cc 100%);
 }
 
 .btn-mkt-secondary {
   display: inline-flex;
   align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-mkt-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.btn-mkt-danger {
+  display: inline-flex;
+  align-items: center;
   gap: 6px;
+  background: rgba(229, 25, 45, 0.12);
+  border: 1px solid rgba(229, 25, 45, 0.3);
+  color: #ff4d5e;
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 12px;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.04);
-  color: #cbd5e1;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: all 0.18s ease;
 }
 
-.btn-mkt-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+.btn-mkt-danger:hover {
+  background: rgba(229, 25, 45, 0.22);
+  color: #ffa4ad;
 }
 
-.mkt-content-body {
-  padding: 20px;
-  flex: 1;
-}
-
-/* Master Cards & KPIs */
-.mkt-hero-hub {
-  background: linear-gradient(180deg, rgba(168, 85, 247, 0.08) 0%, rgba(15, 23, 42, 0.6) 100%);
-  border: 1px solid rgba(168, 85, 247, 0.25);
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
+/* KPI Cards Grid & Structure matching .stat-cards-grid & .stat-card */
 .mkt-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 12px;
-  margin-top: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
 }
 
-.mkt-kpi-card {
-  background: rgba(12, 18, 34, 0.85);
+@media (max-width: 1024px) {
+  .mkt-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .mkt-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+.mkt-stat-card {
+  background: linear-gradient(135deg, rgba(14, 22, 38, 0.75) 0%, rgba(10, 16, 28, 0.75) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 14px;
+  border-radius: 12px;
+  padding: 16px 18px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  backdrop-filter: blur(16px);
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
-.mkt-kpi-card:hover {
-  border-color: rgba(168, 85, 247, 0.4);
+.mkt-stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
-.mkt-kpi-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.mkt-kpi-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+.mkt-stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
-.mkt-kpi-val {
-  font-size: 24px;
-  font-weight: 800;
-  line-height: 1.1;
-  color: #fff;
+.mkt-stat-data {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.mkt-kpi-label {
+.mkt-stat-label {
   font-size: 11.5px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: #94a3b8;
-  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.mkt-kpi-sub {
-  font-size: 10.5px;
+.mkt-stat-val {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin-top: 2px;
+  line-height: 1.15;
+}
+
+.mkt-stat-sub {
+  font-size: 11px;
   color: #64748b;
   margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Two-column and split sections */
-.mkt-split-2col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-bottom: 20px;
-}
-
-@media (max-width: 900px) {
-  .mkt-split-2col {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Standard Section Card */
-.mkt-section-card {
-  background: rgba(10, 16, 30, 0.8);
+/* Standard Cards / Panels */
+.mkt-card {
+  background: linear-gradient(135deg, rgba(14, 22, 38, 0.75) 0%, rgba(10, 16, 28, 0.75) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 18px;
-  margin-bottom: 18px;
+  border-radius: 14px;
+  padding: 20px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 .mkt-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   gap: 12px;
-  flex-wrap: wrap;
 }
 
 .mkt-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #f1f5f9;
-  margin: 0;
 }
 
-.mkt-card-subtitle {
-  font-size: 12px;
+.mkt-card-desc {
+  font-size: 11.5px;
   color: #94a3b8;
   margin-top: 2px;
 }
 
-/* Filter Toolbar */
-.mkt-filter-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-
-.mkt-search-input {
-  flex: 1;
-  min-width: 220px;
-  padding: 7px 12px;
-  border-radius: 8px;
-  background: rgba(15, 23, 42, 0.8);
+/* Standard Inputs & Form Controls */
+.mkt-input,
+.mkt-select,
+.mkt-textarea,
+.mkt-form-input,
+.mkt-form-select,
+.mkt-form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(8, 13, 26, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
+  border-radius: 8px;
+  color: #f1f5f9;
   font-size: 12.5px;
   outline: none;
+  transition: all 0.18s ease;
+  font-family: inherit;
 }
 
-.mkt-search-input:focus {
-  border-color: var(--mkt-purple);
-  box-shadow: 0 0 0 2px var(--mkt-purple-glow);
+.mkt-input:focus,
+.mkt-select:focus,
+.mkt-textarea:focus,
+.mkt-form-input:focus,
+.mkt-form-select:focus,
+.mkt-form-textarea:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
 }
 
-.mkt-select-input {
-  padding: 7px 10px;
-  border-radius: 8px;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
-  font-size: 12px;
-  outline: none;
-  cursor: pointer;
+.mkt-input::placeholder,
+.mkt-textarea::placeholder,
+.mkt-form-input::placeholder,
+.mkt-form-textarea::placeholder {
+  color: #64748b;
 }
 
-/* Data Tables */
-.mkt-table {
+.mkt-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 12px;
 }
 
-.mkt-table th {
-  padding: 10px 12px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.mkt-table td {
-  padding: 11px 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: #cbd5e1;
-  vertical-align: middle;
-}
-
-.mkt-table tr:hover td {
-  background: rgba(168, 85, 247, 0.04);
-}
-
-/* Badges & Status Pills */
-.pill-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-size: 11px;
+.mkt-form-label {
+  font-size: 11.5px;
   font-weight: 600;
-}
-
-.pill-active, .pill-operational, .pill-resolved, .pill-published, .pill-satisfactory {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.pill-planning, .pill-inprogress, .pill-inreview, .pill-scheduled {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-
-.pill-open {
-  background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-}
-
-.pill-critical, .pill-urgent {
-  background: rgba(239, 68, 68, 0.18);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.35);
-}
-
-.pill-high {
-  background: rgba(249, 115, 22, 0.15);
-  color: #fb923c;
-  border: 1px solid rgba(249, 115, 22, 0.3);
-}
-
-.pill-normal, .pill-low, .pill-draft, .pill-closed {
-  background: rgba(148, 163, 184, 0.12);
   color: #94a3b8;
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  letter-spacing: 0.02em;
 }
 
-.pill-platform-fb {
-  background: rgba(24, 119, 242, 0.15);
-  color: #60a5fa;
-  border: 1px solid rgba(24, 119, 242, 0.3);
+.mkt-form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
-.pill-platform-li {
-  background: rgba(10, 102, 194, 0.15);
-  color: #38bdf8;
-  border: 1px solid rgba(10, 102, 194, 0.3);
+@media (max-width: 640px) {
+  .mkt-form-row {
+    grid-template-columns: 1fr;
+  }
 }
 
-.pill-platform-yt {
-  background: rgba(239, 68, 68, 0.15);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-/* Modals */
-.mkt-modal-backdrop {
+/* Modals matching EPI standard dialog style */
+.mkt-modal-backdrop,
+.marketing-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
-  z-index: 100;
+  background: rgba(5, 8, 17, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -397,30 +418,38 @@
   overflow-y: auto;
 }
 
-.mkt-modal-dialog {
-  background: #0b1329;
-  border: 1px solid rgba(168, 85, 247, 0.3);
-  border-radius: 14px;
+.mkt-modal-card,
+.mkt-modal-dialog,
+.marketing-modal-card {
   width: 100%;
-  max-width: 680px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 20px rgba(168, 85, 247, 0.15);
+  max-width: 640px;
+  background: #0c1426;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  max-height: 90vh;
 }
 
-.mkt-modal-header {
+.mkt-modal-header,
+.marketing-modal-header {
   padding: 16px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.mkt-modal-header h3 {
+.mkt-modal-header h3,
+.mkt-modal-header h2,
+.marketing-modal-header h3 {
   font-size: 16px;
   font-weight: 700;
-  color: #fff;
+  color: #ffffff;
   margin: 0;
   display: flex;
   align-items: center;
@@ -434,14 +463,19 @@
   cursor: pointer;
   padding: 4px;
   border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
 }
 
 .mkt-modal-close:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.mkt-modal-body {
+.mkt-modal-body,
+.marketing-modal-body {
   padding: 20px;
   overflow-y: auto;
   display: flex;
@@ -449,70 +483,85 @@
   gap: 14px;
 }
 
-.mkt-modal-footer {
+.mkt-modal-footer,
+.marketing-modal-footer {
   padding: 14px 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
+  background: rgba(255, 255, 255, 0.015);
 }
 
-.mkt-form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+/* Tables matching EPI standard responsive tables */
+.mkt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-table, 12.5px);
+  text-align: left;
 }
 
-@media (max-width: 580px) {
-  .mkt-form-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-.mkt-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.mkt-form-label {
-  font-size: 11.5px;
-  font-weight: 600;
+.mkt-table th {
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 700;
   color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.mkt-form-input, .mkt-form-textarea, .mkt-form-select {
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #fff;
-  font-size: 12.5px;
-  outline: none;
-  font-family: inherit;
+.mkt-table td {
+  padding: 11px 12px;
+  color: #cbd5e1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
 }
 
-.mkt-form-input:focus, .mkt-form-textarea:focus, .mkt-form-select:focus {
-  border-color: var(--mkt-purple);
-  box-shadow: 0 0 0 2px var(--mkt-purple-glow);
+.mkt-table tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
 }
 
-/* Printable Slip & Ticket Sheet */
-@media print {
-  body * {
-    visibility: hidden;
-  }
-  .printable-slip, .printable-slip * {
-    visibility: visible;
-  }
-  .printable-slip {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: #fff !important;
-    color: #000 !important;
-    padding: 20px;
-  }
+/* Status Badges */
+.mkt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2.5px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.mkt-badge-green {
+  background: rgba(16, 185, 129, 0.14);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+}
+
+.mkt-badge-blue {
+  background: rgba(26, 115, 232, 0.14);
+  color: #38bdf8;
+  border: 1px solid rgba(26, 115, 232, 0.28);
+}
+
+.mkt-badge-amber {
+  background: rgba(245, 158, 11, 0.14);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.mkt-badge-red {
+  background: rgba(229, 25, 45, 0.14);
+  color: #f87171;
+  border: 1px solid rgba(229, 25, 45, 0.28);
+}
+
+.mkt-badge-neutral {
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }

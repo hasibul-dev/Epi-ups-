@@ -65,13 +65,11 @@ export default function MarketingReportsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <FileText className="text-purple-400" size={20} />
-            Marketing Analytics & Performance Reports
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">PERFORMANCE AUDIT & ANALYTICS</div>
+          <h2>Marketing Analytics & Performance Reports</h2>
+          <p>
             Executive audit of campaign ROI, B2B lead generation efficiency, and social engagement
           </p>
         </div>
@@ -79,14 +77,14 @@ export default function MarketingReportsPage() {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => exportBackup()}
-            className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors"
+            className="btn-mkt-secondary"
             title="Download JSON Backup"
           >
-            <Database size={14} className="text-purple-400" />
+            <Database size={14} className="text-sky-400" />
             <span>Backup JSON</span>
           </button>
           <label
-            className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="btn-mkt-secondary cursor-pointer"
             title="Restore from JSON Backup"
           >
             <Upload size={14} className="text-cyan-400" />
@@ -100,14 +98,14 @@ export default function MarketingReportsPage() {
           </label>
           <button
             onClick={handleExportCSV}
-            className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors"
+            className="btn-mkt-secondary"
           >
             <Download size={14} />
             <span>Export CSV</span>
           </button>
           <button
             onClick={handlePrint}
-            className="px-3.5 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 flex items-center gap-1.5 transition-all"
+            className="btn-mkt-primary"
           >
             <Printer size={14} />
             <span>Print Report</span>
@@ -116,12 +114,12 @@ export default function MarketingReportsPage() {
       </div>
 
       {/* Printable Report Canvas */}
-      <div ref={printRef} className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-6">
+      <div ref={printRef} className="mkt-card space-y-6">
         {/* Report Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-800 pb-4">
           <div>
             <div className="text-lg font-bold text-white">{systemSettings.companyName}</div>
-            <div className="text-xs text-purple-400 font-semibold uppercase tracking-wider mt-0.5">
+            <div className="text-xs text-sky-400 font-semibold uppercase tracking-wider mt-0.5">
               {systemSettings.departmentName} — Executive Performance Report
             </div>
           </div>
@@ -149,13 +147,13 @@ export default function MarketingReportsPage() {
 
           <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
             <div className="text-[11px] text-slate-400">Total Impressions</div>
-            <div className="text-xl font-bold text-indigo-400 mt-1">{totalImpressions.toLocaleString()}</div>
+            <div className="text-xl font-bold text-sky-400 mt-1">{totalImpressions.toLocaleString()}</div>
             <div className="text-[11px] text-slate-400 mt-1">Clicks: {totalClicks.toLocaleString()}</div>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
             <div className="text-[11px] text-slate-400">Average Click-Through Rate</div>
-            <div className="text-xl font-bold text-purple-400 mt-1">{avgCTR}%</div>
+            <div className="text-xl font-bold text-blue-400 mt-1">{avgCTR}%</div>
             <div className="text-[11px] text-emerald-400 mt-1">Above B2B industry average</div>
           </div>
         </div>
@@ -199,14 +197,14 @@ export default function MarketingReportsPage() {
                       <td className="py-2.5 px-3 text-right font-bold text-emerald-400">
                         {camp.leadsGenerated}
                       </td>
-                      <td className="py-2.5 px-3 text-right font-mono text-purple-300">
+                      <td className="py-2.5 px-3 text-right font-mono text-sky-300">
                         ৳{cpl}
                       </td>
                       <td className="py-2.5 px-3">
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                             camp.status === 'Active'
-                              ? 'bg-purple-500/20 text-purple-300'
+                              ? 'bg-emerald-500/20 text-emerald-300'
                               : 'bg-slate-800 text-slate-400'
                           }`}
                         >

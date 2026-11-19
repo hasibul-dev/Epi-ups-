@@ -37,19 +37,17 @@ export default function CreativeRequestsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Palette className="text-purple-400" size={20} />
-            Creative & Graphic Design Pipeline
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">CREATIVE PIPELINE</div>
+          <h2>Creative & Graphic Design Pipeline</h2>
+          <p>
             Design requests from Sales, Service and Administration for brochures, exhibition roll-ups and digital banners
           </p>
         </div>
         <button
           onClick={() => openCreativeModal()}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>New Design Request</span>
@@ -62,7 +60,7 @@ export default function CreativeRequestsPage() {
         <select
           value={filterDept}
           onChange={(e) => setFilterDept(e.target.value)}
-          className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-purple-500"
+          className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-sky-500"
         >
           <option value="All">All Departments</option>
           <option value="Sales Department">Sales Department</option>
@@ -100,10 +98,10 @@ export default function CreativeRequestsPage() {
                   colRequests.map((req) => (
                     <div
                       key={req.id}
-                      className="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/50 hover:border-purple-500/30 transition-all space-y-3"
+                      className="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/50 hover:border-sky-500/30 transition-all space-y-3"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20">
                           {req.requestingDept}
                         </span>
                         <span
@@ -130,7 +128,7 @@ export default function CreativeRequestsPage() {
 
                       <div className="text-[11px] text-slate-400 flex items-center justify-between">
                         <span>Due: <strong className="text-slate-300">{req.dueDate}</strong></span>
-                        <span>Designer: <strong className="text-purple-300">{req.assignedDesigner}</strong></span>
+                        <span>Designer: <strong className="text-sky-300">{req.assignedDesigner}</strong></span>
                       </div>
 
                       <div className="pt-2 border-t border-slate-700/40 flex items-center justify-between gap-2">

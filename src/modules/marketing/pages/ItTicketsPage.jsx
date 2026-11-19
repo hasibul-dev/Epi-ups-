@@ -76,19 +76,17 @@ export default function ItTicketsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Ticket className="text-amber-400" size={20} />
-            IT Support Helpdesk & Issue Ticketing
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">IT HELPDESK & TICKETING</div>
+          <h2>IT Support Helpdesk & Issue Ticketing</h2>
+          <p>
             Log employee IT hardware problems, software errors, network issues, and generate printable service slips
           </p>
         </div>
         <button
           onClick={() => openTicketModal()}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-semibold shadow-lg shadow-amber-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>New IT Ticket</span>

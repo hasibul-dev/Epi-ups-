@@ -43,19 +43,17 @@ export default function AdsManagementPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Target className="text-purple-400" size={20} />
-            Paid Advertisement & Campaign ROI Tracking
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">PAID CAMPAIGNS & ADS</div>
+          <h2>Paid Advertisement & Campaign ROI Tracking</h2>
+          <p>
             Track paid ad budgets, cost-per-click (CPC), impressions, and qualified commercial sales leads
           </p>
         </div>
         <button
           onClick={() => openAdModal()}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>Launch / Add Ad</span>
@@ -64,30 +62,30 @@ export default function AdsManagementPage() {
 
       {/* Aggregate Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+        <div className="mkt-card p-4">
           <div className="text-xs text-slate-400 mb-1">Total Ad Spend</div>
           <div className="text-xl font-bold text-white">৳{totalSpend.toLocaleString()}</div>
           <div className="text-[11px] text-slate-400 mt-1">Budget: ৳{totalBudget.toLocaleString()}</div>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+        <div className="mkt-card p-4">
           <div className="text-xs text-slate-400 mb-1">Total Ad Leads</div>
           <div className="text-xl font-bold text-emerald-400">{totalLeads} Leads</div>
           <div className="text-[11px] text-slate-400 mt-1">Direct inquiries</div>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+        <div className="mkt-card p-4">
           <div className="text-xs text-slate-400 mb-1">Total Ad Clicks</div>
-          <div className="text-xl font-bold text-indigo-400">{totalClicks.toLocaleString()}</div>
+          <div className="text-xl font-bold text-sky-400">{totalClicks.toLocaleString()}</div>
           <div className="text-[11px] text-slate-400 mt-1">High-intent visitors</div>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
+        <div className="mkt-card p-4">
           <div className="text-xs text-slate-400 mb-1">Avg Cost Per Lead</div>
-          <div className="text-xl font-bold text-purple-400">
+          <div className="text-xl font-bold text-blue-400">
             ৳{totalLeads > 0 ? Math.round(totalSpend / totalLeads) : 0}
           </div>
-          <div className="text-[11px] text-purple-300 mt-1">Calculated ROI</div>
+          <div className="text-[11px] text-slate-400 mt-1">Calculated ROI</div>
         </div>
       </div>
 
@@ -100,7 +98,7 @@ export default function AdsManagementPage() {
               onClick={() => setPlatformFilter(plat)}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                 platformFilter === plat
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-blue-600 text-white'
                   : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'
               }`}
             >
@@ -114,7 +112,7 @@ export default function AdsManagementPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-purple-500"
+            className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-sky-500"
           >
             {STATUSES.map((st) => (
               <option key={st} value={st}>
@@ -137,7 +135,7 @@ export default function AdsManagementPage() {
             return (
               <div
                 key={ad.id}
-                className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all space-y-4"
+                className="mkt-card space-y-4"
               >
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                   <div>
@@ -146,7 +144,7 @@ export default function AdsManagementPage() {
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
                           ad.status === 'Active'
-                            ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                            ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
                             : 'bg-slate-800 text-slate-400'
                         }`}
                       >
@@ -154,7 +152,7 @@ export default function AdsManagementPage() {
                       </span>
                     </div>
                     <div className="text-xs text-slate-400 mt-1 flex flex-wrap items-center gap-2">
-                      <span className="text-purple-300 font-semibold">{ad.platform}</span>
+                      <span className="text-sky-300 font-semibold">{ad.platform}</span>
                       <span>•</span>
                       <span>Format: {ad.adFormat}</span>
                       <span>•</span>
@@ -191,7 +189,7 @@ export default function AdsManagementPage() {
                     </div>
                     <div className="w-full h-1.5 rounded-full bg-slate-700 overflow-hidden mt-1.5">
                       <div
-                        className="h-full bg-purple-500 rounded-full"
+                        className="h-full bg-sky-500 rounded-full"
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -209,7 +207,7 @@ export default function AdsManagementPage() {
 
                   <div>
                     <div className="text-[11px] text-slate-400 mb-1">Avg. CPC</div>
-                    <div className="text-xs font-bold text-indigo-400">৳{ad.cpc}</div>
+                    <div className="text-xs font-bold text-sky-400">৳{ad.cpc}</div>
                     <div className="text-[10px] text-slate-400 mt-1">Cost per website click</div>
                   </div>
 

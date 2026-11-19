@@ -47,7 +47,7 @@ export default function AssetLibraryPage() {
   const getFormatIcon = (format) => {
     const fmt = format.toUpperCase();
     if (fmt.includes('PNG') || fmt.includes('JPG') || fmt.includes('PSD')) {
-      return <Image size={18} className="text-purple-400" />;
+      return <Image size={18} className="text-sky-400" />;
     }
     if (fmt.includes('PDF')) {
       return <FileText size={18} className="text-red-400" />;
@@ -61,19 +61,17 @@ export default function AssetLibraryPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <FolderArchive className="text-purple-400" size={20} />
-            Marketing Digital Asset Library
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">DIGITAL ASSETS</div>
+          <h2>Marketing Digital Asset Library</h2>
+          <p>
             Central repository of product catalogs, 3D machine renders, technical datasheets, and brand files
           </p>
         </div>
         <button
           onClick={() => openAssetModal()}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>Add Media Asset</span>
@@ -89,7 +87,7 @@ export default function AssetLibraryPage() {
             placeholder="Search assets by title, product tag, format..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500"
+            className="w-full pl-9 pr-4 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500"
           />
         </div>
 
@@ -100,7 +98,7 @@ export default function AssetLibraryPage() {
               onClick={() => setSelectedCategory(cat)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                 selectedCategory === cat
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-blue-600 text-white'
                   : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'
               }`}
             >
@@ -120,7 +118,7 @@ export default function AssetLibraryPage() {
           filteredAssets.map((asset) => (
             <div
               key={asset.id}
-              className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between space-y-4"
+              className="mkt-card flex flex-col justify-between space-y-4"
             >
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
@@ -136,7 +134,7 @@ export default function AssetLibraryPage() {
                     </div>
                   </div>
 
-                  <span className="px-2 py-0.5 rounded text-[10px] bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                  <span className="px-2 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-300 border border-sky-500/20">
                     {asset.category}
                   </span>
                 </div>

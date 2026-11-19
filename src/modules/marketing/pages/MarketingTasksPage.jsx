@@ -42,19 +42,17 @@ export default function MarketingTasksPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <CheckSquare className="text-purple-400" size={20} />
-            Marketing Deliverables & Action Items
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">MARKETING DELIVERABLES</div>
+          <h2>Marketing Deliverables & Action Items</h2>
+          <p>
             Track copy drafts, digital campaign audits, SEO content, and graphic design tasks
           </p>
         </div>
         <button
           onClick={() => openTaskModal()}
-          className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-semibold shadow-lg shadow-purple-600/20 flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          className="btn-mkt-primary"
         >
           <Plus size={15} />
           <span>New Task</span>
@@ -70,7 +68,7 @@ export default function MarketingTasksPage() {
               onClick={() => setCategoryFilter(cat)}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
                 categoryFilter === cat
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-blue-600 text-white'
                   : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'
               }`}
             >
@@ -84,7 +82,7 @@ export default function MarketingTasksPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-purple-500"
+            className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-sky-500"
           >
             {STATUSES.map((st) => (
               <option key={st} value={st}>
@@ -117,7 +115,7 @@ export default function MarketingTasksPage() {
                 <div className="flex items-start gap-3">
                   <button
                     onClick={() => toggleTaskStatus(task)}
-                    className="mt-0.5 text-slate-500 hover:text-purple-400 transition-colors"
+                    className="mt-0.5 text-slate-500 hover:text-sky-400 transition-colors"
                   >
                     {isDone ? (
                       <CheckCircle2 size={18} className="text-emerald-400" />
@@ -151,7 +149,7 @@ export default function MarketingTasksPage() {
                     )}
 
                     <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 pt-0.5">
-                      <span className="text-purple-400 font-medium">{task.category}</span>
+                      <span className="text-sky-400 font-medium">{task.category}</span>
                       <span>•</span>
                       <span>Assigned: <strong className="text-slate-300">{task.assignedTo}</strong></span>
                       <span>•</span>

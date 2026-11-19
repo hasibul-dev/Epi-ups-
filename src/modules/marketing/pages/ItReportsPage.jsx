@@ -62,13 +62,11 @@ export default function ItReportsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900/60 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <FileText className="text-amber-400" size={20} />
-            IT Support Helpdesk & Hardware Inventory Reports
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+      <div className="mkt-hero-banner">
+        <div className="mkt-hero-info">
+          <div className="mkt-hero-badge">IT AUDIT & AUDITING</div>
+          <h2>IT Support Helpdesk & Hardware Inventory Reports</h2>
+          <p>
             Complete audit log of IT service tickets, resolution performance, and company hardware assignments
           </p>
         </div>
@@ -76,14 +74,14 @@ export default function ItReportsPage() {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => exportBackup()}
-            className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors"
+            className="btn-mkt-secondary"
             title="Download JSON Backup"
           >
             <Database size={14} className="text-amber-400" />
             <span>Backup JSON</span>
           </button>
           <label
-            className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="btn-mkt-secondary cursor-pointer"
             title="Restore from JSON Backup"
           >
             <Upload size={14} className="text-cyan-400" />
@@ -97,14 +95,14 @@ export default function ItReportsPage() {
           </label>
           <button
             onClick={handleExportCSV}
-            className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors"
+            className="btn-mkt-secondary"
           >
             <Download size={14} />
             <span>Export CSV</span>
           </button>
           <button
             onClick={handlePrint}
-            className="px-3.5 py-2 rounded-lg bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-xs font-semibold shadow-lg shadow-amber-600/20 flex items-center gap-1.5 transition-all"
+            className="btn-mkt-primary"
           >
             <Printer size={14} />
             <span>Print Report</span>
@@ -113,7 +111,7 @@ export default function ItReportsPage() {
       </div>
 
       {/* Printable Report Canvas */}
-      <div ref={printRef} className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-6">
+      <div ref={printRef} className="mkt-card space-y-6">
         {/* Report Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-800 pb-4">
           <div>

@@ -89,7 +89,7 @@ export default function TaskModal() {
       <div className="marketing-modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="marketing-modal-header">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+            <div className="w-9 h-9 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
               <CheckSquare size={18} />
             </div>
             <div>
@@ -127,7 +127,7 @@ export default function TaskModal() {
               value={form.title}
               onChange={handleChange}
               placeholder="e.g. Audit Facebook Pixel lead triggers and compare with CRM"
-              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               required
             />
           </div>
@@ -141,7 +141,7 @@ export default function TaskModal() {
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {TASK_CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -161,7 +161,7 @@ export default function TaskModal() {
                 value={form.assignedTo}
                 onChange={handleChange}
                 placeholder="e.g. Tanvir Ahmed / Samia Jahan"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
           </div>
@@ -176,7 +176,7 @@ export default function TaskModal() {
                 name="dueDate"
                 value={form.dueDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
 
@@ -188,7 +188,7 @@ export default function TaskModal() {
                 name="priority"
                 value={form.priority}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {PRIORITIES.map((p) => (
                   <option key={p} value={p}>
@@ -206,7 +206,7 @@ export default function TaskModal() {
                 name="status"
                 value={form.status}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {STATUS_OPTIONS.map((st) => (
                   <option key={st} value={st}>
@@ -227,7 +227,7 @@ export default function TaskModal() {
               value={form.desc}
               onChange={handleChange}
               placeholder="Detailed instructions, requirements, deliverables or references..."
-              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
             />
           </div>
 
@@ -235,16 +235,16 @@ export default function TaskModal() {
             <button
               type="button"
               onClick={closeTaskModal}
-              className="px-4 py-2 rounded-lg border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
+              className="btn-mkt-secondary"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-xs font-medium text-white shadow-lg shadow-purple-600/20 flex items-center gap-2 transition-all"
+              className="btn-mkt-primary"
             >
               <Save size={14} />
-              {item ? 'Update Task' : 'Save Task'}
+              <span>{item ? 'Update Task' : 'Save Task'}</span>
             </button>
           </div>
         </form>

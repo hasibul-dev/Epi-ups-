@@ -96,7 +96,7 @@ export default function AssetModal() {
       <div className="marketing-modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="marketing-modal-header">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+            <div className="w-9 h-9 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
               <FolderPlus size={18} />
             </div>
             <div>
@@ -134,7 +134,7 @@ export default function AssetModal() {
               value={form.title}
               onChange={handleChange}
               placeholder="e.g. EPI 3-Phase Online UPS Technical Product Catalog 2026"
-              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               required
             />
           </div>
@@ -148,7 +148,7 @@ export default function AssetModal() {
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {ASSET_CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>
@@ -166,7 +166,7 @@ export default function AssetModal() {
                 name="format"
                 value={form.format}
                 onChange={handleChange}
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               >
                 {ASSET_FORMATS.map((fmt) => (
                   <option key={fmt} value={fmt}>
@@ -188,7 +188,7 @@ export default function AssetModal() {
                 value={form.size}
                 onChange={handleChange}
                 placeholder="e.g. 14.2 MB or 3840x2160 PNG"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
 
@@ -202,7 +202,7 @@ export default function AssetModal() {
                 value={form.fileUrl}
                 onChange={handleChange}
                 placeholder="e.g. /docs/EPI-Catalog.pdf or cloud link"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500 font-mono"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
               />
             </div>
           </div>
@@ -218,7 +218,7 @@ export default function AssetModal() {
                 value={form.tags}
                 onChange={handleChange}
                 placeholder="e.g. catalog, 10kva, online-ups, tender"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
 
@@ -232,7 +232,7 @@ export default function AssetModal() {
                 value={form.uploadedBy}
                 onChange={handleChange}
                 placeholder="e.g. Tanvir Ahmed"
-                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
               />
             </div>
           </div>
@@ -247,7 +247,7 @@ export default function AssetModal() {
               value={form.notes}
               onChange={handleChange}
               placeholder="e.g. Official approved catalog for corporate and hospital tenders; contains 2026 price matrix"
-              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-purple-500"
+              className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
             />
           </div>
 
@@ -255,16 +255,16 @@ export default function AssetModal() {
             <button
               type="button"
               onClick={closeAssetModal}
-              className="px-4 py-2 rounded-lg border border-slate-700 text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
+              className="btn-mkt-secondary"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-xs font-medium text-white shadow-lg shadow-purple-600/20 flex items-center gap-2 transition-all"
+              className="btn-mkt-primary"
             >
               <Save size={14} />
-              {item ? 'Update Asset' : 'Save to Library'}
+              <span>{item ? 'Update Asset' : 'Save to Library'}</span>
             </button>
           </div>
         </form>

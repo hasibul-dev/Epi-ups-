@@ -42,7 +42,7 @@ export default function TicketDetailsModal() {
         {/* Modal Header */}
         <div className="mkt-modal-header">
           <h3>
-            <Headphones size={18} style={{ color: '#c084fc' }} />
+            <Headphones size={18} style={{ color: '#38bdf8' }} />
             <span>IT Support Ticket: {ticket.id}</span>
           </h3>
           <button className="mkt-modal-close" onClick={closeTicketDetails}>
@@ -119,9 +119,9 @@ export default function TicketDetailsModal() {
           </div>
 
           {/* Technical Resolution Log */}
-          <div style={{ background: 'rgba(168, 85, 247, 0.05)', border: '1px solid rgba(168, 85, 247, 0.2)', borderRadius: 10, padding: 14 }}>
+          <div style={{ background: 'rgba(26, 115, 232, 0.08)', border: '1px solid rgba(26, 115, 232, 0.25)', borderRadius: 10, padding: 14 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#c084fc', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase' }}>
                 Resolution Findings & Technician Notes
               </span>
               {ticket.completionDate && (
