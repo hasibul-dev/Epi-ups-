@@ -1,11 +1,12 @@
+import React from 'react'
 import { useApp } from '../context/AppContext.jsx'
 import { StatusBadge, PriorityBadge } from './Badges.jsx'
 import { byTime, clientTitle, clientContact } from '../services/domain.js'
 import { fmt, TODAY } from '../services/dates.js'
-import { CheckCircle2, RotateCcw, Edit2, Trash2, Clock, User, Wrench } from 'lucide-react'
+import { CheckCircle2, RotateCcw, Edit2, Trash2, Clock, User, Eye } from 'lucide-react'
 
 export default function WorkTable({ list, empty = 'No work found.' }) {
-  const { s, upd, editWork } = useApp()
+  const { s, editWork, viewWork, completeWork, reopenWork, deleteWork } = useApp()
 
   const getClientInfo = (w) => {
     // 1. Prioritize manual client entries (e.g. for Installation, General Work, or manual records)
@@ -31,23 +32,7 @@ export default function WorkTable({ list, empty = 'No work found.' }) {
     return { title: '—', sub: '', isManual: false }
   }
 
-  const complete = (w) =>
-    upd((p) => ({
-      ...p,
-      works: p.works.map((x) => (x.id === w.id ? { ...x, status: 'done', doneAt: TODAY() } : x)),
-    }))
-
-  const reopen = (w) =>
-    upd((p) => ({
-      ...p,
-      works: p.works.map((x) => (x.id === w.id ? { ...x, status: 'pending', doneAt: '' } : x)),
-    }))
-
-  const remove = (w) =>
-    window.confirm('Delete this work?') &&
-    upd((p) => ({ ...p, works: p.works.filter((x) => x.id !== w.id) }))
-
-  if (!list.length) return <div className="empty">{empty}</div>
+  if (!list || !list.length) return <div className="empty">{empty}</div>
 
   return (
     <div className="tw">
@@ -76,7 +61,13 @@ export default function WorkTable({ list, empty = 'No work found.' }) {
                   </div>
                 </td>
                 <td>
-                  <b style={{ color: '#fff' }}>{w.title}</b>
+                  <span
+                    onClick={() => viewWork && viewWork(w)}
+                    style={{ cursor: 'pointer', color: '#fff', fontWeight: 700 }}
+                    title="Click to view details"
+                  >
+                    {w.title}
+                  </span>
                   {w.auto ? <span className="bd b" style={{ marginLeft: 6 }}>Auto 3M</span> : null}
                   {w.desc && w.desc !== w.title ? (
                     <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>{w.desc}</div>
@@ -113,20 +104,48 @@ export default function WorkTable({ list, empty = 'No work found.' }) {
                   <StatusBadge w={w} />
                 </td>
                 <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                  <div style={{ display: 'inline-flex', gap: 6 }}>
+                  <div style={{ display: 'inline-flex', gap: 5 }}>
+                    <button
+                      type="button"
+                      className="btn s sm"
+                      onClick={() => viewWork && viewWork(w)}
+                      title="View complete work order details & print slip"
+                    >
+                      <Eye size={12} /> View
+                    </button>
                     {w.status === 'done' ? (
-                      <button className="btn s sm" onClick={() => reopen(w)} title="Reopen this work task">
+                      <button
+                        type="button"
+                        className="btn s sm"
+                        onClick={() => reopenWork && reopenWork(w)}
+                        title="Reopen this work task"
+                      >
                         <RotateCcw size={12} /> Reopen
                       </button>
                     ) : (
-                      <button className="btn g sm" onClick={() => complete(w)} title="Mark task as complete">
+                      <button
+                        type="button"
+                        className="btn g sm"
+                        onClick={() => completeWork && completeWork(w)}
+                        title="Mark task as complete"
+                      >
                         <CheckCircle2 size={12} /> Complete
                       </button>
                     )}
-                    <button className="btn s sm" onClick={() => editWork(w)} title="Edit work details">
+                    <button
+                      type="button"
+                      className="btn s sm"
+                      onClick={() => editWork && editWork(w)}
+                      title="Edit work details"
+                    >
                       <Edit2 size={12} />
                     </button>
-                    <button className="btn d sm" onClick={() => remove(w)} title="Delete work order">
+                    <button
+                      type="button"
+                      className="btn d sm"
+                      onClick={() => deleteWork && deleteWork(w)}
+                      title="Delete work order"
+                    >
                       <Trash2 size={12} />
                     </button>
                   </div>

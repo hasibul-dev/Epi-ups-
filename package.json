@@ -14,6 +14,7 @@
     "test:auth-rbac": "node tests/test_login_rbac_and_accounts_crud.js",
     "test:storage": "node tests/test_browser_local_storage.js",
     "test:server": "node tests/test_unified_server.js",
+    "test:service": "node tests/test_service_department_functionality.js",
     "test:functional": "node tests/test_functional_crud_and_connections.js"
   },
   "dependencies": {

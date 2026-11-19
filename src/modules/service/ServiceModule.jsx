@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext.jsx';
 import { fmt, TODAY } from './services/dates.js';
 import Dashboard from './pages/Dashboard.jsx';
@@ -31,40 +32,62 @@ import {
   Download
 } from 'lucide-react';
 
-function ServiceShell({ initialPage = 'dashboard' }) {
-  const [page, setPage] = useState(initialPage);
+const ROUTE_TO_PAGE = {
+  '': 'dashboard',
+  dashboard: 'dashboard',
+  today: 'today',
+  upcoming: 'upcoming',
+  calendar: 'calendar',
+  clients: 'clients',
+  'sales-clients': 'clients',
+  servicing: 'servicing',
+  maintenance: 'maintenance',
+  installation: 'installation',
+  general: 'general',
+  warranty: 'warranty',
+  new: 'new',
+  'new-order': 'new',
+  history: 'history',
+  reports: 'srep',
+  srep: 'srep',
+  settings: 'settings',
+};
+
+const PAGE_TO_ROUTE = {
+  dashboard: '/service',
+  today: '/service/today',
+  upcoming: '/service/upcoming',
+  calendar: '/service/calendar',
+  clients: '/service/clients',
+  servicing: '/service/servicing',
+  maintenance: '/service/maintenance',
+  installation: '/service/installation',
+  general: '/service/general',
+  warranty: '/service/warranty',
+  new: '/service/new-order',
+  history: '/service/history',
+  srep: '/service/reports',
+  settings: '/service/settings',
+};
+
+function ServiceShell({ initialPage }) {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [reportPreset, setReportPreset] = useState({ clientId: '', reportType: '' });
   const { s, addWork, addClient } = useApp();
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (initialPage) {
-      setPage(initialPage);
-    }
-  }, [initialPage]);
+  // Synchronize active page directly from React Router URL location
+  const rawSlug = location.pathname.replace(/^\/service\/?/, '').split('/')[0] || '';
+  const page = ROUTE_TO_PAGE[rawSlug] || initialPage || 'dashboard';
 
   const go = (nextPage) => {
     setReportPreset({ clientId: '', reportType: '' });
-    setPage(nextPage);
+    const targetRoute = PAGE_TO_ROUTE[nextPage] || `/service/${nextPage}`;
+    navigate(targetRoute);
   };
 
   const openClientReport = (clientIdOrCategory, category = 'Sales') => {
-    if (
-      typeof clientIdOrCategory === 'string' &&
-      ['Sales', 'Servicing', 'Maintenance', 'Installation', 'General'].includes(clientIdOrCategory)
-    ) {
-      const map = {
-        Sales: 'sales',
-        Servicing: 'servicing',
-        Maintenance: 'maintenance',
-        Installation: 'installation',
-        General: 'general',
-      };
-      setReportPreset({ clientId: '', reportType: map[clientIdOrCategory] || '' });
-      setPage('srep');
-      return;
-    }
-
     const map = {
       Sales: 'sales',
       Servicing: 'servicing',
@@ -72,8 +95,18 @@ function ServiceShell({ initialPage = 'dashboard' }) {
       Installation: 'installation',
       General: 'general',
     };
+
+    if (
+      typeof clientIdOrCategory === 'string' &&
+      ['Sales', 'Servicing', 'Maintenance', 'Installation', 'General'].includes(clientIdOrCategory)
+    ) {
+      setReportPreset({ clientId: '', reportType: map[clientIdOrCategory] || '' });
+      navigate('/service/reports');
+      return;
+    }
+
     setReportPreset({ clientId: clientIdOrCategory, reportType: map[category] || 'sales' });
-    setPage('srep');
+    navigate('/service/reports');
   };
 
   const pages = {
@@ -120,6 +153,22 @@ function ServiceShell({ initialPage = 'dashboard' }) {
     { key: 'srep', label: 'Reports', icon: FileText },
     { key: 'settings', label: 'Settings', icon: Sliders },
   ];
+
+  // Context-aware Add Work category based on current page
+  const getContextualCategory = () => {
+    if (page === 'installation') return 'Installation';
+    if (page === 'general') return 'General';
+    if (page === 'maintenance') return 'Maintenance';
+    if (page === 'servicing') return 'Servicing';
+    return 'Servicing';
+  };
+
+  // Context-aware Add Client type based on current page
+  const getContextualClientType = () => {
+    if (page === 'servicing') return 'Servicing';
+    if (page === 'maintenance') return 'Maintenance';
+    return 'Sales';
+  };
 
   const exportServiceBackup = () => {
     const backup = {
@@ -171,18 +220,20 @@ function ServiceShell({ initialPage = 'dashboard' }) {
         <div className="dept-subnav-actions">
           <button
             type="button"
-            onClick={() => addWork(TODAY(), 'Servicing')}
+            onClick={() => addWork(TODAY(), getContextualCategory())}
             className="btn btn-primary-highlight sm"
             style={{ padding: '5px 11px', fontSize: 11.5 }}
+            title={`Add new ${getContextualCategory()} work order`}
           >
             <PlusCircle size={13} />
             <span>+ Add Work</span>
           </button>
           <button
             type="button"
-            onClick={() => addClient('Sales')}
+            onClick={() => addClient(getContextualClientType())}
             className="btn btn-secondary sm"
             style={{ padding: '5px 11px', fontSize: 11.5 }}
+            title={`Register new ${getContextualClientType()} client`}
           >
             <Briefcase size={13} />
             <span>+ Add Client</span>

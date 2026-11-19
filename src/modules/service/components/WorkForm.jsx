@@ -150,7 +150,7 @@ export default function WorkForm({ init, onSave, onClose }) {
           </Field>
         </div>
 
-        {selectedDbClient && !isStrictlyManual && (
+        {selectedDbClient && (
           <div className="muted" style={{ fontSize: 12, marginTop: 8 }}>
             Linked to client record: <b>{clientTitle(selectedDbClient)}</b> ({clientType(selectedDbClient)})
           </div>
