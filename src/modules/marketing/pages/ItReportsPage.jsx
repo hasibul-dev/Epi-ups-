@@ -8,14 +8,32 @@ import {
   CheckCircle2,
   Clock,
   Laptop,
+  Database,
+  Upload,
 } from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
 import { today } from '../../sales/utils/helpers.js';
 
 export default function ItReportsPage() {
-  const { data } = useMarketing();
+  const { data, exportBackup, importBackup } = useMarketing();
   const { tickets, devices, softwareAccounts, systemSettings } = data;
   const printRef = useRef();
+
+  const handleImportFile = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        importBackup(event.target.result);
+        alert('IT Support & Infrastructure data backup successfully restored!');
+      } catch (err) {
+        alert(`Failed to restore backup: ${err.message}`);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
 
   const openTickets = tickets.filter((t) => ['Open', 'In Progress'].includes(t.status));
   const resolvedTickets = tickets.filter((t) => ['Resolved', 'Closed'].includes(t.status));
@@ -55,7 +73,28 @@ export default function ItReportsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => exportBackup()}
+            className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors"
+            title="Download JSON Backup"
+          >
+            <Database size={14} className="text-amber-400" />
+            <span>Backup JSON</span>
+          </button>
+          <label
+            className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+            title="Restore from JSON Backup"
+          >
+            <Upload size={14} className="text-cyan-400" />
+            <span>Import Backup</span>
+            <input
+              type="file"
+              accept=".json"
+              onChange={handleImportFile}
+              className="hidden"
+            />
+          </label>
           <button
             onClick={handleExportCSV}
             className="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1.5 transition-colors"
