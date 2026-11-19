@@ -11,6 +11,7 @@ import AdminModule from './modules/admin/AdminModule.jsx';
 import SalesModule from './modules/sales/SalesModule.jsx';
 import ServiceModule from './modules/service/ServiceModule.jsx';
 import ErpModule from './modules/erp/ErpModule.jsx';
+import MarketingItModule from './modules/marketing/MarketingItModule.jsx';
 
 function LoadingScreen() {
   return (
@@ -64,6 +65,7 @@ function RootRedirect() {
   if (depts.includes('sales')) return <Navigate to="/sales" replace />;
   if (depts.includes('service')) return <Navigate to="/service" replace />;
   if (depts.includes('accounts')) return <Navigate to="/accounts" replace />;
+  if (depts.includes('marketing')) return <Navigate to="/marketing" replace />;
   return <Navigate to="/admin" replace />;
 }
 
@@ -120,6 +122,14 @@ export default function App() {
             element={
               <RequireDept dept="accounts">
                 <ErpModule />
+              </RequireDept>
+            }
+          />
+          <Route
+            path="marketing/*"
+            element={
+              <RequireDept dept="marketing">
+                <MarketingItModule />
               </RequireDept>
             }
           />

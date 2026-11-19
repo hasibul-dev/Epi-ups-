@@ -36,6 +36,16 @@ import {
   Download,
   Upload,
   Trash2,
+  Share2,
+  Megaphone,
+  Target,
+  Image,
+  Palette,
+  Activity,
+  Headphones,
+  Laptop,
+  Wifi,
+  FileCheck,
 } from 'lucide-react';
 
 export default function Layout() {
@@ -101,6 +111,7 @@ export default function Layout() {
   if (pathname.startsWith('/sales')) activeDept = 'sales';
   else if (pathname.startsWith('/service')) activeDept = 'service';
   else if (pathname.startsWith('/accounts')) activeDept = 'accounts';
+  else if (pathname.startsWith('/marketing')) activeDept = 'marketing';
   else if (pathname.startsWith('/admin')) activeDept = 'admin';
   else {
     activeDept = user?.role === 'superadmin' ? 'admin' : (user?.departments?.[0] || 'admin');
@@ -172,6 +183,25 @@ export default function Layout() {
           { to: '/accounts/reports', label: 'Financial Reports', icon: PieChart },
           { to: '/accounts/settings', label: 'Accounts Settings', icon: Sliders },
         ];
+      case 'marketing':
+        return [
+          { to: '/marketing', label: 'Marketing & IT Overview', icon: LayoutDashboard, end: true },
+          { to: '/marketing/marketing-dashboard', label: 'Marketing Dashboard', icon: Megaphone },
+          { to: '/marketing/campaigns', label: 'Campaigns Master', icon: Target },
+          { to: '/marketing/calendar', label: 'Content Calendar', icon: Calendar },
+          { to: '/marketing/social', label: 'Social Media (FB & LinkedIn)', icon: Share2 },
+          { to: '/marketing/ads', label: 'Ads Management', icon: DollarSign },
+          { to: '/marketing/assets', label: 'Asset Library', icon: Image },
+          { to: '/marketing/creative-requests', label: 'Creative Requests', icon: Palette },
+          { to: '/marketing/tasks', label: 'Marketing Tasks', icon: ClipboardList },
+          { to: '/marketing/marketing-reports', label: 'Campaign Reports', icon: FileText },
+          { to: '/marketing/it-dashboard', label: 'IT Support Dashboard', icon: Activity },
+          { to: '/marketing/tickets', label: 'IT Support Tickets', icon: Headphones },
+          { to: '/marketing/devices', label: 'Device Inventory', icon: Laptop },
+          { to: '/marketing/software', label: 'Software & Accounts', icon: ShieldCheck },
+          { to: '/marketing/maintenance', label: 'Network & Maintenance', icon: Wifi },
+          { to: '/marketing/it-reports', label: 'IT Support Reports', icon: FileCheck },
+        ];
       default:
         return [];
     }
@@ -239,6 +269,16 @@ export default function Layout() {
               >
                 <Landmark size={15} />
                 <span>ERP / Accounts</span>
+              </NavLink>
+            )}
+
+            {(isSuperAdmin || canAccessDept('marketing')) && (
+              <NavLink
+                to="/marketing"
+                className={({ isActive }) => `dept-tab ${isActive || activeDept === 'marketing' ? 'active-marketing' : ''}`}
+              >
+                <Share2 size={15} />
+                <span>Marketing & IT</span>
               </NavLink>
             )}
           </nav>
@@ -425,6 +465,7 @@ export default function Layout() {
               {activeDept === 'sales' && 'SALES DEPARTMENT'}
               {activeDept === 'service' && 'SERVICE DEPARTMENT'}
               {activeDept === 'accounts' && 'ACCOUNTS & ERP'}
+              {activeDept === 'marketing' && 'DIGITAL MARKETING & IT SUPPORT'}
             </span>
             <button className="sidebar-close-btn" onClick={() => setMobileMenuOpen(false)}>
               <X size={18} />
@@ -476,6 +517,17 @@ export default function Layout() {
                 >
                   <Landmark size={13} />
                   <span>ERP</span>
+                </NavLink>
+              )}
+
+              {(isSuperAdmin || canAccessDept('marketing')) && (
+                <NavLink
+                  to="/marketing"
+                  className={({ isActive }) => `mobile-dept-btn ${isActive || activeDept === 'marketing' ? 'active-marketing' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Share2 size={13} />
+                  <span>Mkt & IT</span>
                 </NavLink>
               )}
             </div>

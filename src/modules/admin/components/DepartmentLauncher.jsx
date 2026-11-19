@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCentralAuth } from '../context/CentralAuthContext.jsx';
-import { Briefcase, Wrench, Landmark, ArrowRight, ShieldCheck, Lock } from 'lucide-react';
+import { Briefcase, Wrench, Landmark, ArrowRight, ShieldCheck, Lock, Share2 } from 'lucide-react';
 
 export default function DepartmentLauncher({ onLaunchDept }) {
   const { user, canAccessDept } = useCentralAuth();
@@ -131,6 +131,46 @@ export default function DepartmentLauncher({ onLaunchDept }) {
                 <span className="launcher-lock-tag">Restricted</span>
               </div>
               <h3>EPI Accounts Department</h3>
+              <p>You do not have access permission for this department. Please contact your Super Admin if required.</p>
+            </div>
+          </div>
+        )}
+
+        {/* Digital Marketing & IT Support Card */}
+        {(isSuperAdmin || canAccessDept('marketing')) ? (
+          <div className="launcher-card card-marketing" style={{ borderColor: 'rgba(168, 85, 247, 0.35)' }}>
+            <div className="launcher-card-icon marketing-bg" style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc' }}>
+              <Share2 size={28} />
+            </div>
+            <div className="launcher-card-body">
+              <div className="launcher-tag-row">
+                <span className="launcher-dept-tag tag-marketing" style={{ background: 'rgba(168, 85, 247, 0.15)', color: '#c084fc' }}>Digital Marketing & IT</span>
+                <span className="launcher-access-tag">Authorized</span>
+              </div>
+              <h3>Digital Marketing & IT Support</h3>
+              <p>
+                Social media scheduling, campaign management, ad budgets, media assets, design requests, and internal IT support tickets.
+              </p>
+              <button
+                className="btn-launch-action marketing-btn"
+                style={{ background: 'linear-gradient(135deg, #7e22ce, #a855f7)', color: '#fff' }}
+                onClick={() => onLaunchDept('marketing')}
+              >
+                Launch Marketing & IT Workspace <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="launcher-card card-locked">
+            <div className="launcher-card-icon locked-bg">
+              <Lock size={28} />
+            </div>
+            <div className="launcher-card-body">
+              <div className="launcher-tag-row">
+                <span className="launcher-dept-tag">Marketing & IT</span>
+                <span className="launcher-lock-tag">Restricted</span>
+              </div>
+              <h3>Digital Marketing & IT Support</h3>
               <p>You do not have access permission for this department. Please contact your Super Admin if required.</p>
             </div>
           </div>

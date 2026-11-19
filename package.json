@@ -15,7 +15,8 @@
     "test:storage": "node tests/test_browser_local_storage.js",
     "test:server": "node tests/test_unified_server.js",
     "test:service": "node tests/test_service_department_functionality.js",
-    "test:functional": "node tests/test_functional_crud_and_connections.js"
+    "test:functional": "node tests/test_functional_crud_and_connections.js",
+    "test:marketing": "node tests/test_marketing_it_department.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

@@ -20,6 +20,7 @@ import {
   AlertCircle,
   Sparkles,
   ExternalLink,
+  Share2,
 } from 'lucide-react';
 import { centralStore } from '../services/centralStorage.js';
 
@@ -33,6 +34,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
     serviceUsers: 0,
     salesUsers: 0,
     accountsUsers: 0,
+    marketingUsers: 0,
     recentLogins: [],
     recentActivities: [],
   });
@@ -227,6 +229,17 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
             <span className="stat-subtext">Finance & invoicing team</span>
           </div>
         </div>
+
+        <div className="stat-card">
+          <div className="stat-card-icon icon-marketing" style={{ color: '#c084fc', background: 'rgba(168, 85, 247, 0.15)' }}>
+            <Share2 size={22} />
+          </div>
+          <div className="stat-card-data">
+            <span className="stat-label">Marketing & IT</span>
+            <span className="stat-val" style={{ color: '#c084fc' }}>{stats.marketingUsers || 0}</span>
+            <span className="stat-subtext">Digital growth & tech support</span>
+          </div>
+        </div>
       </div>
 
       {/* System Status & Important Notifications Banner */}
@@ -331,6 +344,27 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
               onClick={() => onLaunchDept('accounts')}
             >
               <span>Open Accounts Workspace</span>
+              <ArrowRight size={15} />
+            </button>
+          </div>
+
+          {/* Digital Marketing & IT Support Card */}
+          <div className="dept-launch-card card-marketing" style={{ borderColor: 'rgba(168, 85, 247, 0.35)' }}>
+            <div className="dept-launch-header">
+              <div className="dept-icon-box marketing-bg" style={{ background: 'rgba(168, 85, 247, 0.18)', color: '#c084fc' }}>
+                <Share2 size={20} />
+              </div>
+              <span className="dept-status-pill" style={{ color: '#c084fc', borderColor: 'rgba(168, 85, 247, 0.35)' }}>Active Digital Hub</span>
+            </div>
+            <h4>Digital Marketing & IT Support</h4>
+            <p>Social media campaigns, advertisement tracking, editorial calendar, asset library, and internal IT support tickets.</p>
+            <button
+              type="button"
+              className="btn-launch-dept marketing-btn"
+              style={{ background: 'linear-gradient(135deg, #7e22ce, #a855f7)', color: '#fff' }}
+              onClick={() => onLaunchDept('marketing')}
+            >
+              <span>Open Marketing & IT Workspace</span>
               <ArrowRight size={15} />
             </button>
           </div>

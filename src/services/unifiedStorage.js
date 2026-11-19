@@ -8,9 +8,10 @@
 import { today, addDays, uid } from '../modules/sales/utils/helpers.js';
 import { sync as syncServiceWorks } from '../modules/service/services/domain.js';
 import { DEFAULT_COA } from '../modules/erp/services/erpStorage.js';
+import { createInitialMarketingItData, MARKETING_STORAGE_KEY } from '../modules/marketing/services/marketingStorage.js';
 
 const IDB_NAME = 'epi_unified_database_v2';
-const IDB_VERSION = 2;
+const IDB_VERSION = 3;
 
 const STORAGE_KEYS = {
   CLIENTS: 'epi_unified_clients_v2',
@@ -22,6 +23,7 @@ const STORAGE_KEYS = {
   ERP_STORE: 'epi_erp_storage_v1',
   CENTRAL_USERS: 'epi_central_users_v1',
   CENTRAL_AUDIT: 'epi_central_audit_logs_v1',
+  MARKETING: MARKETING_STORAGE_KEY,
 };
 
 // --- INITIAL REALISTIC DEMO DATA SEED FACTORY ---
@@ -1012,8 +1014,8 @@ export function createRealisticSeedData() {
       email: 'admin@epiups.com.bd',
       passwordHash: defaultPwHash,
       role: 'superadmin',
-      departments: ['sales', 'service', 'accounts'],
-      departmentRoles: { sales: 'admin', service: 'admin', accounts: 'admin' },
+      departments: ['sales', 'service', 'accounts', 'marketing'],
+      departmentRoles: { sales: 'admin', service: 'admin', accounts: 'admin', marketing: 'admin' },
       status: 'active',
       createdAt: new Date().toISOString(),
       loginHistory: [],
@@ -1057,6 +1059,32 @@ export function createRealisticSeedData() {
       createdAt: new Date().toISOString(),
       loginHistory: [],
     },
+    {
+      id: 'usr-marketing-01',
+      userId: 'marketing1',
+      name: 'Tanvir Ahmed (Marketing Manager)',
+      email: 'marketing@epiups.com.bd',
+      passwordHash: defaultPwHash,
+      role: 'marketing_manager',
+      departments: ['marketing'],
+      departmentRoles: { marketing: 'marketing_manager' },
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      loginHistory: [],
+    },
+    {
+      id: 'usr-it-01',
+      userId: 'it1',
+      name: 'Md. Al-Amin (IT Specialist)',
+      email: 'itsupport@epiups.com.bd',
+      passwordHash: defaultPwHash,
+      role: 'it_manager',
+      departments: ['marketing'],
+      departmentRoles: { marketing: 'it_manager' },
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      loginHistory: [],
+    },
   ];
 
   return {
@@ -1066,6 +1094,7 @@ export function createRealisticSeedData() {
     salesOffice,
     serviceWorks: syncServiceWorks({ clients, works: serviceWorks }).works,
     serviceSettings,
+    marketingData: createInitialMarketingItData(),
     erpData: {
       accounts: erpAccounts,
       parties: erpParties,
@@ -1119,6 +1148,7 @@ function openUnifiedIdb() {
           'erp_data',
           'users',
           'audit_logs',
+          'marketing_data',
         ];
         for (const s of stores) {
           if (!db.objectStoreNames.contains(s)) {
@@ -1171,6 +1201,7 @@ class UnifiedDataStoreEngine {
         const serviceSettings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SERVICE_SETTINGS) || '{}');
         const erpData = JSON.parse(localStorage.getItem(STORAGE_KEYS.ERP_STORE) || '{}');
         const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.CENTRAL_USERS) || '[]');
+        const marketingData = JSON.parse(localStorage.getItem(STORAGE_KEYS.MARKETING) || 'null');
 
         if (Array.isArray(clients) && clients.length > 0) {
           return {
@@ -1182,6 +1213,7 @@ class UnifiedDataStoreEngine {
             serviceSettings: serviceSettings.company ? serviceSettings : { company: 'EPI UPS Bangladesh Limited', engineers: 'Sabbir, Tanvir, Rafi, Shanto' },
             erpData: erpData.accounts ? erpData : null,
             users: Array.isArray(users) && users.length > 0 ? users : null,
+            marketingData: marketingData || createInitialMarketingItData(),
           };
         }
       }
@@ -1254,6 +1286,9 @@ class UnifiedDataStoreEngine {
       if (data.users) {
         localStorage.setItem(STORAGE_KEYS.CENTRAL_USERS, JSON.stringify(data.users));
       }
+      if (data.marketingData) {
+        localStorage.setItem(STORAGE_KEYS.MARKETING, JSON.stringify(data.marketingData));
+      }
       // Cross-compatibility keys for legacy readers
       localStorage.setItem('epi_sales_data_v1', JSON.stringify({
         clients: data.clients || [],
@@ -1304,6 +1339,7 @@ class UnifiedDataStoreEngine {
       writeStore('service_works', data.serviceWorks || []),
       writeStore('erp_data', data.erpData, true),
       writeStore('users', data.users || []),
+      writeStore('marketing_data', data.marketingData, true),
     ]);
   }
 
@@ -1375,6 +1411,7 @@ class UnifiedDataStoreEngine {
         serviceSettings: data.serviceSettings || { company: 'EPI UPS Bangladesh Limited', engineers: 'Sabbir, Tanvir, Rafi, Shanto' },
         erpData: data.erpData || this.memory.erpData,
         users: Array.isArray(data.users) ? data.users : this.memory.users,
+        marketingData: data.marketingData || this.memory.marketingData || createInitialMarketingItData(),
       };
       this.persist();
       return { success: true, message: 'Backup imported successfully.' };
@@ -1393,6 +1430,7 @@ class UnifiedDataStoreEngine {
       serviceSettings: { company: 'EPI UPS Bangladesh Limited', engineers: '' },
       erpData: null,
       users: (this.memory.users || []).filter((u) => u.role === 'superadmin'),
+      marketingData: createInitialMarketingItData(),
     };
     this.persist();
   }

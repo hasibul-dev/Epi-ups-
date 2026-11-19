@@ -2,6 +2,7 @@
 @import './styles/sales.css';
 @import './styles/service.css';
 @import './styles/erp.css';
+@import './styles/marketing.css';
 
 /* ==========================================================================
    EPI UNIFIED APPLICATION SHELL & LAYOUT STYLES
@@ -220,6 +221,12 @@ img, svg, canvas, iframe {
   background: rgba(245, 158, 11, 0.18);
   color: #fbbf24;
   border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.dept-tab.active-marketing {
+  background: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.35);
 }
 
 /* Topbar Right & User Profile */
@@ -776,7 +783,7 @@ img, svg, canvas, iframe {
 
 .login-dept-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
   width: 100%;
   margin-bottom: 16px;
@@ -872,6 +879,17 @@ img, svg, canvas, iframe {
 .login-dept-pill.selected-accounts .login-dept-icon,
 .login-dept-pill.selected-accounts .login-dept-label {
   color: #fbbf24 !important;
+  font-weight: 700;
+}
+
+.login-dept-pill.selected-marketing {
+  background: rgba(168, 85, 247, 0.14) !important;
+  border: 1.5px solid #c084fc !important;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+.login-dept-pill.selected-marketing .login-dept-icon,
+.login-dept-pill.selected-marketing .login-dept-label {
+  color: #c084fc !important;
   font-weight: 700;
 }
 

@@ -48,15 +48,15 @@ it('Seed contains all 8 commercial Bangladesh clients with complete details', ()
   assert(trustMachineries.phone && trustMachineries.address, 'Phone and address present');
 });
 
-it('Seed contains 4 demo user accounts with valid bcrypt hashes', () => {
+it('Seed contains demo user accounts with valid bcrypt hashes', () => {
   assert(Array.isArray(seed.users), 'Users is an array');
-  assert.strictEqual(seed.users.length, 4, '4 demo accounts created');
+  assert(seed.users.length >= 4, 'at least 4 demo accounts created');
   const admin = seed.users.find(u => u.userId === 'admin');
   const sales = seed.users.find(u => u.userId === 'sales1');
   const service = seed.users.find(u => u.userId === 'service1');
   const accounts = seed.users.find(u => u.userId === 'accounts1');
 
-  assert(admin && sales && service && accounts, 'All 4 demo user IDs exist');
+  assert(admin && sales && service && accounts, 'All core demo user IDs exist');
   assert(bcrypt.compareSync('password123', admin.passwordHash), 'Admin password hashes to password123');
   assert(bcrypt.compareSync('password123', sales.passwordHash), 'Sales password hashes to password123');
   assert(bcrypt.compareSync('password123', service.passwordHash), 'Service password hashes to password123');
@@ -337,7 +337,7 @@ it('Backup & Restore: full state serializes to JSON and deserializes identically
 
   assert.strictEqual(parsed.system, 'EPI Centralized Management System');
   assert.strictEqual(parsed.data.clients.length, 8);
-  assert.strictEqual(parsed.data.users.length, 4);
+  assert.strictEqual(parsed.data.users.length, seed.users.length);
   assert(parsed.data.erpData.accounts.length > 0);
 });
 

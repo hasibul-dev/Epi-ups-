@@ -155,6 +155,7 @@ export default function UserManagement() {
   const salesCount = usersList.filter((u) => u.role === 'superadmin' || u.departments?.includes('sales')).length;
   const serviceCount = usersList.filter((u) => u.role === 'superadmin' || u.departments?.includes('service')).length;
   const accountsCount = usersList.filter((u) => u.role === 'superadmin' || u.departments?.includes('accounts')).length;
+  const marketingCount = usersList.filter((u) => u.role === 'superadmin' || u.departments?.includes('marketing')).length;
 
   return (
     <div className="central-admin-content user-management-page">
@@ -266,6 +267,7 @@ export default function UserManagement() {
               <option value="sales">Sales Department Only</option>
               <option value="service">Service Department Only</option>
               <option value="accounts">Accounts Department Only</option>
+              <option value="marketing">Digital Marketing & IT Support Only</option>
             </select>
 
             <select
@@ -321,7 +323,23 @@ export default function UserManagement() {
 
                       <td>
                         <span className={`role-badge ${isSuper ? 'role-superadmin' : 'role-employee'}`}>
-                          {isSuper ? 'Super Admin' : (u.role || 'Employee')}
+                          {isSuper
+                            ? 'Super Admin'
+                            : u.role === 'marketing_manager'
+                            ? 'Marketing Manager'
+                            : u.role === 'marketing_executive'
+                            ? 'Marketing Executive'
+                            : u.role === 'it_manager'
+                            ? 'IT Manager'
+                            : u.role === 'it_technician'
+                            ? 'IT Technician'
+                            : u.role === 'engineer'
+                            ? 'Service Engineer'
+                            : u.role === 'accountant'
+                            ? 'Accountant'
+                            : u.role === 'manager'
+                            ? 'Manager'
+                            : 'Employee'}
                         </span>
                       </td>
 
@@ -341,6 +359,9 @@ export default function UserManagement() {
                               )}
                               {u.departments && u.departments.includes('accounts') && (
                                 <span className="dept-pill dept-accounts">Accounts</span>
+                              )}
+                              {u.departments && u.departments.includes('marketing') && (
+                                <span className="dept-pill dept-marketing">Marketing & IT</span>
                               )}
                               {(!u.departments || u.departments.length === 0) && (
                                 <span className="dept-pill dept-none">None</span>

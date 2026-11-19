@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, UserPlus, UserCheck, KeyRound, Sparkles, Copy, Check, AlertCircle, Shield, Briefcase, Wrench, Landmark } from 'lucide-react';
+import { X, UserPlus, UserCheck, KeyRound, Sparkles, Copy, Check, AlertCircle, Shield, Briefcase, Wrench, Landmark, Share2 } from 'lucide-react';
 import { useCentralAuth } from '../context/CentralAuthContext.jsx';
 
 export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
@@ -74,6 +74,9 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
       case 'accounts':
         setDepartments(['accounts']);
         break;
+      case 'marketing':
+        setDepartments(['marketing']);
+        break;
       case 'sales_service':
         setDepartments(['sales', 'service']);
         break;
@@ -81,7 +84,7 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
         setDepartments(['sales', 'accounts']);
         break;
       case 'all':
-        setDepartments(['service', 'sales', 'accounts']);
+        setDepartments(['sales', 'service', 'accounts', 'marketing']);
         break;
       default:
         break;
@@ -254,6 +257,10 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
               >
                 <option value="employee">Standard Employee</option>
                 <option value="manager">Department Manager</option>
+                <option value="marketing_manager">Digital Marketing Manager</option>
+                <option value="marketing_executive">Digital Marketing Executive</option>
+                <option value="it_manager">IT Support Manager</option>
+                <option value="it_technician">IT Support Technician</option>
                 <option value="engineer">Service Engineer</option>
                 <option value="accountant">Accounts / Accountant</option>
                 <option value="superadmin">Super Administrator (Full System Access)</option>
@@ -329,8 +336,9 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
                 <button type="button" className="btn-preset-pill" onClick={() => applyPreset('sales')}>Sales</button>
                 <button type="button" className="btn-preset-pill" onClick={() => applyPreset('service')}>Service</button>
                 <button type="button" className="btn-preset-pill" onClick={() => applyPreset('accounts')}>Accounts</button>
+                <button type="button" className="btn-preset-pill" onClick={() => applyPreset('marketing')}>Marketing & IT</button>
                 <button type="button" className="btn-preset-pill" onClick={() => applyPreset('sales_service')}>Sales+Service</button>
-                <button type="button" className="btn-preset-pill" onClick={() => applyPreset('all')}>All 3</button>
+                <button type="button" className="btn-preset-pill" onClick={() => applyPreset('all')}>All 4</button>
               </div>
             </div>
 
@@ -380,6 +388,22 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
                 <div className="dept-card-info">
                   <strong>EPI Accounts Department</strong>
                   <span>Ledgers, invoices, payroll, banking & VAT</span>
+                </div>
+              </label>
+
+              {/* Digital Marketing & IT Support Card */}
+              <label className={`dept-card-select ${departments.includes('marketing') ? 'selected' : ''}`}>
+                <input
+                  type="checkbox"
+                  checked={departments.includes('marketing')}
+                  onChange={() => toggleDept('marketing')}
+                />
+                <div className="dept-card-icon dept-icon-marketing" style={{ color: '#c084fc', background: 'rgba(168, 85, 247, 0.15)' }}>
+                  <Share2 size={20} />
+                </div>
+                <div className="dept-card-info">
+                  <strong>Digital Marketing & IT Support</strong>
+                  <span>Campaigns, social media, IT tickets & devices</span>
                 </div>
               </label>
             </div>

@@ -9,6 +9,7 @@ import {
   Wrench,
   Landmark,
   Maximize2,
+  Share2,
 } from 'lucide-react';
 
 export default function DepartmentWorkspaceView({ department, onBack }) {
@@ -52,6 +53,17 @@ export default function DepartmentWorkspaceView({ department, onBack }) {
           btnClass: 'accounts-btn',
           themeClass: 'accounts-theme',
           iconBg: 'accounts-bg',
+        };
+      case 'marketing':
+        return {
+          title: 'Digital Marketing & IT Support',
+          subtitle: 'Campaigns, Social Media Management, Asset Library & IT Support Tickets',
+          port: 5173,
+          icon: <Share2 size={22} />,
+          badgeClass: 'badge-purple',
+          btnClass: 'marketing-btn',
+          themeClass: 'marketing-theme',
+          iconBg: 'marketing-bg',
         };
       default:
         return {

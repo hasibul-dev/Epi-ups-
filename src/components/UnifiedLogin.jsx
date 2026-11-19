@@ -11,6 +11,7 @@ import {
   Briefcase,
   Wrench,
   Landmark,
+  Share2,
 } from 'lucide-react';
 
 export default function UnifiedLogin() {
@@ -73,6 +74,18 @@ export default function UnifiedLogin() {
       glow: 'rgba(245, 158, 11, 0.25)',
       gradient: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)',
     },
+    {
+      id: 'marketing',
+      name: 'Digital Marketing & IT Support',
+      shortName: 'Marketing & IT',
+      title: 'Digital Marketing & IT Support',
+      icon: Share2,
+      accent: '#c084fc',
+      bg: 'rgba(168, 85, 247, 0.12)',
+      border: 'rgba(168, 85, 247, 0.38)',
+      glow: 'rgba(168, 85, 247, 0.25)',
+      gradient: 'linear-gradient(135deg, #7e22ce 0%, #a855f7 100%)',
+    },
   ];
 
   const currentDeptObj = departments.find((d) => d.id === selectedDept) || departments[0];
@@ -123,6 +136,8 @@ export default function UnifiedLogin() {
         navigate('/service');
       } else if (selectedDept === 'accounts') {
         navigate('/accounts');
+      } else if (selectedDept === 'marketing') {
+        navigate('/marketing');
       } else {
         navigate('/admin');
       }
