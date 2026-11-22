@@ -46,6 +46,9 @@ import {
   Laptop,
   Wifi,
   FileCheck,
+  UserPlus,
+  CalendarPlus,
+  Edit3,
 } from 'lucide-react';
 
 export default function Layout() {
@@ -155,10 +158,13 @@ export default function Layout() {
       case 'sales':
         return [
           { to: '/sales', label: 'Sales Dashboard', icon: LayoutDashboard, end: true },
+          { to: '/sales/today', label: "Today's Work", icon: CalendarCheck },
           { to: '/sales/clients', label: 'Clients Master', icon: Briefcase },
-          { to: '/sales/schedule', label: 'Today Work Schedule', icon: CalendarCheck },
-          { to: '/sales/summary', label: 'Work Summary & Follow-ups', icon: ClipboardList },
-          { to: '/sales/reports', label: 'Activity Reports & Print', icon: FileText },
+          { to: '/sales/new-client', label: 'Add Client', icon: UserPlus },
+          { to: '/sales/new-work', label: 'Add Work', icon: CalendarPlus },
+          { to: '/sales/summary', label: 'Daily Summary', icon: ClipboardList },
+          { to: '/sales/reports', label: 'Activity Reports', icon: FileText },
+          { to: '/sales/edit-data', label: 'Edit Work Data', icon: Edit3 },
         ];
       case 'service':
         return [

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { flushSync } from 'react-dom';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useDb from './hooks/useDb.js';
 import { today, clockTime } from './utils/helpers.js';
 import Dashboard from './components/Dashboard.jsx';
@@ -23,8 +23,6 @@ import {
   ClipboardList,
   FileText,
   Edit3,
-  LogIn,
-  LogOut,
   Clock,
 } from 'lucide-react';
 
@@ -35,6 +33,7 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
   const [page, setPage] = useState(initialPage);
   const [printNode, setPrintNode] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Sync sub-routes from URL pathname
   useEffect(() => {
@@ -73,16 +72,19 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
 
   const totalClients = (db?.clients || []).length;
 
+  // Essential top shortcut navigation for Sales Dashboard
   const navButtons = [
-    { key: 'dashboard', label: 'Dashboard', icon: Briefcase },
-    { key: 'client', label: 'Add Client', icon: UserPlus, highlight: true },
-    { key: 'work', label: 'Add Work', icon: CalendarPlus, highlight: true },
-    { key: 'today', label: "Today's Work", icon: CheckSquare, count: todayDueCount },
-    { key: 'clients', label: 'Clients Master', icon: Users, count: totalClients },
-    { key: 'dailySummary', label: 'Daily Summary', icon: ClipboardList },
-    { key: 'reports', label: 'Activity Reports', icon: FileText },
-    { key: 'editData', label: 'Edit Work Data', icon: Edit3 },
+    { key: 'dashboard', label: 'Dashboard', icon: Briefcase, path: '/sales' },
+    { key: 'today', label: "Today's Work", icon: CheckSquare, count: todayDueCount, path: '/sales/today' },
+    { key: 'client', label: 'Add Client', icon: UserPlus, highlight: true, path: '/sales/new-client' },
   ];
+
+  const handleNavClick = (btn) => {
+    setPage(btn.key);
+    if (btn.path) {
+      navigate(btn.path);
+    }
+  };
 
   return (
     <div className="sales-module-root" style={{ padding: '20px 24px' }}>
@@ -105,7 +107,7 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
               <button
                 key={btn.key}
                 type="button"
-                onClick={() => setPage(btn.key)}
+                onClick={() => handleNavClick(btn)}
                 className={`btn ${active ? 'btn-primary-highlight' : 'btn-secondary'}`}
                 style={{
                   display: 'flex',
@@ -150,52 +152,8 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
           })}
         </div>
 
-        {/* Attendance & Backup Controls */}
+        {/* Database Backup & Restore Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <button
-            type="button"
-            onClick={store.officeIn}
-            className="btn btn-secondary"
-            title="Mark Office Check-IN for today"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 5,
-              padding: '6px 11px',
-              fontSize: 12,
-              borderRadius: 8,
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              background: 'rgba(16, 185, 129, 0.08)',
-              color: '#34d399',
-              cursor: 'pointer',
-            }}
-          >
-            <LogIn size={13} />
-            <span>Office IN</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={store.officeOut}
-            className="btn btn-secondary"
-            title="Mark Office Check-OUT for today"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 5,
-              padding: '6px 11px',
-              fontSize: 12,
-              borderRadius: 8,
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              background: 'rgba(239, 68, 68, 0.08)',
-              color: '#f87171',
-              cursor: 'pointer',
-            }}
-          >
-            <LogOut size={13} />
-            <span>Office OUT</span>
-          </button>
-
           <button
             type="button"
             onClick={() => store.downloadBackup()}

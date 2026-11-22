@@ -140,18 +140,19 @@ function ServiceShell({ initialPage }) {
   const quickNav = [
     { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { key: 'today', label: 'Today Work', icon: CalendarCheck, count: todayPendingCount },
-    { key: 'upcoming', label: 'Upcoming', icon: CalendarClock, count: upcomingPendingCount },
-    { key: 'calendar', label: 'Calendar', icon: Calendar },
-    { key: 'clients', label: 'Sales Clients', icon: Briefcase },
-    { key: 'servicing', label: 'Servicing', icon: Wrench },
-    { key: 'maintenance', label: 'Maintenance', icon: Settings2 },
-    { key: 'installation', label: 'Installation', icon: Zap },
-    { key: 'general', label: 'General Work', icon: ClipboardList },
-    { key: 'warranty', label: 'Warranty', icon: ShieldCheck },
-    { key: 'new', label: 'Add Work Order', icon: PlusCircle },
-    { key: 'history', label: 'Work History', icon: HistoryIcon },
-    { key: 'srep', label: 'Reports', icon: FileText },
-    { key: 'settings', label: 'Settings', icon: Sliders },
+    {
+      key: 'addClient',
+      label: 'Add Client',
+      icon: Briefcase,
+      action: () => addClient(getContextualClientType()),
+    },
+    {
+      key: 'addWork',
+      label: 'Add Work',
+      icon: PlusCircle,
+      highlight: true,
+      action: () => addWork(TODAY(), getContextualCategory()),
+    },
   ];
 
   // Context-aware Add Work category based on current page
@@ -202,8 +203,17 @@ function ServiceShell({ initialPage }) {
               <button
                 key={btn.key}
                 type="button"
-                onClick={() => go(btn.key)}
+                onClick={btn.action ? btn.action : () => go(btn.key)}
                 className={`dept-subnav-btn ${active ? 'active-service' : ''}`}
+                style={
+                  btn.highlight
+                    ? {
+                        borderColor: 'rgba(56, 189, 248, 0.35)',
+                        background: 'rgba(56, 189, 248, 0.08)',
+                        color: '#e0f2fe',
+                      }
+                    : undefined
+                }
               >
                 <Icon size={13} />
                 <span>{btn.label}</span>
@@ -218,26 +228,6 @@ function ServiceShell({ initialPage }) {
         </div>
 
         <div className="dept-subnav-actions">
-          <button
-            type="button"
-            onClick={() => addWork(TODAY(), getContextualCategory())}
-            className="btn btn-primary-highlight sm"
-            style={{ padding: '5px 11px', fontSize: 11.5 }}
-            title={`Add new ${getContextualCategory()} work order`}
-          >
-            <PlusCircle size={13} />
-            <span>+ Add Work</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => addClient(getContextualClientType())}
-            className="btn btn-secondary sm"
-            style={{ padding: '5px 11px', fontSize: 11.5 }}
-            title={`Register new ${getContextualClientType()} client`}
-          >
-            <Briefcase size={13} />
-            <span>+ Add Client</span>
-          </button>
           <button
             type="button"
             onClick={exportServiceBackup}
