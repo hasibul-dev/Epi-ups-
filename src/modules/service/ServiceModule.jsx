@@ -211,11 +211,12 @@ function ServiceShell({ initialPage }) {
                         borderColor: 'rgba(56, 189, 248, 0.35)',
                         background: 'rgba(56, 189, 248, 0.08)',
                         color: '#e0f2fe',
+                        fontWeight: 700,
                       }
                     : undefined
                 }
               >
-                <Icon size={13} />
+                <Icon size={14} />
                 <span>{btn.label}</span>
                 {btn.count > 0 && (
                   <span className="dept-subnav-badge">
@@ -231,11 +232,11 @@ function ServiceShell({ initialPage }) {
           <button
             type="button"
             onClick={exportServiceBackup}
-            className="btn btn-secondary sm"
+            className="btn btn-secondary"
             title="Download Service Database Backup (JSON)"
-            style={{ padding: '5px 11px', fontSize: 11.5 }}
+            style={{ padding: '8px 16px', fontSize: 13, minHeight: 38, display: 'inline-flex', alignItems: 'center', gap: 6, borderRadius: 8, color: '#cbd5e1' }}
           >
-            <Download size={13} />
+            <Download size={14} />
             <span>Backup</span>
           </button>
         </div>

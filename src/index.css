@@ -722,17 +722,18 @@ img, svg, canvas, iframe {
 .dept-subnav-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 600;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  min-height: 38px;
   text-decoration: none;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   color: #94a3b8;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.18s ease;
   white-space: nowrap;
   user-select: none;
 }
@@ -740,7 +741,7 @@ img, svg, canvas, iframe {
 .dept-subnav-btn:hover {
   background: rgba(255, 255, 255, 0.07);
   color: #f1f5f9;
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
 .dept-subnav-btn.active-service {
@@ -757,13 +758,21 @@ img, svg, canvas, iframe {
   box-shadow: 0 2px 10px rgba(0, 82, 204, 0.2);
 }
 
+.dept-subnav-btn.active-marketing {
+  background: rgba(168, 85, 247, 0.18);
+  color: #c084fc;
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 0 2px 10px rgba(168, 85, 247, 0.2);
+}
+
 .dept-subnav-badge {
   background: #e5192d;
   color: #fff;
-  padding: 1px 6px;
+  padding: 2px 7px;
   border-radius: 10px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
+  line-height: 1;
 }
 
 .dept-subnav-actions {
@@ -771,6 +780,41 @@ img, svg, canvas, iframe {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+/* Global button standard sizes across all modules */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 650;
+  border-radius: 8px;
+  min-height: 38px;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn-primary-highlight {
+  background: linear-gradient(135deg, #0052cc 0%, #1a73e8 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 4px 14px rgba(0, 82, 204, 0.3) !important;
+  font-weight: 700 !important;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #cbd5e1 !important;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.09) !important;
+  color: #ffffff !important;
 }
 
 @media (max-width: 768px) {
@@ -791,8 +835,9 @@ img, svg, canvas, iframe {
   }
 
   .dept-subnav-btn {
-    padding: 5px 8px;
-    font-size: 11.5px;
+    padding: 7px 12px;
+    font-size: 12.5px;
+    min-height: 34px;
   }
 
   .dept-subnav-actions {

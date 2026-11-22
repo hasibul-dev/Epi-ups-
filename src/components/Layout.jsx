@@ -157,10 +157,7 @@ export default function Layout() {
         ];
       case 'sales':
         return [
-          { to: '/sales', label: 'Sales Dashboard', icon: LayoutDashboard, end: true },
-          { to: '/sales/today', label: "Today's Work", icon: CalendarCheck },
           { to: '/sales/clients', label: 'Clients Master', icon: Briefcase },
-          { to: '/sales/new-client', label: 'Add Client', icon: UserPlus },
           { to: '/sales/new-work', label: 'Add Work', icon: CalendarPlus },
           { to: '/sales/summary', label: 'Daily Summary', icon: ClipboardList },
           { to: '/sales/reports', label: 'Activity Reports', icon: FileText },
@@ -168,8 +165,6 @@ export default function Layout() {
         ];
       case 'service':
         return [
-          { to: '/service', label: 'Service Dashboard', icon: LayoutDashboard, end: true },
-          { to: '/service/today', label: 'Today Work', icon: CalendarCheck },
           { to: '/service/upcoming', label: 'Upcoming Work', icon: CalendarClock },
           { to: '/service/calendar', label: 'Calendar / Dispatch', icon: Calendar },
           { to: '/service/clients', label: 'Sales Clients', icon: Briefcase },
@@ -205,8 +200,6 @@ export default function Layout() {
         ];
       case 'marketing':
         return [
-          { to: '/marketing', label: 'Marketing Dashboard', icon: LayoutDashboard, end: true },
-          { to: '/marketing/tasks', label: 'Work / Task Management', icon: ClipboardList },
           { to: '/marketing/social', label: 'Content & Social Posts', icon: Share2 },
           { to: '/marketing/campaigns', label: 'Campaign Management', icon: Target },
           { to: '/marketing/marketing-reports', label: 'Marketing Reports', icon: FileText },

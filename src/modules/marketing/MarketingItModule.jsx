@@ -51,6 +51,7 @@ import {
   FileCheck,
   History,
   Plus,
+  Download,
 } from 'lucide-react';
 
 const ROUTE_MAP = {
@@ -76,34 +77,46 @@ const ROUTE_MAP = {
   maintenance: 'maintenance',
 };
 
-const SUBNAV_TABS = [
-  // Digital Marketing (5 focused modules)
-  { id: 'overview', label: 'Marketing Dashboard', path: '/marketing', icon: LayoutDashboard },
-  { id: 'tasks', label: 'Work / Task Management', path: '/marketing/tasks', icon: CheckSquare },
-  { id: 'social', label: 'Content & Social Posts', path: '/marketing/social', icon: Share2 },
-  { id: 'campaigns', label: 'Campaign Management', path: '/marketing/campaigns', icon: Target, badgeKey: 'activeCampaigns' },
-  { id: 'mkt_rep', label: 'Marketing Reports', path: '/marketing/marketing-reports', icon: FileText },
-
-  // IT Support (5 focused modules)
-  { id: 'it_dash', label: 'IT Support Dashboard', path: '/marketing/it-dashboard', icon: Activity },
-  { id: 'tickets', label: 'IT Work Management', path: '/marketing/tickets', icon: Ticket, badgeKey: 'openTickets' },
-  { id: 'devices', label: 'Basic Device Management', path: '/marketing/devices', icon: Laptop },
-  { id: 'it_hist', label: 'IT Work History', path: '/marketing/it-history', icon: History },
-  { id: 'it_rep', label: 'IT Reports', path: '/marketing/it-reports', icon: FileCheck },
-];
-
 function MarketingItInner() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data, openTicketModal } = useMarketing();
+  const { data, openTaskModal, openTicketModal, exportBackup } = useMarketing();
 
   const rawSlug = location.pathname.replace(/^\/marketing\/?/, '').split('/')[0] || '';
   const currentTab = ROUTE_MAP[rawSlug] || 'overview';
 
-  const badgeCounts = {
-    activeCampaigns: data.campaigns.filter((c) => c.status === 'Active').length,
-    openTickets: data.tickets.filter((t) => ['Open', 'In Progress'].includes(t.status)).length,
-  };
+  const pendingTasksCount = (data.tasks || []).filter(
+    (t) => t.status !== 'Done' && t.status !== 'Completed'
+  ).length;
+
+  const navButtons = [
+    {
+      key: 'overview',
+      label: 'Dashboard',
+      icon: LayoutDashboard,
+      path: '/marketing',
+    },
+    {
+      key: 'tasks',
+      label: 'Work / Task Management',
+      icon: CheckSquare,
+      path: '/marketing/tasks',
+      count: pendingTasksCount,
+    },
+    {
+      key: 'addWork',
+      label: '+ Add Work',
+      icon: Plus,
+      highlight: true,
+      action: () => openTaskModal(),
+    },
+    {
+      key: 'addTicket',
+      label: '+ Add IT Ticket',
+      icon: Ticket,
+      action: () => openTicketModal(),
+    },
+  ];
 
   // Render current active page
   const renderPage = () => {
@@ -149,47 +162,70 @@ function MarketingItInner() {
 
   return (
     <div className="marketing-module-wrapper space-y-4">
-      {/* Sleek Enterprise Horizontal Navigation Bar matching EPI Layout */}
-      <div className="mkt-subnav-container">
-        <div className="mkt-subnav-scroll flex items-center justify-between">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {SUBNAV_TABS.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = currentTab === tab.id;
-              const badge = tab.badgeKey ? badgeCounts[tab.badgeKey] : null;
+      {/* Sub-Header Navigation Tabs & Actions matching EPI Standard */}
+      <div className="dept-subnav-bar">
+        <div className="dept-subnav-tabs">
+          {navButtons.map((btn) => {
+            const Icon = btn.icon;
+            const active =
+              (btn.key === 'overview' && currentTab === 'overview') ||
+              (btn.key === 'tasks' && currentTab === 'tasks');
 
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => navigate(tab.path)}
-                  className={`mkt-subnav-btn ${isActive ? 'active' : ''}`}
-                >
-                  <Icon size={14} />
-                  <span>{tab.label}</span>
-                  {badge > 0 && (
-                    <span className="mkt-subnav-badge">
-                      {badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
+            return (
+              <button
+                key={btn.key}
+                type="button"
+                onClick={btn.action ? btn.action : () => navigate(btn.path)}
+                className={`dept-subnav-btn ${active ? 'active-marketing' : ''}`}
+                style={
+                  btn.highlight
+                    ? {
+                        borderColor: 'rgba(168, 85, 247, 0.4)',
+                        background: 'rgba(168, 85, 247, 0.1)',
+                        color: '#f3e8ff',
+                        fontWeight: 700,
+                      }
+                    : btn.key === 'addTicket'
+                    ? {
+                        borderColor: 'rgba(245, 158, 11, 0.35)',
+                        background: 'rgba(245, 158, 11, 0.1)',
+                        color: '#fef3c7',
+                        fontWeight: 700,
+                      }
+                    : undefined
+                }
+              >
+                <Icon size={14} />
+                <span>{btn.label}</span>
+                {btn.count > 0 && (
+                  <span className="dept-subnav-badge" style={{ background: '#a855f7' }}>
+                    {btn.count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
 
+        <div className="dept-subnav-actions">
           <button
             type="button"
-            onClick={() => openTicketModal()}
-            className="mkt-subnav-btn flex items-center gap-1.5 shrink-0"
+            onClick={exportBackup}
+            className="btn btn-secondary"
+            title="Download Marketing & IT Support Database Backup (JSON)"
             style={{
-              background: 'rgba(245, 158, 11, 0.1)',
-              borderColor: 'rgba(245, 158, 11, 0.3)',
-              color: '#fbbf24',
-              marginLeft: 8,
+              padding: '8px 16px',
+              fontSize: 13,
+              minHeight: 38,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              borderRadius: 8,
+              color: '#cbd5e1',
             }}
-            title="Create new IT Support Ticket"
           >
-            <Plus size={13} />
-            <span>+ Add IT Ticket</span>
+            <Download size={14} />
+            <span>Backup</span>
           </button>
         </div>
       </div>

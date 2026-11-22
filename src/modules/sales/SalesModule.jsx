@@ -112,11 +112,12 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 6,
-                  padding: '7px 12px',
+                  gap: 7,
+                  padding: '9px 18px',
                   borderRadius: 8,
-                  fontSize: 12.5,
-                  fontWeight: 600,
+                  fontSize: 13,
+                  fontWeight: 650,
+                  minHeight: 38,
                   cursor: 'pointer',
                   border: active
                     ? '1px solid rgba(26, 115, 232, 0.45)'
@@ -131,17 +132,18 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
                   color: active ? '#38bdf8' : btn.highlight ? '#e0f2fe' : '#94a3b8',
                 }}
               >
-                <Icon size={14} />
+                <Icon size={15} />
                 <span>{btn.label}</span>
                 {btn.count > 0 && (
                   <span
                     style={{
                       background: btn.key === 'today' ? '#e5192d' : 'rgba(56, 189, 248, 0.2)',
                       color: '#fff',
-                      padding: '1px 6px',
+                      padding: '2px 7px',
                       borderRadius: 10,
-                      fontSize: 10.5,
+                      fontSize: 11,
                       fontWeight: 700,
+                      lineHeight: 1,
                     }}
                   >
                     {btn.count}
@@ -162,17 +164,19 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 5,
-              padding: '6px 11px',
-              fontSize: 12,
+              gap: 6,
+              padding: '8px 16px',
+              fontSize: 13,
+              fontWeight: 600,
+              minHeight: 38,
               borderRadius: 8,
               border: '1px solid rgba(255, 255, 255, 0.1)',
               background: 'rgba(255, 255, 255, 0.04)',
-              color: '#94a3b8',
+              color: '#cbd5e1',
               cursor: 'pointer',
             }}
           >
-            <Download size={13} />
+            <Download size={14} />
             <span>Export Backup</span>
           </button>
 
@@ -182,18 +186,20 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 5,
-              padding: '6px 11px',
-              fontSize: 12,
+              gap: 6,
+              padding: '8px 16px',
+              fontSize: 13,
+              fontWeight: 600,
+              minHeight: 38,
               borderRadius: 8,
               border: '1px solid rgba(255, 255, 255, 0.1)',
               background: 'rgba(255, 255, 255, 0.04)',
-              color: '#94a3b8',
+              color: '#cbd5e1',
               cursor: 'pointer',
               margin: 0,
             }}
           >
-            <Upload size={13} />
+            <Upload size={14} />
             <span>Import Backup</span>
             <input
               type="file"
