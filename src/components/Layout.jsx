@@ -69,16 +69,27 @@ export default function Layout() {
     }
   });
 
-  const [snapshot, setSnapshot] = useState(() => unifiedStore.getSnapshot());
+  const [snapshot, setSnapshot] = useState(() => {
+    if (unifiedStore && typeof unifiedStore.getSnapshot === 'function') {
+      return unifiedStore.getSnapshot();
+    }
+    return unifiedStore?.memory || {};
+  });
 
   // Listen to live data changes to keep sidebar badges updated
   React.useEffect(() => {
     const handleUpdate = () => {
-      setSnapshot(unifiedStore.getSnapshot());
+      if (unifiedStore && typeof unifiedStore.getSnapshot === 'function') {
+        setSnapshot(unifiedStore.getSnapshot());
+      } else if (unifiedStore?.memory) {
+        setSnapshot({ ...unifiedStore.memory });
+      }
     };
+    const unsub = unifiedStore?.subscribe ? unifiedStore.subscribe(handleUpdate) : null;
     window.addEventListener('storage', handleUpdate);
     window.addEventListener('epi_data_updated', handleUpdate);
     return () => {
+      if (unsub) unsub();
       window.removeEventListener('storage', handleUpdate);
       window.removeEventListener('epi_data_updated', handleUpdate);
     };
@@ -191,7 +202,7 @@ export default function Layout() {
     (w) => w.date === tDate && w.status !== 'done'
   ).length;
 
-  const mktPendingTasks = (snapshot?.marketingData?.tasks || []).filter(
+  const mktPendingTasks = (snapshot?.marketingData?.marketingTasks || snapshot?.marketingData?.tasks || []).filter(
     (t) => t.status !== 'Done' && t.status !== 'Completed'
   ).length;
 

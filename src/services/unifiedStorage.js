@@ -1167,10 +1167,30 @@ function openUnifiedIdb() {
 // --- MASTER UNIFIED DATA STORE ENGINE ---
 class UnifiedDataStoreEngine {
   constructor() {
-    this.memory = this.loadInitialFromLocalStorage();
     this.idb = null;
     this.initialized = false;
     this.listeners = new Set();
+    this.getSnapshot = this.getSnapshot.bind(this);
+    this.subscribe = this.subscribe.bind(this);
+    this.notify = this.notify.bind(this);
+    this.memory = this.loadInitialFromLocalStorage();
+    if (!this.memory) {
+      const seed = createRealisticSeedData();
+      this.memory = seed;
+      this.syncToLocalStorage(seed);
+    }
+  }
+
+  getSnapshot() {
+    if (!this.memory) {
+      this.memory = this.loadInitialFromLocalStorage();
+    }
+    if (!this.memory) {
+      const seed = createRealisticSeedData();
+      this.memory = seed;
+      this.syncToLocalStorage(seed);
+    }
+    return this.memory;
   }
 
   subscribe(listener) {
@@ -1184,6 +1204,13 @@ class UnifiedDataStoreEngine {
         fn(this.memory);
       } catch (e) {
         console.warn('[UnifiedStore] Listener notification error:', e);
+      }
+    }
+    if (typeof window !== 'undefined') {
+      try {
+        window.dispatchEvent(new CustomEvent('epi_data_updated', { detail: this.memory }));
+      } catch (e) {
+        // Safe dispatch fallback
       }
     }
   }
@@ -1359,6 +1386,9 @@ class UnifiedDataStoreEngine {
   }
 
   persist() {
+    if (this.memory) {
+      this.memory = { ...this.memory };
+    }
     this.syncToLocalStorage(this.memory);
     if (this.idb) {
       this.syncToIndexedDB(this.memory).catch(() => {});
