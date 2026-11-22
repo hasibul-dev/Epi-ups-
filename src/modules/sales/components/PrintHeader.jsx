@@ -1,14 +1,20 @@
 import React from 'react';
 
 // Shared pieces of the A4 print layouts matching EPI Corporate Standards
-export function PrintHeader({ title, department = 'SALES DEPARTMENT', dateRange = '', subtitle = '' }) {
+export function PrintHeader({
+  title,
+  department = 'SALES DEPARTMENT',
+  dateRange = '',
+  subtitle = '',
+  metaItems = [],
+}) {
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   return (
     <div className="print-header-banner" style={{ borderBottom: '2px solid #0052cc', paddingBottom: '12px', marginBottom: '16px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <img
             src="/logo.png"
@@ -33,7 +39,18 @@ export function PrintHeader({ title, department = 'SALES DEPARTMENT', dateRange 
         </div>
       </div>
 
-      <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #e2e8f0', paddingTop: '8px' }}>
+      {metaItems && metaItems.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '8px', padding: '6px 10px', background: '#f8fafc', borderRadius: '6px', fontSize: '10.5px', color: '#334155' }}>
+          {metaItems.map((meta, i) => (
+            <div key={i}>
+              <span style={{ color: '#64748b', fontWeight: 600 }}>{meta.label}: </span>
+              <span style={{ fontWeight: 700, color: '#0f172a' }}>{meta.value}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #e2e8f0', paddingTop: '8px' }}>
         <div>
           <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: '#1e293b' }}>{title}</h2>
           {subtitle && <div style={{ fontSize: '11px', color: '#64748b' }}>{subtitle}</div>}
@@ -46,16 +63,40 @@ export function PrintHeader({ title, department = 'SALES DEPARTMENT', dateRange 
   );
 }
 
-export function PrintSignatures({ roles = ['Prepared By', 'Verified By (Manager)', 'Authorized Signatory'] }) {
+export function PrintSignatures({ roles, signatories }) {
+  const items = signatories || roles || [
+    'Prepared By',
+    'Verified By (Manager)',
+    'Authorized Signatory',
+  ];
+
   return (
-    <div className="print-signatures" style={{ marginTop: '36px', paddingTop: '16px', display: 'grid', gridTemplateColumns: `repeat(${roles.length}, 1fr)`, gap: '20px', pageBreakInside: 'avoid' }}>
-      {roles.map((role, idx) => (
-        <div key={idx} style={{ textAlign: 'center' }}>
-          <div style={{ borderTop: '1px solid #94a3b8', width: '80%', margin: '0 auto 6px' }}></div>
-          <b style={{ fontSize: '11.5px', color: '#0f172a' }}>{role}</b>
-          <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>Signature &amp; Date</div>
-        </div>
-      ))}
+    <div
+      className="print-signatures"
+      style={{
+        marginTop: '36px',
+        paddingTop: '16px',
+        display: 'grid',
+        gridTemplateColumns: `repeat(${items.length}, 1fr)`,
+        gap: '20px',
+        pageBreakInside: 'avoid',
+      }}
+    >
+      {items.map((item, idx) => {
+        const title = typeof item === 'object' && item !== null ? item.title || item.role : item;
+        const note =
+          typeof item === 'object' && item !== null
+            ? item.note || 'Signature & Date'
+            : 'Signature & Date';
+
+        return (
+          <div key={idx} style={{ textAlign: 'center' }}>
+            <div style={{ borderTop: '1px solid #94a3b8', width: '80%', margin: '0 auto 6px' }}></div>
+            <b style={{ fontSize: '11.5px', color: '#0f172a' }}>{title}</b>
+            <div style={{ fontSize: '10px', color: '#64748b', marginTop: '2px' }}>{note}</div>
+          </div>
+        );
+      })}
     </div>
   );
 }

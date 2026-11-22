@@ -51,6 +51,7 @@ import {
   Edit3,
   PanelLeftClose,
   PanelLeftOpen,
+  CheckSquare,
 } from 'lucide-react';
 
 export default function Layout() {
@@ -699,7 +700,7 @@ export default function Layout() {
                     <div className="sidebar-group-title">{groupObj.group}</div>
                   )}
                   {groupObj.items.map((item, idx) => {
-                    const Icon = item.icon;
+                    const Icon = item.icon || FileText;
                     return (
                       <NavLink
                         key={idx}
