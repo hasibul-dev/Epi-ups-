@@ -10,45 +10,94 @@ import {
   clientType,
   status,
   warr,
+  isOverdue,
 } from '../services/domain.js'
 import { TODAY, addD, fmt } from '../services/dates.js'
-import { Printer, Download, CheckSquare, Square, FileText } from 'lucide-react'
+import { exportToPdf, exportToCsv, triggerPrint } from '../../../services/reportExport.js'
+import {
+  Printer,
+  Download,
+  CheckSquare,
+  Square,
+  FileText,
+  FileSpreadsheet,
+  Eye,
+  Calendar,
+  Users,
+  Wrench,
+  Settings2,
+  Zap,
+  ClipboardList,
+  ShieldCheck,
+  UserCheck,
+  AlertTriangle,
+  Clock,
+  Search,
+} from 'lucide-react'
 
 const REPORT_TYPES = [
-  {
-    id: 'sales',
-    title: 'Sales Client Report',
-    icon: '💼',
-    category: 'Sales',
-    desc: 'Sales clients, products, warranty tracking & sales work records',
-  },
   {
     id: 'servicing',
     title: 'Servicing Report',
     icon: '🛠️',
     category: 'Servicing',
-    desc: 'Servicing tasks, site repairs & client service notes',
+    desc: 'Servicing tasks, site repairs, troubleshooting & client service records',
   },
   {
     id: 'maintenance',
     title: 'Maintenance Report',
     icon: '⚙️',
     category: 'Maintenance',
-    desc: 'Automatic 3-month & manual maintenance schedules',
+    desc: 'Quarterly routine checks and preventative maintenance schedules',
   },
   {
     id: 'installation',
     title: 'Installation Report',
     icon: '🔌',
     category: 'Installation',
-    desc: 'UPS & equipment installations, manual client sites & commissioning records',
+    desc: 'UPS & equipment installations, battery bank setups & commissioning records',
   },
   {
     id: 'general',
     title: 'General Work Report',
     icon: '📋',
     category: 'General',
-    desc: 'Independent manual work orders, routine inspections & general tasks',
+    desc: 'Independent manual work orders, routine inspections & general technical tasks',
+  },
+  {
+    id: 'warranty',
+    title: 'Warranty Report',
+    icon: '🛡️',
+    category: '',
+    desc: 'Warranty coverage tracking, active vs expiring ≤30 days, serial numbers & models',
+  },
+  {
+    id: 'technician',
+    title: 'Technician Work Report',
+    icon: '👷',
+    category: '',
+    desc: 'Engineer workload breakdown, assignment distribution & execution metrics',
+  },
+  {
+    id: 'completed',
+    title: 'Completed Work Report',
+    icon: '✅',
+    category: '',
+    desc: 'Successfully executed and closed work orders with completion notes',
+  },
+  {
+    id: 'overdue',
+    title: 'Overdue Work Report',
+    icon: '⚠️',
+    category: '',
+    desc: 'Pending work orders and maintenance calls past their target scheduled date',
+  },
+  {
+    id: 'sales',
+    title: 'Sales Client Report',
+    icon: '💼',
+    category: 'Sales',
+    desc: 'Sales client equipment installations, warranty tracking & historical service orders',
   },
   {
     id: 'schedule',
@@ -65,18 +114,29 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
   const [selectedReports, setSelectedReports] = useState(() =>
     preselectReport
       ? [preselectReport]
-      : ['sales', 'servicing', 'maintenance', 'installation', 'general', 'schedule']
+      : ['servicing', 'maintenance', 'installation', 'general', 'warranty', 'technician', 'completed', 'overdue']
   )
   const [from, setFrom] = useState(addD(TODAY(), -90))
   const [to, setTo] = useState(addD(TODAY(), 90))
   const [workType, setWorkType] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
+  const [selectedTechnician, setSelectedTechnician] = useState('')
   const [q, setQ] = useState('')
   const [selectedClientIds, setSelectedClientIds] = useState(() =>
     preselectClientId ? [preselectClientId] : []
   )
   const [previewMode, setPreviewMode] = useState(false)
   const [soloPrintId, setSoloPrintId] = useState('')
+
+  const engineerList = Array.from(
+    new Set(
+      (s.settings?.engineers || 'Sabbir, Tanvir, Rafi, Shanto, Md. Al-Amin')
+        .split(',')
+        .map((e) => e.trim())
+        .filter(Boolean)
+        .concat((s.works || []).map((w) => w.engineer).filter(Boolean))
+    )
+  )
 
   useEffect(() => {
     if (preselectReport) setSelectedReports([preselectReport])
@@ -129,16 +189,25 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
 
   // Compute filtered work rows for a given report type
   const getReportData = (reportId) => {
-    const def = REPORT_TYPES.find((r) => r.id === reportId) || REPORT_TYPES[5]
+    const def = REPORT_TYPES.find((r) => r.id === reportId) || REPORT_TYPES[0]
     const rows = s.works
       .filter((w) => {
         if (from && w.date < from) return false
         if (to && w.date > to) return false
         if (workType && w.category !== workType) return false
         if (statusFilter && status(w) !== statusFilter) return false
+        if (selectedTechnician && w.engineer !== selectedTechnician) return false
 
-        // Category filter based on report definition:
-        if (def.category) {
+        // Category & Report specific filtering:
+        if (reportId === 'completed') {
+          if (status(w) !== 'done') return false
+        } else if (reportId === 'overdue') {
+          if (!isOverdue(w)) return false
+        } else if (reportId === 'technician') {
+          // includes all works matching technician
+        } else if (reportId === 'warranty') {
+          // warranty report primarily focuses on warranty-covered items
+        } else if (def.category) {
           if (reportId === 'sales') {
             const c = s.clients.find((x) => x.id === w.clientId)
             if (w.category !== 'Sales' && (!c || clientType(c) !== 'Sales')) return false
@@ -152,7 +221,7 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
           if (!selectedClientIds.includes(w.clientId)) return false
         }
 
-        // Search filter (searches work details, technician, database clients AND manual client entries)
+        // Search filter
         if (q.trim()) {
           const c = s.clients.find((x) => x.id === w.clientId)
           const hay = [
@@ -179,7 +248,7 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
       .sort(byTime)
 
     const clientsForSheet =
-      reportId === 'sales'
+      reportId === 'sales' || reportId === 'warranty'
         ? matchingClients.filter(
             (c) =>
               clientType(c) === 'Sales' &&
@@ -206,9 +275,125 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
   }
 
   const printSelected = () => runPrint(`EPI-UPS-Selected-Reports-${TODAY()}`)
-  const exportSelectedPdf = () => runPrint(`EPI-UPS-Reports-${TODAY()}`)
   const printIndividual = (reportId, title) =>
     runPrint(`EPI-UPS-${title.replace(/\s+/g, '-')}-${TODAY()}`, reportId)
+
+  // Direct PDF Export via reportExport engine
+  const exportReportPdf = (reportId) => {
+    const { def, rows, clientsForSheet } = getReportData(reportId)
+    const dateRangeStr = `${fmt(from)} to ${fmt(to)}`
+    let headers = []
+    let pdfRows = []
+
+    if (reportId === 'warranty') {
+      headers = ['SL', 'Client Organization', 'Contact & Phone', 'Equipment Model', 'Serial Number', 'Sale Date', 'Warranty Coverage', 'Expiry Date']
+      pdfRows = clientsForSheet.map((c, idx) => {
+        const w = warr(c)
+        return [
+          idx + 1,
+          clientTitle(c),
+          c.phone || '-',
+          clientProduct(c),
+          c.serial || 'N/A',
+          fmt(c.saleDate),
+          `${w.months}m (${w.active ? `${w.left}d left` : `Expired ${-w.left}d ago`})`,
+          fmt(w.exp),
+        ]
+      })
+    } else {
+      headers = ['SL', 'Date', 'Time', 'Client / Site', 'Category', 'Priority', 'Work Title & Description', 'Technician', 'Status']
+      pdfRows = rows.map((w, idx) => {
+        const ci = getClientInfo(w)
+        return [
+          idx + 1,
+          fmt(w.date),
+          w.time || '-',
+          ci.title || 'Direct Site',
+          w.category,
+          w.priority || 'Normal',
+          w.title,
+          w.engineer || 'Unassigned',
+          statusLabel(w),
+        ]
+      })
+    }
+
+    exportToPdf({
+      title: def.title,
+      department: 'Service',
+      subtitle: def.desc,
+      dateRange: dateRangeStr,
+      headers,
+      rows: pdfRows,
+      summary: {
+        'Total Works': rows.length,
+        'Completed': rows.filter((w) => w.status === 'done').length,
+        'Pending': rows.filter((w) => status(w) === 'pending').length,
+        'Overdue': rows.filter((w) => status(w) === 'overdue').length,
+      },
+      orientation: 'landscape',
+    })
+  }
+
+  // Direct Excel CSV Export via reportExport engine
+  const exportReportExcel = (reportId) => {
+    const { def, rows, clientsForSheet } = getReportData(reportId)
+    let headers = []
+    let csvRows = []
+
+    if (reportId === 'warranty') {
+      headers = ['SL No', 'Client Title', 'Contact', 'Phone', 'Product', 'Serial Number', 'Sale Date', 'Warranty Months', 'Expiry Date', 'Status']
+      csvRows = clientsForSheet.map((c, idx) => {
+        const w = warr(c)
+        return [
+          idx + 1,
+          clientTitle(c),
+          clientContact(c),
+          c.phone,
+          clientProduct(c),
+          c.serial,
+          c.saleDate,
+          w.months,
+          w.exp,
+          w.active ? 'Active' : 'Expired',
+        ]
+      })
+    } else {
+      headers = ['SL No', 'Date', 'Time', 'Client', 'Category', 'Priority', 'Title', 'Description', 'Technician', 'Status', 'Notes']
+      csvRows = rows.map((w, idx) => {
+        const ci = getClientInfo(w)
+        return [
+          idx + 1,
+          w.date,
+          w.time,
+          ci.title,
+          w.category,
+          w.priority,
+          w.title,
+          w.desc,
+          w.engineer,
+          statusLabel(w),
+          w.notes,
+        ]
+      })
+    }
+
+    exportToCsv({
+      title: def.title,
+      department: 'Service Department',
+      dateRange: `${from} to ${to}`,
+      headers,
+      rows: csvRows,
+    })
+  }
+
+  const exportSelectedPdf = () => {
+    if (activeSheets.length === 1) {
+      exportReportPdf(activeSheets[0].id)
+    } else {
+      runPrint(`EPI-UPS-Reports-${TODAY()}`)
+    }
+  }
 
   const statusLabel = (w) =>
     ({ done: 'Completed', overdue: 'Overdue', pending: 'Pending' }[status(w)])
@@ -406,6 +591,17 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
                   <option value="overdue">Overdue</option>
                 </select>
               </label>
+              <label className="f">
+                <span>Technician</span>
+                <select value={selectedTechnician} onChange={(e) => setSelectedTechnician(e.target.value)}>
+                  <option value="">All Engineers</option>
+                  {engineerList.map((eng) => (
+                    <option key={eng} value={eng}>
+                      👷 {eng}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
 
             {/* Client Multi-Select */}
@@ -501,9 +697,17 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
                     type="button"
                     className="btn s sm"
                     style={{ color: '#111', borderColor: '#cbd5e1', background: '#f1f5f9' }}
-                    onClick={() => printIndividual(rt.id, rt.title)}
+                    onClick={() => exportReportPdf(rt.id)}
                   >
-                    ⬇ Save as PDF
+                    ⬇ Export PDF
+                  </button>
+                  <button
+                    type="button"
+                    className="btn s sm"
+                    style={{ color: '#111', borderColor: '#cbd5e1', background: '#f1f5f9' }}
+                    onClick={() => exportReportExcel(rt.id)}
+                  >
+                    📊 Export Excel
                   </button>
                 </div>
 

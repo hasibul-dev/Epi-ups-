@@ -48,6 +48,7 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
       'summary': 'dailySummary',
       'daily-summary': 'dailySummary',
       'reports': 'reports',
+      'history': 'reports',
       'edit': 'editData',
       'edit-data': 'editData',
       'new-client': 'client',

@@ -49,6 +49,8 @@ import {
   UserPlus,
   CalendarPlus,
   Edit3,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 
 export default function Layout() {
@@ -58,6 +60,38 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [dataModalOpen, setDataModalOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('epi_sidebar_collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const [snapshot, setSnapshot] = useState(() => unifiedStore.getSnapshot());
+
+  // Listen to live data changes to keep sidebar badges updated
+  React.useEffect(() => {
+    const handleUpdate = () => {
+      setSnapshot(unifiedStore.getSnapshot());
+    };
+    window.addEventListener('storage', handleUpdate);
+    window.addEventListener('epi_data_updated', handleUpdate);
+    return () => {
+      window.removeEventListener('storage', handleUpdate);
+      window.removeEventListener('epi_data_updated', handleUpdate);
+    };
+  }, []);
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('epi_sidebar_collapsed', String(next));
+      } catch {}
+      return next;
+    });
+  };
 
   const handleResetDemo = async () => {
     if (
@@ -146,75 +180,170 @@ export default function Layout() {
     return name.slice(0, 2).toUpperCase();
   };
 
-  // Nav Items for each department
+  // Dynamic notification counters for navigation badges
+  const tDate = new Date().toISOString().slice(0, 10);
+  const salesTodayCount =
+    (snapshot?.salesWork || []).filter((w) => w.date === tDate && w.status !== 'Completed').length +
+    (snapshot?.clients || []).filter((c) => c.nextDate && c.nextDate <= tDate && c.status !== 'Completed').length;
+
+  const serviceTodayCount = (snapshot?.serviceWorks || []).filter(
+    (w) => w.date === tDate && w.status !== 'done'
+  ).length;
+
+  const mktPendingTasks = (snapshot?.marketingData?.tasks || []).filter(
+    (t) => t.status !== 'Done' && t.status !== 'Completed'
+  ).length;
+
+  const mktActiveCampaigns = (snapshot?.marketingData?.campaigns || []).filter(
+    (c) => c.status === 'Active'
+  ).length;
+
+  const itOpenTickets = (snapshot?.marketingData?.tickets || []).filter((t) =>
+    ['Open', 'In Progress'].includes(t.status)
+  ).length;
+
+  // Grouped Navigation Items for each department
   const getSidebarNav = () => {
     switch (activeDept) {
       case 'admin':
         return [
-          { to: '/admin', label: 'Executive Dashboard', icon: LayoutDashboard, end: true },
-          { to: '/admin/users', label: 'User Management', icon: Users },
-          { to: '/admin/audit', label: 'Security & Audit Logs', icon: ShieldCheck },
+          {
+            group: 'CENTRAL CONTROL',
+            items: [
+              { to: '/admin', label: 'Executive Dashboard', icon: LayoutDashboard, end: true },
+              { to: '/admin/users', label: 'User Management', icon: Users },
+              { to: '/admin/audit', label: 'Security & Audit Logs', icon: ShieldCheck },
+            ],
+          },
         ];
       case 'sales':
         return [
-          { to: '/sales/clients', label: 'Clients Master', icon: Briefcase },
-          { to: '/sales/new-work', label: 'Add Work', icon: CalendarPlus },
-          { to: '/sales/summary', label: 'Daily Summary', icon: ClipboardList },
-          { to: '/sales/reports', label: 'Activity Reports', icon: FileText },
-          { to: '/sales/edit-data', label: 'Edit Work Data', icon: Edit3 },
+          {
+            group: 'CORE OPERATIONS',
+            items: [
+              { to: '/sales', label: 'Sales Dashboard', icon: LayoutDashboard, end: true },
+              { to: '/sales/today', label: "Today's Work", icon: CalendarCheck, badge: salesTodayCount },
+              { to: '/sales/summary', label: 'Daily Summary', icon: ClipboardList },
+            ],
+          },
+          {
+            group: 'CLIENTS & WORK',
+            items: [
+              { to: '/sales/clients', label: 'Clients Master', icon: Briefcase },
+              { to: '/sales/new-client', label: 'Add Client', icon: UserPlus },
+              { to: '/sales/new-work', label: 'Add Work', icon: CalendarPlus },
+              { to: '/sales/edit-data', label: 'Edit Work Data', icon: Edit3 },
+              { to: '/sales/history', label: 'Work History', icon: History },
+            ],
+          },
+          {
+            group: 'REPORTS & ANALYTICS',
+            items: [
+              { to: '/sales/reports', label: 'Sales Reports & Print', icon: FileText },
+            ],
+          },
         ];
       case 'service':
         return [
-          { to: '/service/upcoming', label: 'Upcoming Work', icon: CalendarClock },
-          { to: '/service/calendar', label: 'Calendar / Dispatch', icon: Calendar },
-          { to: '/service/clients', label: 'Sales Clients', icon: Briefcase },
-          { to: '/service/servicing', label: 'Servicing Clients', icon: Wrench },
-          { to: '/service/maintenance', label: 'Maintenance Clients', icon: Settings2 },
-          { to: '/service/installation', label: 'Installation Sector', icon: Zap },
-          { to: '/service/general', label: 'General Work', icon: ClipboardList },
-          { to: '/service/warranty', label: 'Warranty Tracking', icon: ShieldCheck },
-          { to: '/service/new-order', label: 'Add Work Order', icon: PlusCircle },
-          { to: '/service/history', label: 'Work History', icon: History },
-          { to: '/service/reports', label: 'Schedule & Reports', icon: FileText },
-          { to: '/service/settings', label: 'Service Settings', icon: Sliders },
+          {
+            group: 'CORE OPERATIONS',
+            items: [
+              { to: '/service', label: 'Service Dashboard', icon: LayoutDashboard, end: true },
+              { to: '/service/today', label: 'Today Work', icon: CalendarCheck, badge: serviceTodayCount },
+              { to: '/service/upcoming', label: 'Upcoming Work', icon: CalendarClock },
+              { to: '/service/calendar', label: 'Calendar / Dispatch', icon: Calendar },
+            ],
+          },
+          {
+            group: 'CLIENT SECTORS',
+            items: [
+              { to: '/service/clients', label: 'Sales Clients', icon: Briefcase },
+              { to: '/service/servicing', label: 'Servicing Clients', icon: Wrench },
+              { to: '/service/maintenance', label: 'Maintenance Clients', icon: Settings2 },
+              { to: '/service/installation', label: 'Installation Sector', icon: Zap },
+              { to: '/service/general', label: 'General Work', icon: ClipboardList },
+              { to: '/service/warranty', label: 'Warranty Tracking', icon: ShieldCheck },
+            ],
+          },
+          {
+            group: 'WORK ORDERS',
+            items: [
+              { to: '/service/new-order', label: 'Add Work Order', icon: PlusCircle },
+              { to: '/service/history', label: 'Work History', icon: History },
+            ],
+          },
+          {
+            group: 'REPORTS & SETTINGS',
+            items: [
+              { to: '/service/reports', label: 'Schedule & Reports (Print)', icon: FileText },
+              { to: '/service/settings', label: 'Service Settings', icon: Sliders },
+            ],
+          },
         ];
       case 'accounts':
         return [
-          { to: '/accounts', label: 'Financial Dashboard', icon: LayoutDashboard, end: true },
-          { to: '/accounts/chart', label: 'Chart of Accounts', icon: BookOpen },
-          { to: '/accounts/journal', label: 'Journal & Vouchers', icon: FileText },
-          { to: '/accounts/banking', label: 'Cash & Bank', icon: Landmark },
-          { to: '/accounts/expenses', label: 'Expenses Ledger', icon: DollarSign },
-          { to: '/accounts/customers', label: 'Customers', icon: Users },
-          { to: '/accounts/suppliers', label: 'Suppliers', icon: Briefcase },
-          { to: '/accounts/invoices', label: 'Sales Invoices', icon: Receipt },
-          { to: '/accounts/bills', label: 'Purchase Bills', icon: FileText },
-          { to: '/accounts/payments', label: 'Receipts & Payments', icon: DollarSign },
-          { to: '/accounts/ageing', label: 'Ageing Analysis', icon: History },
-          { to: '/accounts/inventory', label: 'Inventory Items', icon: Package },
-          { to: '/accounts/vat', label: 'VAT Mushak-9.1', icon: ShieldCheck },
-          { to: '/accounts/payroll', label: 'Payroll & Salaries', icon: Users },
-          { to: '/accounts/assets', label: 'Fixed Assets', icon: Landmark },
-          { to: '/accounts/reports', label: 'Financial Reports', icon: PieChart },
-          { to: '/accounts/settings', label: 'Accounts Settings', icon: Sliders },
+          {
+            group: 'CORE ACCOUNTING',
+            items: [
+              { to: '/accounts', label: 'Financial Dashboard', icon: LayoutDashboard, end: true },
+              { to: '/accounts/chart', label: 'Chart of Accounts', icon: BookOpen },
+              { to: '/accounts/journal', label: 'Journal & Vouchers', icon: FileText },
+              { to: '/accounts/banking', label: 'Cash & Bank', icon: Landmark },
+              { to: '/accounts/expenses', label: 'Expenses Ledger', icon: DollarSign },
+            ],
+          },
+          {
+            group: 'SALES & PURCHASES',
+            items: [
+              { to: '/accounts/customers', label: 'Customers', icon: Users },
+              { to: '/accounts/suppliers', label: 'Suppliers', icon: Briefcase },
+              { to: '/accounts/invoices', label: 'Sales Invoices', icon: Receipt },
+              { to: '/accounts/bills', label: 'Purchase Bills', icon: FileText },
+              { to: '/accounts/payments', label: 'Receipts & Payments', icon: DollarSign },
+            ],
+          },
+          {
+            group: 'REPORTS & COMPLIANCE',
+            items: [
+              { to: '/accounts/ageing', label: 'Ageing Analysis', icon: History },
+              { to: '/accounts/inventory', label: 'Inventory Items', icon: Package },
+              { to: '/accounts/vat', label: 'VAT Mushak-9.1', icon: ShieldCheck },
+              { to: '/accounts/payroll', label: 'Payroll & Salaries', icon: Users },
+              { to: '/accounts/assets', label: 'Fixed Assets', icon: Landmark },
+              { to: '/accounts/reports', label: 'Financial Reports & Print', icon: PieChart },
+              { to: '/accounts/settings', label: 'Accounts Settings', icon: Sliders },
+            ],
+          },
         ];
       case 'marketing':
         return [
-          { to: '/marketing/social', label: 'Content & Social Posts', icon: Share2 },
-          { to: '/marketing/campaigns', label: 'Campaign Management', icon: Target },
-          { to: '/marketing/marketing-reports', label: 'Marketing Reports', icon: FileText },
-          { to: '/marketing/it-dashboard', label: 'IT Support Dashboard', icon: Activity },
-          { to: '/marketing/tickets', label: 'IT Work Management', icon: Headphones },
-          { to: '/marketing/devices', label: 'Basic Device Management', icon: Laptop },
-          { to: '/marketing/it-history', label: 'IT Work History', icon: History },
-          { to: '/marketing/it-reports', label: 'IT Reports', icon: FileCheck },
+          {
+            group: 'DIGITAL MARKETING',
+            items: [
+              { to: '/marketing', label: 'Marketing Dashboard', icon: LayoutDashboard, end: true },
+              { to: '/marketing/tasks', label: 'Work / Task Management', icon: CheckSquare, badge: mktPendingTasks },
+              { to: '/marketing/social', label: 'Content & Social Posts', icon: Share2 },
+              { to: '/marketing/campaigns', label: 'Campaign Management', icon: Target, badge: mktActiveCampaigns },
+              { to: '/marketing/marketing-reports', label: 'Marketing Reports & Print', icon: FileText },
+            ],
+          },
+          {
+            group: 'IT SUPPORT HELPDESK',
+            items: [
+              { to: '/marketing/it-dashboard', label: 'IT Support Dashboard', icon: Activity },
+              { to: '/marketing/tickets', label: 'IT Work Management', icon: Headphones, badge: itOpenTickets },
+              { to: '/marketing/devices', label: 'Basic Device Management', icon: Laptop },
+              { to: '/marketing/it-history', label: 'IT Work History', icon: History },
+              { to: '/marketing/it-reports', label: 'IT Reports & Print', icon: FileCheck },
+            ],
+          },
         ];
       default:
         return [];
     }
   };
 
-  const navItems = getSidebarNav();
+  const navGroups = getSidebarNav();
 
   return (
     <div className="app-layout">
@@ -464,19 +593,41 @@ export default function Layout() {
       </header>
 
       <div className="app-body-container">
-        {/* Universal Modular Sidebar */}
-        <aside className={`app-sidebar ${mobileMenuOpen ? 'sidebar-open' : ''}`}>
+        {/* Universal Modular Sidebar with Expand/Collapse & Grouped Navigation */}
+        <aside
+          className={`app-sidebar ${mobileMenuOpen ? 'sidebar-open' : ''} ${
+            sidebarCollapsed ? 'sidebar-collapsed' : ''
+          }`}
+        >
           <div className="sidebar-header-line">
-            <span className="sidebar-dept-tag">
-              {activeDept === 'admin' && 'CENTRAL CONTROL'}
-              {activeDept === 'sales' && 'SALES DEPARTMENT'}
-              {activeDept === 'service' && 'SERVICE DEPARTMENT'}
-              {activeDept === 'accounts' && 'ACCOUNTS & ERP'}
-              {activeDept === 'marketing' && 'DIGITAL MARKETING & IT SUPPORT'}
-            </span>
-            <button className="sidebar-close-btn" onClick={() => setMobileMenuOpen(false)}>
-              <X size={18} />
-            </button>
+            {!sidebarCollapsed && (
+              <span className="sidebar-dept-tag">
+                {activeDept === 'admin' && 'CENTRAL CONTROL'}
+                {activeDept === 'sales' && 'SALES DEPARTMENT'}
+                {activeDept === 'service' && 'SERVICE DEPARTMENT'}
+                {activeDept === 'accounts' && 'ACCOUNTS & ERP'}
+                {activeDept === 'marketing' && 'DIGITAL MARKETING & IT'}
+              </span>
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto' }}>
+              <button
+                type="button"
+                className="sidebar-collapse-toggle"
+                onClick={toggleSidebar}
+                title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+                aria-label="Toggle Sidebar Collapse"
+              >
+                {sidebarCollapsed ? <PanelLeftOpen size={15} /> : <PanelLeftClose size={15} />}
+              </button>
+              <button
+                type="button"
+                className="sidebar-close-btn"
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Close Mobile Menu"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
           {/* Mobile Department Switcher (Visible on mobile/tablet drawer) */}
@@ -542,28 +693,53 @@ export default function Layout() {
 
           <div className="sidebar-scroll">
             <nav className="sidebar-nav-list">
-              {navItems.map((item, idx) => {
-                const Icon = item.icon;
-                return (
-                  <NavLink
-                    key={idx}
-                    to={item.to}
-                    end={item.end}
-                    className={({ isActive }) => `sidebar-nav-link ${isActive ? 'active' : ''}`}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Icon size={17} className="nav-icon" />
-                    <span>{item.label}</span>
-                  </NavLink>
-                );
-              })}
+              {navGroups.map((groupObj, gIdx) => (
+                <div key={gIdx} className="sidebar-group">
+                  {!sidebarCollapsed && (
+                    <div className="sidebar-group-title">{groupObj.group}</div>
+                  )}
+                  {groupObj.items.map((item, idx) => {
+                    const Icon = item.icon;
+                    return (
+                      <NavLink
+                        key={idx}
+                        to={item.to}
+                        end={item.end}
+                        title={sidebarCollapsed ? `${groupObj.group}: ${item.label}` : undefined}
+                        className={({ isActive }) => `sidebar-nav-link ${isActive ? 'active' : ''}`}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Icon size={17} className="nav-icon" />
+                        {!sidebarCollapsed && <span>{item.label}</span>}
+                        {item.badge > 0 && (
+                          <span
+                            className="sidebar-badge"
+                            style={
+                              activeDept === 'sales'
+                                ? { background: '#0052cc' }
+                                : activeDept === 'service'
+                                ? { background: '#059669' }
+                                : activeDept === 'marketing'
+                                ? { background: '#7c3aed' }
+                                : undefined
+                            }
+                            title={`${item.badge} pending / scheduled`}
+                          >
+                            {item.badge}
+                          </span>
+                        )}
+                      </NavLink>
+                    );
+                  })}
+                </div>
+              ))}
             </nav>
           </div>
 
           <div className="sidebar-footer">
             <button className="sidebar-logout-link" onClick={handleLogout}>
               <LogOut size={16} />
-              <span>Log Out</span>
+              {!sidebarCollapsed && <span>Log Out</span>}
             </button>
           </div>
         </aside>

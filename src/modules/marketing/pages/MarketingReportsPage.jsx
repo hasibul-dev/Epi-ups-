@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   FileText,
   Printer,
@@ -10,25 +10,65 @@ import {
   Award,
   Upload,
   Database,
+  Calendar,
+  CheckSquare,
+  Search,
+  Eye,
+  FileSpreadsheet,
+  Target,
 } from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
-import { today } from '../../sales/utils/helpers.js';
+import { today, addDays, fmt } from '../../sales/utils/helpers.js';
+import { exportToPdf, exportToCsv, triggerPrint } from '../../../services/reportExport.js';
+import { PrintHeader, PrintSignatures } from '../../sales/components/PrintHeader.jsx';
+
+const MKT_REPORTS = [
+  { id: 'campaign', label: 'Campaign Performance Report', icon: Target, desc: 'B2B ad campaigns, budgets, actual spend, impressions, CTR & cost per lead' },
+  { id: 'content', label: 'Social Media Content Report', icon: Share2, desc: 'Editorial content planning, publication schedule, themes & platforms' },
+  { id: 'published', label: 'Published Posts Report', icon: FileText, desc: 'Audited log of live published social media content & engagement metrics' },
+  { id: 'leads', label: 'Lead Generation Report', icon: Users, desc: 'Industrial UPS lead capture breakdown, source platform & conversion rates' },
+  { id: 'activity', label: 'Marketing Activity Report', icon: CheckSquare, desc: 'Department team tasks, creative production requests & asset library usage' },
+];
 
 export default function MarketingReportsPage() {
   const { data, exportBackup, importBackup } = useMarketing();
-  const { campaigns, posts, ads, systemSettings } = data;
-  const printRef = useRef();
+  const { campaigns = [], posts = [], ads = [], tasks = [], creativeRequests = [], systemSettings = {} } = data;
+
+  const [activeReport, setActiveReport] = useState('campaign');
+  const [from, setFrom] = useState(addDays(today(), -30));
+  const [to, setTo] = useState(today());
+  const [platformFilter, setPlatformFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [previewMode, setPreviewMode] = useState(false);
+
+  // Quick Date Presets
+  const setPreset = (preset) => {
+    const t = today();
+    if (preset === 'today') {
+      setFrom(t);
+      setTo(t);
+    } else if (preset === '7days') {
+      setFrom(addDays(t, -6));
+      setTo(t);
+    } else if (preset === '30days') {
+      setFrom(addDays(t, -29));
+      setTo(t);
+    } else if (preset === 'thisMonth') {
+      const parts = t.split('-');
+      setFrom(`${parts[0]}-${parts[1]}-01`);
+      setTo(t);
+    } else if (preset === 'all') {
+      setFrom('2020-01-01');
+      setTo('2099-12-31');
+    }
+  };
 
   const handleImportFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const confirmed = window.confirm(
       `⚠️ WARNING: OVERWRITE MARKETING & IT DATA\n\n` +
-      `Importing this backup will OVERWRITE your current records:\n` +
-      `- Campaigns: ${campaigns.length}\n` +
-      `- Posts: ${posts.length}\n` +
-      `- Ads: ${ads.length}\n\n` +
-      `Existing records will be completely replaced by the data in the imported backup file.\n` +
+      `Importing this backup will OVERWRITE your current records.\n` +
       `Are you sure you want to proceed?`
     );
     if (!confirmed) {
@@ -48,209 +88,640 @@ export default function MarketingReportsPage() {
     e.target.value = '';
   };
 
+  // KPI calculations
   const totalBudget = campaigns.reduce((acc, c) => acc + (c.budget || 0), 0);
   const totalSpend = campaigns.reduce((acc, c) => acc + (c.spend || 0), 0);
   const totalLeads = campaigns.reduce((acc, c) => acc + (c.leadsGenerated || 0), 0);
   const totalImpressions = campaigns.reduce((acc, c) => acc + (c.impressions || 0), 0);
   const totalClicks = campaigns.reduce((acc, c) => acc + (c.clicks || 0), 0);
-
   const avgCPL = totalLeads > 0 ? Math.round(totalSpend / totalLeads) : 0;
   const avgCTR = totalImpressions > 0 ? ((totalClicks / totalImpressions) * 100).toFixed(2) : 0;
 
-  const handlePrint = () => {
-    window.print();
+  const q = searchQuery.trim().toLowerCase();
+
+  // Filtered rows for current report
+  const getFilteredData = () => {
+    if (activeReport === 'campaign') {
+      return campaigns.filter((c) => {
+        if (platformFilter && !c.platforms?.includes(platformFilter)) return false;
+        if (q) {
+          const match = [c.name, c.focusProduct, c.targetAudience, c.assignedEmployee].filter(Boolean).join(' ').toLowerCase();
+          if (!match.includes(q)) return false;
+        }
+        return true;
+      });
+    } else if (activeReport === 'content' || activeReport === 'published') {
+      return posts.filter((p) => {
+        if (activeReport === 'published' && p.status !== 'Published') return false;
+        if (platformFilter && p.platform !== platformFilter) return false;
+        if (from && p.scheduledDate && p.scheduledDate < from) return false;
+        if (to && p.scheduledDate && p.scheduledDate > to) return false;
+        if (q) {
+          const match = [p.title, p.topic, p.caption, p.platform].filter(Boolean).join(' ').toLowerCase();
+          if (!match.includes(q)) return false;
+        }
+        return true;
+      });
+    } else if (activeReport === 'leads') {
+      return campaigns.map((c) => ({
+        campaign: c.name,
+        product: c.focusProduct,
+        platforms: c.platforms?.join(', '),
+        leadTarget: c.leadTarget || 0,
+        leadsGenerated: c.leadsGenerated || 0,
+        spend: c.spend || 0,
+        cpl: c.leadsGenerated > 0 ? Math.round((c.spend || 0) / c.leadsGenerated) : 0,
+        status: c.status,
+      })).filter((l) => {
+        if (q && !String(l.campaign + ' ' + l.product).toLowerCase().includes(q)) return false;
+        return true;
+      });
+    } else {
+      // Activity
+      return tasks.filter((t) => {
+        if (q) {
+          const match = [t.title, t.description, t.assignedTo, t.priority, t.status].filter(Boolean).join(' ').toLowerCase();
+          if (!match.includes(q)) return false;
+        }
+        return true;
+      });
+    }
   };
 
-  const handleExportCSV = () => {
-    let csv = 'Campaign Name,Status,Platforms,Budget,Spend,Leads Generated,Lead Target,Impressions,Clicks,Assigned\n';
-    campaigns.forEach((c) => {
-      csv += `"${c.name}","${c.status}","${c.platforms.join('; ')}",${c.budget},${c.spend},${c.leadsGenerated},${c.leadTarget},${c.impressions},${c.clicks},"${c.assignedEmployee}"\n`;
+  const filteredData = getFilteredData();
+  const activeDef = MKT_REPORTS.find((r) => r.id === activeReport) || MKT_REPORTS[0];
+
+  // PDF Export
+  const handleExportPdf = () => {
+    const dateRangeStr = `${fmt(from)} to ${fmt(to)}`;
+    let headers = [];
+    let pdfRows = [];
+
+    if (activeReport === 'campaign') {
+      headers = ['SL', 'Campaign Name', 'Focus Product', 'Platforms', 'Budget (BDT)', 'Spend (BDT)', 'Leads', 'CPL', 'Status'];
+      pdfRows = filteredData.map((c, i) => [
+        i + 1,
+        c.name,
+        c.focusProduct || 'Industrial UPS',
+        (c.platforms || []).join(', '),
+        `Tk ${c.budget?.toLocaleString()}`,
+        `Tk ${c.spend?.toLocaleString()}`,
+        c.leadsGenerated || 0,
+        c.leadsGenerated > 0 ? `Tk ${Math.round(c.spend / c.leadsGenerated)}` : '-',
+        c.status || 'Active',
+      ]);
+    } else if (activeReport === 'content' || activeReport === 'published') {
+      headers = ['SL', 'Post Title & Topic', 'Platform', 'Scheduled Date', 'Status', 'Engagement / Reach', 'Author'];
+      pdfRows = filteredData.map((p, i) => [
+        i + 1,
+        p.title || p.topic || 'Social Post',
+        p.platform || 'LinkedIn',
+        p.scheduledDate ? fmt(p.scheduledDate) : 'N/A',
+        p.status || 'Draft',
+        p.engagement ? `${p.engagement} interactions` : (p.views ? `${p.views} views` : 'Pending'),
+        p.author || 'Marketing Team',
+      ]);
+    } else if (activeReport === 'leads') {
+      headers = ['SL', 'Campaign', 'Focus Solution', 'Platforms', 'Lead Target', 'Actual Leads', 'Spend (BDT)', 'CPL', 'Status'];
+      pdfRows = filteredData.map((l, i) => [
+        i + 1,
+        l.campaign,
+        l.product,
+        l.platforms,
+        l.leadTarget,
+        l.leadsGenerated,
+        `Tk ${l.spend?.toLocaleString()}`,
+        `Tk ${l.cpl}`,
+        l.status,
+      ]);
+    } else {
+      headers = ['SL', 'Task Title', 'Assigned To', 'Priority', 'Due Date', 'Status'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.title,
+        t.assignedTo || 'Unassigned',
+        t.priority || 'Normal',
+        t.dueDate ? fmt(t.dueDate) : 'N/A',
+        t.status || 'Pending',
+      ]);
+    }
+
+    exportToPdf({
+      title: activeDef.label,
+      department: 'Marketing',
+      subtitle: activeDef.desc,
+      dateRange: dateRangeStr,
+      headers,
+      rows: pdfRows,
+      summary: {
+        'Total Budget': `Tk ${totalBudget.toLocaleString()}`,
+        'Total Spend': `Tk ${totalSpend.toLocaleString()}`,
+        'Total Leads': `${totalLeads} Leads`,
+        'Average CPL': `Tk ${avgCPL}`,
+        'Average CTR': `${avgCTR}%`,
+      },
+      orientation: 'landscape',
     });
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `EPI-Marketing-Performance-Report-${today()}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  };
+
+  // Excel CSV Export
+  const handleExportCsv = () => {
+    let headers = [];
+    let csvRows = [];
+
+    if (activeReport === 'campaign') {
+      headers = ['SL No', 'Campaign Name', 'Focus Product', 'Platforms', 'Budget', 'Spend', 'Leads Generated', 'Impressions', 'Clicks', 'Status'];
+      csvRows = filteredData.map((c, i) => [
+        i + 1,
+        c.name,
+        c.focusProduct,
+        (c.platforms || []).join('; '),
+        c.budget,
+        c.spend,
+        c.leadsGenerated,
+        c.impressions,
+        c.clicks,
+        c.status,
+      ]);
+    } else if (activeReport === 'content' || activeReport === 'published') {
+      headers = ['SL No', 'Title', 'Platform', 'Scheduled Date', 'Status', 'Caption'];
+      csvRows = filteredData.map((p, i) => [
+        i + 1,
+        p.title || p.topic,
+        p.platform,
+        p.scheduledDate,
+        p.status,
+        p.caption,
+      ]);
+    } else {
+      headers = ['SL No', 'Task', 'Assigned To', 'Priority', 'Due Date', 'Status'];
+      csvRows = filteredData.map((t, i) => [
+        i + 1,
+        t.title,
+        t.assignedTo,
+        t.priority,
+        t.dueDate,
+        t.status,
+      ]);
+    }
+
+    exportToCsv({
+      title: activeDef.label,
+      department: 'Digital Marketing Department',
+      dateRange: `${from} to ${to}`,
+      headers,
+      rows: csvRows,
+    });
+  };
+
+  const handleTriggerPrint = () => {
+    triggerPrint(`EPI-UPS-${activeDef.label.replace(/\s+/g, '-')}-${today()}`);
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-4">
+      {/* 1. Header Banner */}
       <div className="mkt-hero-banner">
         <div className="mkt-hero-info">
-          <div className="mkt-hero-badge">PERFORMANCE AUDIT & ANALYTICS</div>
-          <h2>Marketing Analytics & Performance Reports</h2>
+          <div className="mkt-hero-badge">PERFORMANCE AUDIT &amp; ANALYTICS</div>
+          <h2>Digital Marketing Performance Reports</h2>
           <p>
-            Executive audit of campaign ROI, B2B lead generation efficiency, and social engagement
+            Formal company audit of marketing campaigns, B2B lead generation, social media reach &amp; team activity
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => exportBackup()}
-            className="btn-mkt-secondary"
-            title="Download JSON Backup"
-          >
+          <button onClick={() => exportBackup()} className="btn-mkt-secondary" title="Download JSON Backup">
             <Database size={14} className="text-sky-400" />
-            <span>Backup JSON</span>
+            <span>Backup</span>
           </button>
-          <label
-            className="btn-mkt-secondary cursor-pointer"
-            title="Restore from JSON Backup"
-          >
+          <label className="btn-mkt-secondary cursor-pointer" title="Restore from JSON Backup">
             <Upload size={14} className="text-cyan-400" />
-            <span>Import Backup</span>
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleImportFile}
-              className="hidden"
-            />
+            <span>Import</span>
+            <input type="file" accept=".json" onChange={handleImportFile} className="hidden" />
           </label>
-          <button
-            onClick={handleExportCSV}
-            className="btn-mkt-secondary"
-          >
-            <Download size={14} />
-            <span>Export CSV</span>
-          </button>
-          <button
-            onClick={handlePrint}
-            className="btn-mkt-primary"
-          >
-            <Printer size={14} />
-            <span>Print Report</span>
-          </button>
         </div>
       </div>
 
-      {/* Printable Report Canvas */}
-      <div ref={printRef} className="mkt-card space-y-6">
-        {/* Report Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-800 pb-4">
+      {/* 2. Report Selector Pill Bar */}
+      <div className="panel no-print" style={{ padding: '14px 18px', background: 'rgba(14, 22, 38, 0.75)' }}>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {MKT_REPORTS.map((r) => {
+            const Icon = r.icon;
+            const active = activeReport === r.id;
+            return (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => setActiveReport(r.id)}
+                className={`btn ${active ? 'btn-primary-highlight' : 'btn-secondary'}`}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 7,
+                  padding: '8px 14px',
+                  borderRadius: 8,
+                  fontSize: 12.5,
+                  fontWeight: active ? 700 : 500,
+                  cursor: 'pointer',
+                  border: active ? '1px solid rgba(168, 85, 247, 0.45)' : '1px solid rgba(255, 255, 255, 0.08)',
+                }}
+              >
+                <Icon size={14} />
+                <span>{r.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 3. Filter Controls Toolbar */}
+      <div className="panel no-print" style={{ padding: '16px 20px', background: 'rgba(14, 22, 38, 0.75)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 12 }}>
           <div>
-            <div className="text-lg font-bold text-white">{systemSettings.companyName}</div>
-            <div className="text-xs text-sky-400 font-semibold uppercase tracking-wider mt-0.5">
-              {systemSettings.departmentName} — Executive Performance Report
-            </div>
+            <b style={{ color: '#c084fc', fontSize: 14 }}>{activeDef.label}</b>
+            <span className="muted" style={{ fontSize: 12, marginLeft: 8 }}>
+              {activeDef.desc}
+            </span>
           </div>
-          <div className="text-right text-xs text-slate-400 mt-2 sm:mt-0">
-            <div>Generated: {today()}</div>
-            <div>Prepared by: {systemSettings.marketingLead}</div>
+
+          {/* Quick Date Presets */}
+          <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', marginRight: 4, textTransform: 'uppercase' }}>
+              Presets:
+            </span>
+            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('today')}>Today</button>
+            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('7days')}>7 Days</button>
+            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('30days')}>30 Days</button>
+            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('thisMonth')}>This Month</button>
+            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('all')}>All Time</button>
           </div>
         </div>
 
-        {/* Executive Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400">Total Budget Allocated</div>
-            <div className="text-xl font-bold text-white mt-1">৳{totalBudget.toLocaleString()}</div>
-            <div className="text-[11px] text-slate-400 mt-1">
-              Actual Spend: ৳{totalSpend.toLocaleString()}
+        <div className="report-toolbar" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, alignItems: 'end' }}>
+          <div className="field">
+            <label style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>Start Date</label>
+            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ padding: '6px 10px', fontSize: 12 }} />
+          </div>
+
+          <div className="field">
+            <label style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>End Date</label>
+            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ padding: '6px 10px', fontSize: 12 }} />
+          </div>
+
+          <div className="field">
+            <label style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>Filter Platform</label>
+            <select
+              value={platformFilter}
+              onChange={(e) => setPlatformFilter(e.target.value)}
+              style={{ padding: '6px 10px', fontSize: 12 }}
+            >
+              <option value="">All Social &amp; Ad Platforms</option>
+              <option value="Facebook">Facebook Page</option>
+              <option value="LinkedIn">LinkedIn Company</option>
+              <option value="Google Ads">Google Search / Display</option>
+              <option value="YouTube">YouTube Video</option>
+            </select>
+          </div>
+
+          <div className="field">
+            <label style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>Search Keyword</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                type="text"
+                placeholder="Search campaign, product, caption..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ padding: '6px 10px 6px 30px', fontSize: 12, width: '100%' }}
+              />
+              <Search size={13} style={{ position: 'absolute', left: 10, top: 10, color: '#94a3b8' }} />
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400">Total Leads Generated</div>
-            <div className="text-xl font-bold text-emerald-400 mt-1">{totalLeads} Leads</div>
-            <div className="text-[11px] text-slate-400 mt-1">Average CPL: ৳{avgCPL}</div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400">Total Impressions</div>
-            <div className="text-xl font-bold text-sky-400 mt-1">{totalImpressions.toLocaleString()}</div>
-            <div className="text-[11px] text-slate-400 mt-1">Clicks: {totalClicks.toLocaleString()}</div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400">Average Click-Through Rate</div>
-            <div className="text-xl font-bold text-blue-400 mt-1">{avgCTR}%</div>
-            <div className="text-[11px] text-emerald-400 mt-1">Above B2B industry average</div>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setPreviewMode(!previewMode)}
+              style={{ padding: '7px 12px', fontSize: 12.5 }}
+              title="Toggle A4 Print Preview"
+            >
+              <Eye size={13} />
+              <span>{previewMode ? 'Live Table' : 'Print Preview'}</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleExportCsv}
+              style={{ padding: '7px 12px', fontSize: 12.5 }}
+              title="Export formatted Excel CSV"
+            >
+              <FileSpreadsheet size={13} />
+              <span>Excel</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleExportPdf}
+              style={{ padding: '7px 12px', fontSize: 12.5 }}
+              title="Export PDF Document"
+            >
+              <Download size={13} />
+              <span>PDF</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary-highlight"
+              onClick={handleTriggerPrint}
+              style={{ padding: '7px 14px', fontSize: 12.5 }}
+            >
+              <Printer size={13} />
+              <span>Print</span>
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Detailed Campaigns Table */}
-        <div className="space-y-3">
-          <h2 className="text-sm font-bold text-white">Campaign Details & Financial Auditing</h2>
+      {/* 4. Executive KPI Summary Cards */}
+      <div className="grid" style={{ marginBottom: 14 }}>
+        <div className="stat">
+          <b>৳{totalBudget.toLocaleString()}</b>
+          <span>Total Allocated Budget</span>
+        </div>
+        <div className="stat">
+          <b style={{ color: '#c084fc' }}>৳{totalSpend.toLocaleString()}</b>
+          <span>Total Actual Spend</span>
+        </div>
+        <div className="stat">
+          <b style={{ color: '#34d399' }}>{totalLeads} Leads</b>
+          <span>Total Leads Generated</span>
+        </div>
+        <div className="stat">
+          <b style={{ color: '#38bdf8' }}>৳{avgCPL}</b>
+          <span>Average Cost Per Lead (CPL)</span>
+        </div>
+      </div>
+
+      {/* 5. Print Preview or Live Table */}
+      {previewMode ? (
+        <div
+          className="panel print-page-container"
+          style={{
+            background: '#ffffff',
+            color: '#0f172a',
+            padding: '32px 36px',
+            borderRadius: 8,
+            boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
+            maxWidth: '1000px',
+            margin: '0 auto',
+          }}
+        >
+          <PrintHeader
+            title={activeDef.label}
+            department="DIGITAL MARKETING DEPARTMENT"
+            dateRange={`${fmt(from)} to ${fmt(to)}`}
+            subtitle={activeDef.desc}
+          />
+
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
+            <thead>
+              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
+                <th style={{ padding: '8px 6px', textAlign: 'left', fontSize: 11, color: '#334155' }}>SL</th>
+                {activeReport === 'campaign' ? (
+                  <>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Campaign Name</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Focus Solution</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Platforms</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Budget</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Actual Spend</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Leads</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Status</th>
+                  </>
+                ) : activeReport === 'content' || activeReport === 'published' ? (
+                  <>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Post Title &amp; Topic</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Platform</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Scheduled Date</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Status</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Engagement</th>
+                  </>
+                ) : activeReport === 'leads' ? (
+                  <>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Campaign</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Target Product</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Target Leads</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Actual Leads</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Spend</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>CPL</th>
+                  </>
+                ) : (
+                  <>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Task Title</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Assigned To</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Priority</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Due Date</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Status</th>
+                  </>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredData.length > 0 ? (
+                filteredData.map((row, i) => (
+                  <tr key={row.id || i} style={{ borderBottom: '1px solid #e2e8f0', fontSize: 10.5 }}>
+                    <td style={{ padding: '6px 6px', color: '#64748b' }}>{i + 1}</td>
+                    {activeReport === 'campaign' ? (
+                      <>
+                        <td style={{ padding: '6px 8px', fontWeight: 600 }}>{row.name}</td>
+                        <td style={{ padding: '6px 8px', color: '#475569' }}>{row.focusProduct || 'Industrial UPS'}</td>
+                        <td style={{ padding: '6px 8px', color: '#7c3aed', fontWeight: 600 }}>{(row.platforms || []).join(', ')}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right' }}>৳{row.budget?.toLocaleString()}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 600 }}>৳{row.spend?.toLocaleString()}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#059669', fontWeight: 700 }}>{row.leadsGenerated || 0}</td>
+                        <td style={{ padding: '6px 8px' }}>
+                          <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9.5, fontWeight: 700, background: '#ecfdf5', color: '#059669' }}>
+                            {row.status}
+                          </span>
+                        </td>
+                      </>
+                    ) : activeReport === 'content' || activeReport === 'published' ? (
+                      <>
+                        <td style={{ padding: '6px 8px', fontWeight: 600 }}>{row.title || row.topic}</td>
+                        <td style={{ padding: '6px 8px', color: '#0052cc', fontWeight: 600 }}>{row.platform}</td>
+                        <td style={{ padding: '6px 8px' }}>{row.scheduledDate ? fmt(row.scheduledDate) : '-'}</td>
+                        <td style={{ padding: '6px 8px' }}>
+                          <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9.5, fontWeight: 700, background: '#f1f5f9', color: '#334155' }}>
+                            {row.status}
+                          </span>
+                        </td>
+                        <td style={{ padding: '6px 8px', color: '#059669' }}>{row.engagement || 'Recorded Live'}</td>
+                      </>
+                    ) : activeReport === 'leads' ? (
+                      <>
+                        <td style={{ padding: '6px 8px', fontWeight: 600 }}>{row.campaign}</td>
+                        <td style={{ padding: '6px 8px' }}>{row.product}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right' }}>{row.leadTarget}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 700, color: '#059669' }}>{row.leadsGenerated}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right' }}>৳{row.spend?.toLocaleString()}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#0052cc', fontWeight: 600 }}>৳{row.cpl}</td>
+                      </>
+                    ) : (
+                      <>
+                        <td style={{ padding: '6px 8px', fontWeight: 600 }}>{row.title}</td>
+                        <td style={{ padding: '6px 8px' }}>{row.assignedTo || 'Unassigned'}</td>
+                        <td style={{ padding: '6px 8px' }}>{row.priority}</td>
+                        <td style={{ padding: '6px 8px' }}>{row.dueDate ? fmt(row.dueDate) : '-'}</td>
+                        <td style={{ padding: '6px 8px' }}>{row.status}</td>
+                      </>
+                    )}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} style={{ padding: 24, textAlign: 'center', color: '#94a3b8' }}>
+                    No records found for the selected period and criteria.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          <PrintSignatures
+            roles={['Marketing Executive', 'Head of Digital Marketing', 'Managing Director']}
+          />
+        </div>
+      ) : (
+        /* Live Table */
+        <div className="mkt-card">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-slate-700 text-[11px] uppercase tracking-wider text-slate-400">
-                  <th className="py-2.5 px-3">Campaign</th>
-                  <th className="py-2.5 px-3">Platforms</th>
-                  <th className="py-2.5 px-3">Dates</th>
-                  <th className="py-2.5 px-3 text-right">Budget</th>
-                  <th className="py-2.5 px-3 text-right">Spend</th>
-                  <th className="py-2.5 px-3 text-right">Leads</th>
-                  <th className="py-2.5 px-3 text-right">Est. CPL</th>
-                  <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2.5 px-3">SL</th>
+                  {activeReport === 'campaign' ? (
+                    <>
+                      <th className="py-2.5 px-3">Campaign Name</th>
+                      <th className="py-2.5 px-3">Platforms</th>
+                      <th className="py-2.5 px-3 text-right">Budget</th>
+                      <th className="py-2.5 px-3 text-right">Actual Spend</th>
+                      <th className="py-2.5 px-3 text-right">Leads</th>
+                      <th className="py-2.5 px-3 text-right">Est. CPL</th>
+                      <th className="py-2.5 px-3">Status</th>
+                    </>
+                  ) : activeReport === 'content' || activeReport === 'published' ? (
+                    <>
+                      <th className="py-2.5 px-3">Post Title</th>
+                      <th className="py-2.5 px-3">Platform</th>
+                      <th className="py-2.5 px-3">Scheduled Date</th>
+                      <th className="py-2.5 px-3">Status</th>
+                      <th className="py-2.5 px-3">Reach</th>
+                    </>
+                  ) : activeReport === 'leads' ? (
+                    <>
+                      <th className="py-2.5 px-3">Campaign</th>
+                      <th className="py-2.5 px-3">Focus Product</th>
+                      <th className="py-2.5 px-3 text-right">Target Leads</th>
+                      <th className="py-2.5 px-3 text-right">Actual Leads</th>
+                      <th className="py-2.5 px-3 text-right">Spend</th>
+                      <th className="py-2.5 px-3 text-right">CPL</th>
+                    </>
+                  ) : (
+                    <>
+                      <th className="py-2.5 px-3">Task Title</th>
+                      <th className="py-2.5 px-3">Assigned To</th>
+                      <th className="py-2.5 px-3">Priority</th>
+                      <th className="py-2.5 px-3">Due Date</th>
+                      <th className="py-2.5 px-3">Status</th>
+                    </>
+                  )}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
-                {campaigns.map((camp) => {
-                  const cpl = camp.leadsGenerated > 0 ? Math.round(camp.spend / camp.leadsGenerated) : 0;
-                  return (
-                    <tr key={camp.id} className="hover:bg-slate-800/30">
-                      <td className="py-2.5 px-3">
-                        <div className="font-semibold text-white">{camp.name}</div>
-                        <div className="text-[11px] text-slate-400">{camp.focusProduct}</div>
-                      </td>
-                      <td className="py-2.5 px-3 text-slate-300">{camp.platforms.join(', ')}</td>
-                      <td className="py-2.5 px-3 text-slate-400 text-[11px]">
-                        {camp.startDate} to {camp.endDate}
-                      </td>
-                      <td className="py-2.5 px-3 text-right font-mono text-slate-300">
-                        ৳{camp.budget?.toLocaleString()}
-                      </td>
-                      <td className="py-2.5 px-3 text-right font-mono text-slate-200 font-semibold">
-                        ৳{camp.spend?.toLocaleString()}
-                      </td>
-                      <td className="py-2.5 px-3 text-right font-bold text-emerald-400">
-                        {camp.leadsGenerated}
-                      </td>
-                      <td className="py-2.5 px-3 text-right font-mono text-sky-300">
-                        ৳{cpl}
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                            camp.status === 'Active'
-                              ? 'bg-emerald-500/20 text-emerald-300'
-                              : 'bg-slate-800 text-slate-400'
-                          }`}
-                        >
-                          {camp.status}
-                        </span>
-                      </td>
+                {filteredData.length > 0 ? (
+                  filteredData.map((row, i) => (
+                    <tr key={row.id || i} className="hover:bg-slate-800/30">
+                      <td className="py-2.5 px-3 text-slate-500">{i + 1}</td>
+                      {activeReport === 'campaign' ? (
+                        <>
+                          <td className="py-2.5 px-3">
+                            <div className="font-semibold text-white">{row.name}</div>
+                            <div className="text-[11px] text-slate-400">{row.focusProduct}</div>
+                          </td>
+                          <td className="py-2.5 px-3 text-purple-300 font-semibold">
+                            {(row.platforms || []).join(', ')}
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-mono text-slate-300">
+                            ৳{row.budget?.toLocaleString()}
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-mono text-slate-200 font-semibold">
+                            ৳{row.spend?.toLocaleString()}
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-bold text-emerald-400">
+                            {row.leadsGenerated || 0}
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-mono text-sky-300">
+                            ৳{row.leadsGenerated > 0 ? Math.round(row.spend / row.leadsGenerated) : 0}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                                row.status === 'Active'
+                                  ? 'bg-emerald-500/20 text-emerald-300'
+                                  : 'bg-slate-800 text-slate-400'
+                              }`}
+                            >
+                              {row.status}
+                            </span>
+                          </td>
+                        </>
+                      ) : activeReport === 'content' || activeReport === 'published' ? (
+                        <>
+                          <td className="py-2.5 px-3 font-semibold text-white">{row.title || row.topic}</td>
+                          <td className="py-2.5 px-3 text-sky-400">{row.platform}</td>
+                          <td className="py-2.5 px-3 text-slate-400">{row.scheduledDate ? fmt(row.scheduledDate) : '-'}</td>
+                          <td className="py-2.5 px-3">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-300">
+                              {row.status}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-3 text-emerald-400">{row.engagement || 'Active'}</td>
+                        </>
+                      ) : activeReport === 'leads' ? (
+                        <>
+                          <td className="py-2.5 px-3 font-semibold text-white">{row.campaign}</td>
+                          <td className="py-2.5 px-3 text-slate-300">{row.product}</td>
+                          <td className="py-2.5 px-3 text-right text-slate-400">{row.leadTarget}</td>
+                          <td className="py-2.5 px-3 text-right font-bold text-emerald-400">{row.leadsGenerated}</td>
+                          <td className="py-2.5 px-3 text-right font-mono text-slate-200">৳{row.spend?.toLocaleString()}</td>
+                          <td className="py-2.5 px-3 text-right font-mono text-sky-300">৳{row.cpl}</td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="py-2.5 px-3 font-semibold text-white">{row.title}</td>
+                          <td className="py-2.5 px-3 text-slate-300">{row.assignedTo || 'Unassigned'}</td>
+                          <td className="py-2.5 px-3 text-amber-300">{row.priority}</td>
+                          <td className="py-2.5 px-3 text-slate-400">{row.dueDate ? fmt(row.dueDate) : '-'}</td>
+                          <td className="py-2.5 px-3">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-300">
+                              {row.status}
+                            </span>
+                          </td>
+                        </>
+                      )}
                     </tr>
-                  );
-                })}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="py-6 text-center text-slate-500">
+                      No records match the selected criteria.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
-
-        {/* Social Publishing Summary */}
-        <div className="space-y-3 pt-3 border-t border-slate-800">
-          <h2 className="text-sm font-bold text-white">Social Media Outreach & Inquiry Summary</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 space-y-2">
-              <div className="text-xs font-semibold text-blue-400">Facebook Channel Performance</div>
-              <p className="text-xs text-slate-300">
-                Total 4 publications this period. High engagement from factory engineers and maintenance officers in Gazipur and Savar. Over 28,450 page followers with a 96% inquiry response rate.
-              </p>
-            </div>
-            <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 space-y-2">
-              <div className="text-xs font-semibold text-sky-400">LinkedIn Corporate Channel</div>
-              <p className="text-xs text-slate-300">
-                Direct engagement from plant directors, electrical leads, and textile operations heads. 5.8% organic engagement rate, generating 24 direct tender and quotation leads.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

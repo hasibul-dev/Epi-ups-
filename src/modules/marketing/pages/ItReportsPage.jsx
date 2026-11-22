@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   FileText,
   Printer,
@@ -10,14 +10,92 @@ import {
   Laptop,
   Database,
   Upload,
+  Calendar,
+  Search,
+  Eye,
+  FileSpreadsheet,
+  Server,
+  UserCheck,
+  AlertTriangle,
 } from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
-import { today } from '../../sales/utils/helpers.js';
+import { today, addDays, fmt } from '../../sales/utils/helpers.js';
+import { exportToPdf, exportToCsv, triggerPrint } from '../../../services/reportExport.js';
+import { PrintHeader, PrintSignatures } from '../../sales/components/PrintHeader.jsx';
+
+const IT_REPORTS = [
+  {
+    id: 'ticket',
+    label: 'IT Ticket Report',
+    icon: Ticket,
+    desc: 'Complete audit log of IT service desk tickets, issue categories, departments & priority',
+  },
+  {
+    id: 'device',
+    label: 'Device Management Report',
+    icon: Laptop,
+    desc: 'Hardware asset allocation, IP configuration, serial numbers & operational status',
+  },
+  {
+    id: 'technician',
+    label: 'Technician Activity Report',
+    icon: Wrench,
+    desc: 'Technician resolution workload, performance rate, critical fixes & ticket distribution',
+  },
+  {
+    id: 'resolved',
+    label: 'Resolved Ticket Report',
+    icon: CheckCircle2,
+    desc: 'Resolved and closed IT support requests with turnaround times & engineering notes',
+  },
+  {
+    id: 'pending',
+    label: 'Pending Ticket Report',
+    icon: Clock,
+    desc: 'Active, open, and in-progress IT assistance requests requiring urgent technician dispatch',
+  },
+  {
+    id: 'history',
+    label: 'IT Work History Report',
+    icon: Database,
+    desc: 'Chronological archive of enterprise network repairs, firmware setups & hardware servicing',
+  },
+];
 
 export default function ItReportsPage() {
   const { data, exportBackup, importBackup } = useMarketing();
-  const { tickets, devices, softwareAccounts, systemSettings } = data;
-  const printRef = useRef();
+  const { tickets = [], devices = [], softwareAccounts = [], systemSettings = {} } = data;
+
+  const [activeReport, setActiveReport] = useState('ticket');
+  const [from, setFrom] = useState(addDays(today(), -30));
+  const [to, setTo] = useState(today());
+  const [deptFilter, setDeptFilter] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('');
+  const [techFilter, setTechFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [previewMode, setPreviewMode] = useState(false);
+
+  // Quick Date Presets
+  const setPreset = (preset) => {
+    const t = today();
+    if (preset === 'today') {
+      setFrom(t);
+      setTo(t);
+    } else if (preset === '7days') {
+      setFrom(addDays(t, -6));
+      setTo(t);
+    } else if (preset === '30days') {
+      setFrom(addDays(t, -29));
+      setTo(t);
+    } else if (preset === 'thisMonth') {
+      const parts = t.split('-');
+      setFrom(`${parts[0]}-${parts[1]}-01`);
+      setTo(t);
+    } else if (preset === 'all') {
+      setFrom('2020-01-01');
+      setTo('2099-12-31');
+    }
+  };
 
   const handleImportFile = (e) => {
     const file = e.target.files?.[0];
@@ -48,39 +126,429 @@ export default function ItReportsPage() {
     e.target.value = '';
   };
 
-  const openTickets = tickets.filter((t) => ['Open', 'In Progress'].includes(t.status));
-  const resolvedTickets = tickets.filter((t) => ['Resolved', 'Closed'].includes(t.status));
-  const criticalTickets = tickets.filter((t) => t.priority === 'Critical' || t.priority === 'High');
+  // Unique lists for dropdown filters
+  const allDepartments = Array.from(
+    new Set([
+      ...tickets.map((t) => t.department).filter(Boolean),
+      ...devices.map((d) => d.department).filter(Boolean),
+    ])
+  ).sort();
 
-  const operationalDevices = devices.filter((d) => d.status === 'Operational');
+  const allTechnicians = Array.from(
+    new Set(tickets.map((t) => t.assignedTechnician).filter(Boolean))
+  ).sort();
 
-  const handlePrint = () => {
-    window.print();
+  const q = searchQuery.trim().toLowerCase();
+
+  // Filtered dataset for the active report
+  const getFilteredData = () => {
+    if (activeReport === 'ticket') {
+      return tickets.filter((t) => {
+        if (deptFilter && t.department !== deptFilter) return false;
+        if (priorityFilter && t.priority !== priorityFilter) return false;
+        if (techFilter && t.assignedTechnician !== techFilter) return false;
+        if (from && t.createdDate && t.createdDate < from) return false;
+        if (to && t.createdDate && t.createdDate > to) return false;
+        if (q) {
+          const match = [
+            t.id,
+            t.title,
+            t.description,
+            t.requestingEmployee,
+            t.department,
+            t.issueCategory,
+            t.assignedTechnician,
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+          if (!match.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    if (activeReport === 'device') {
+      return devices.filter((d) => {
+        if (deptFilter && d.department !== deptFilter) return false;
+        if (q) {
+          const match = [
+            d.id,
+            d.deviceTag,
+            d.deviceType,
+            d.brandModel,
+            d.specifications,
+            d.serialNumber,
+            d.assignedTo,
+            d.department,
+            d.ipAddress,
+            d.status,
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+          if (!match.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    if (activeReport === 'technician') {
+      // Aggregate performance per technician
+      const techMap = {};
+      tickets.forEach((t) => {
+        const name = t.assignedTechnician || 'Unassigned';
+        if (!techMap[name]) {
+          techMap[name] = {
+            technician: name,
+            totalTickets: 0,
+            resolved: 0,
+            pending: 0,
+            criticalResolved: 0,
+            categories: new Set(),
+          };
+        }
+        // Apply date range
+        if (from && t.createdDate && t.createdDate < from) return;
+        if (to && t.createdDate && t.createdDate > to) return;
+
+        techMap[name].totalTickets += 1;
+        if (['Resolved', 'Closed'].includes(t.status)) {
+          techMap[name].resolved += 1;
+          if (t.priority === 'Critical' || t.priority === 'High') {
+            techMap[name].criticalResolved += 1;
+          }
+        } else {
+          techMap[name].pending += 1;
+        }
+        if (t.issueCategory) techMap[name].categories.add(t.issueCategory);
+      });
+
+      return Object.values(techMap)
+        .map((tech) => ({
+          ...tech,
+          categories: Array.from(tech.categories).join(', '),
+          rate:
+            tech.totalTickets > 0
+              ? `${Math.round((tech.resolved / tech.totalTickets) * 100)}%`
+              : '100%',
+        }))
+        .filter((tech) => {
+          if (techFilter && tech.technician !== techFilter) return false;
+          if (q && !tech.technician.toLowerCase().includes(q)) return false;
+          return true;
+        });
+    }
+
+    if (activeReport === 'resolved') {
+      return tickets
+        .filter((t) => ['Resolved', 'Closed'].includes(t.status))
+        .filter((t) => {
+          if (deptFilter && t.department !== deptFilter) return false;
+          if (priorityFilter && t.priority !== priorityFilter) return false;
+          if (techFilter && t.assignedTechnician !== techFilter) return false;
+          const resDate = t.completionDate || t.createdDate;
+          if (from && resDate && resDate < from) return false;
+          if (to && resDate && resDate > to) return false;
+          if (q) {
+            const match = [
+              t.id,
+              t.title,
+              t.requestingEmployee,
+              t.department,
+              t.assignedTechnician,
+              t.resolutionDetails,
+            ]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase();
+            if (!match.includes(q)) return false;
+          }
+          return true;
+        });
+    }
+
+    if (activeReport === 'pending') {
+      return tickets
+        .filter((t) => ['Open', 'In Progress'].includes(t.status))
+        .filter((t) => {
+          if (deptFilter && t.department !== deptFilter) return false;
+          if (priorityFilter && t.priority !== priorityFilter) return false;
+          if (techFilter && t.assignedTechnician !== techFilter) return false;
+          if (from && t.createdDate && t.createdDate < from) return false;
+          if (to && t.createdDate && t.createdDate > to) return false;
+          if (q) {
+            const match = [
+              t.id,
+              t.title,
+              t.requestingEmployee,
+              t.department,
+              t.assignedTechnician,
+              t.description,
+            ]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase();
+            if (!match.includes(q)) return false;
+          }
+          return true;
+        });
+    }
+
+    if (activeReport === 'history') {
+      // Chronological log of all actions
+      return [...tickets]
+        .sort((a, b) => (b.createdDate || '').localeCompare(a.createdDate || ''))
+        .filter((t) => {
+          if (deptFilter && t.department !== deptFilter) return false;
+          if (techFilter && t.assignedTechnician !== techFilter) return false;
+          if (from && t.createdDate && t.createdDate < from) return false;
+          if (to && t.createdDate && t.createdDate > to) return false;
+          if (q) {
+            const match = [
+              t.id,
+              t.title,
+              t.description,
+              t.requestingEmployee,
+              t.department,
+              t.assignedTechnician,
+              t.resolutionDetails,
+            ]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase();
+            if (!match.includes(q)) return false;
+          }
+          return true;
+        });
+    }
+
+    return tickets;
   };
 
-  const handleExportCSV = () => {
-    let csv = 'Ticket ID,Subject,Requesting User,Department,Category,Priority,Technician,Status,Created Date,Resolved Date\n';
-    tickets.forEach((t) => {
-      csv += `"${t.id}","${t.title}","${t.requestingEmployee}","${t.department}","${t.issueCategory}","${t.priority}","${t.assignedTechnician}","${t.status}","${t.createdDate}","${t.completionDate || 'N/A'}"\n`;
+  const filteredData = getFilteredData();
+  const activeDef = IT_REPORTS.find((r) => r.id === activeReport) || IT_REPORTS[0];
+
+  // High level KPIs
+  const totalTickets = tickets.length;
+  const openCount = tickets.filter((t) => ['Open', 'In Progress'].includes(t.status)).length;
+  const resolvedCount = tickets.filter((t) => ['Resolved', 'Closed'].includes(t.status)).length;
+  const criticalCount = tickets.filter((t) => t.priority === 'Critical' || t.priority === 'High').length;
+  const operationalDevices = devices.filter((d) => d.status === 'Operational').length;
+
+  const dateRangeStr = `${fmt(from)} to ${fmt(to)}`;
+
+  // PDF Export
+  const handleExportPdf = () => {
+    let headers = [];
+    let pdfRows = [];
+
+    if (activeReport === 'ticket') {
+      headers = ['SL', 'Ticket ID', 'Issue Title', 'User & Dept', 'Category', 'Priority', 'Technician', 'Status', 'Date'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        `${t.requestingEmployee || 'N/A'} (${t.department || ''})`,
+        t.issueCategory || 'General',
+        t.priority || 'Normal',
+        t.assignedTechnician || 'Unassigned',
+        t.status || 'Open',
+        t.createdDate ? fmt(t.createdDate) : 'N/A',
+      ]);
+    } else if (activeReport === 'device') {
+      headers = ['SL', 'Asset Tag', 'Device Model & Type', 'Specs / CPU / RAM', 'Serial No', 'Assigned User', 'Dept', 'IP Address', 'Status'];
+      pdfRows = filteredData.map((d, i) => [
+        i + 1,
+        d.deviceTag,
+        `${d.brandModel} (${d.deviceType})`,
+        d.specifications || '-',
+        d.serialNumber || '-',
+        d.assignedTo || 'Unassigned',
+        d.department || 'General',
+        d.ipAddress || '-',
+        d.status || 'Operational',
+      ]);
+    } else if (activeReport === 'technician') {
+      headers = ['SL', 'IT Support Technician', 'Assigned Tickets', 'Resolved', 'Pending Work', 'Critical Resolved', 'Resolution Rate'];
+      pdfRows = filteredData.map((tech, i) => [
+        i + 1,
+        tech.technician,
+        tech.totalTickets,
+        tech.resolved,
+        tech.pending,
+        tech.criticalResolved,
+        tech.rate,
+      ]);
+    } else if (activeReport === 'resolved') {
+      headers = ['SL', 'Ticket ID', 'Issue Title', 'Requester & Dept', 'Assigned Tech', 'Resolution Date', 'Engineering Resolution Details'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        `${t.requestingEmployee} (${t.department})`,
+        t.assignedTechnician || 'Unassigned',
+        t.completionDate ? fmt(t.completionDate) : fmt(t.createdDate),
+        t.resolutionDetails || 'Verified & resolved by IT Support Engineer',
+      ]);
+    } else if (activeReport === 'pending') {
+      headers = ['SL', 'Ticket ID', 'Pending Issue Title', 'Requester & Dept', 'Category', 'Priority', 'Technician', 'Created Date', 'Status'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        `${t.requestingEmployee} (${t.department})`,
+        t.issueCategory || 'General',
+        t.priority || 'Normal',
+        t.assignedTechnician || 'Pending Assignment',
+        t.createdDate ? fmt(t.createdDate) : 'N/A',
+        t.status || 'Open',
+      ]);
+    } else {
+      // History
+      headers = ['SL', 'Ticket ID', 'Event / Problem Title', 'Department', 'Technician', 'Created Date', 'Resolved Date', 'Status'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        t.department || 'Office',
+        t.assignedTechnician || 'Staff',
+        t.createdDate ? fmt(t.createdDate) : 'N/A',
+        t.completionDate ? fmt(t.completionDate) : 'In Progress',
+        t.status || 'Open',
+      ]);
+    }
+
+    exportToPdf({
+      title: activeDef.label,
+      department: 'IT Support',
+      subtitle: activeDef.desc,
+      dateRange: dateRangeStr,
+      headers,
+      rows: pdfRows,
+      summary: {
+        'Total Logged Tickets': `${totalTickets} Tickets`,
+        'Open / In Progress': `${openCount} Tickets`,
+        'Resolved Work': `${resolvedCount} Tickets`,
+        'Active Hardware Assets': `${devices.length} Units`,
+        'Resolution Rate': totalTickets > 0 ? `${Math.round((resolvedCount / totalTickets) * 100)}%` : '100%',
+      },
+      orientation: 'landscape',
     });
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `EPI-IT-Support-Audit-${today()}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  };
+
+  // Excel CSV Export
+  const handleExportCsv = () => {
+    let headers = [];
+    let csvRows = [];
+
+    if (activeReport === 'ticket') {
+      headers = ['SL No', 'Ticket ID', 'Issue Title', 'Description', 'Requesting User', 'Department', 'Category', 'Priority', 'Technician', 'Status', 'Created Date', 'Resolved Date'];
+      csvRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        t.description || '',
+        t.requestingEmployee,
+        t.department,
+        t.issueCategory,
+        t.priority,
+        t.assignedTechnician,
+        t.status,
+        t.createdDate,
+        t.completionDate || '',
+      ]);
+    } else if (activeReport === 'device') {
+      headers = ['SL No', 'Asset Tag', 'Device Model', 'Device Type', 'Specifications', 'Serial Number', 'Assigned User', 'Department', 'IP Address', 'Status'];
+      csvRows = filteredData.map((d, i) => [
+        i + 1,
+        d.deviceTag,
+        d.brandModel,
+        d.deviceType,
+        d.specifications,
+        d.serialNumber,
+        d.assignedTo,
+        d.department,
+        d.ipAddress,
+        d.status,
+      ]);
+    } else if (activeReport === 'technician') {
+      headers = ['SL No', 'Technician', 'Total Tickets', 'Resolved', 'Pending', 'Critical Resolved', 'Resolution Rate', 'Covered Categories'];
+      csvRows = filteredData.map((tech, i) => [
+        i + 1,
+        tech.technician,
+        tech.totalTickets,
+        tech.resolved,
+        tech.pending,
+        tech.criticalResolved,
+        tech.rate,
+        tech.categories,
+      ]);
+    } else if (activeReport === 'resolved') {
+      headers = ['SL No', 'Ticket ID', 'Issue Title', 'User', 'Department', 'Technician', 'Created Date', 'Resolved Date', 'Resolution Details'];
+      csvRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        t.requestingEmployee,
+        t.department,
+        t.assignedTechnician,
+        t.createdDate,
+        t.completionDate || '',
+        t.resolutionDetails || '',
+      ]);
+    } else if (activeReport === 'pending') {
+      headers = ['SL No', 'Ticket ID', 'Issue Title', 'User', 'Department', 'Priority', 'Technician', 'Created Date', 'Current Status', 'Description'];
+      csvRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        t.requestingEmployee,
+        t.department,
+        t.priority,
+        t.assignedTechnician,
+        t.createdDate,
+        t.status,
+        t.description || '',
+      ]);
+    } else {
+      // History
+      headers = ['SL No', 'Ticket ID', 'Title', 'Department', 'Technician', 'Created Date', 'Completion Date', 'Status', 'Resolution Details'];
+      csvRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        t.department,
+        t.assignedTechnician,
+        t.createdDate,
+        t.completionDate || '',
+        t.status,
+        t.resolutionDetails || '',
+      ]);
+    }
+
+    exportToCsv({
+      title: activeDef.label,
+      department: 'IT Support & Infrastructure',
+      dateRange: dateRangeStr,
+      headers,
+      rows: csvRows,
+    });
+  };
+
+  const handlePrint = () => {
+    triggerPrint(activeDef.label);
   };
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Hero Banner */}
       <div className="mkt-hero-banner">
         <div className="mkt-hero-info">
-          <div className="mkt-hero-badge">IT AUDIT & AUDITING</div>
+          <div className="mkt-hero-badge">IT SUPPORT & INFRASTRUCTURE REPORTING</div>
           <h2>IT Support Helpdesk & Hardware Inventory Reports</h2>
           <p>
-            Complete audit log of IT service tickets, resolution performance, and company hardware assignments
+            Complete enterprise audit logs for IT service requests, device assignments, technician efficiency, and work history
           </p>
         </div>
 
@@ -107,15 +575,33 @@ export default function ItReportsPage() {
             />
           </label>
           <button
-            onClick={handleExportCSV}
+            onClick={() => setPreviewMode(!previewMode)}
             className="btn-mkt-secondary"
+            title="Toggle Print Preview"
           >
-            <Download size={14} />
+            <Eye size={14} className="text-sky-400" />
+            <span>{previewMode ? 'Live Mode' : 'Print Preview'}</span>
+          </button>
+          <button
+            onClick={handleExportCsv}
+            className="btn-mkt-secondary"
+            title="Export to Microsoft Excel CSV"
+          >
+            <FileSpreadsheet size={14} className="text-emerald-400" />
             <span>Export CSV</span>
+          </button>
+          <button
+            onClick={handleExportPdf}
+            className="btn-mkt-secondary"
+            title="Download Official Corporate PDF"
+          >
+            <Download size={14} className="text-purple-400" />
+            <span>Download PDF</span>
           </button>
           <button
             onClick={handlePrint}
             className="btn-mkt-primary"
+            title="Print Official Report with Letterhead"
           >
             <Printer size={14} />
             <span>Print Report</span>
@@ -123,157 +609,549 @@ export default function ItReportsPage() {
         </div>
       </div>
 
-      {/* Printable Report Canvas */}
-      <div ref={printRef} className="mkt-card space-y-6">
-        {/* Report Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-800 pb-4">
+      {/* Report Switcher Tabs */}
+      <div className="mkt-card p-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+          {IT_REPORTS.map((rep) => {
+            const Icon = rep.icon;
+            const isActive = activeReport === rep.id;
+            return (
+              <button
+                key={rep.id}
+                onClick={() => setActiveReport(rep.id)}
+                className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${
+                  isActive
+                    ? 'bg-indigo-600/20 border-indigo-500/50 text-white shadow-lg shadow-indigo-600/10'
+                    : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:text-slate-200 hover:bg-slate-800/70'
+                }`}
+              >
+                <Icon size={18} className={isActive ? 'text-indigo-400' : 'text-slate-500'} />
+                <span className="text-xs font-bold mt-1.5 leading-tight">{rep.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Filter Toolbar */}
+      <div className="mkt-card p-4 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <Calendar size={13} className="text-indigo-400" />
+              Presets:
+            </span>
+            <button
+              onClick={() => setPreset('today')}
+              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+            >
+              Today
+            </button>
+            <button
+              onClick={() => setPreset('7days')}
+              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+            >
+              7 Days
+            </button>
+            <button
+              onClick={() => setPreset('30days')}
+              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+            >
+              30 Days
+            </button>
+            <button
+              onClick={() => setPreset('thisMonth')}
+              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+            >
+              This Month
+            </button>
+            <button
+              onClick={() => setPreset('all')}
+              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+            >
+              All Time
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-slate-400">Date Range:</label>
+            <input
+              type="date"
+              value={from}
+              onChange={(e) => setFrom(e.target.value)}
+              className="px-2.5 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+            />
+            <span className="text-slate-500 text-xs">to</span>
+            <input
+              type="date"
+              value={to}
+              onChange={(e) => setTo(e.target.value)}
+              className="px-2.5 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 pt-2 border-t border-slate-800/80">
           <div>
-            <div className="text-lg font-bold text-white">{systemSettings.companyName}</div>
-            <div className="text-xs text-amber-400 font-semibold uppercase tracking-wider mt-0.5">
-              IT Support Department — Service & Inventory Audit Report
+            <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">
+              Department
+            </label>
+            <select
+              value={deptFilter}
+              onChange={(e) => setDeptFilter(e.target.value)}
+              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+            >
+              <option value="">All Departments</option>
+              {allDepartments.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">
+              Technician
+            </label>
+            <select
+              value={techFilter}
+              onChange={(e) => setTechFilter(e.target.value)}
+              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+            >
+              <option value="">All Technicians</option>
+              {allTechnicians.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">
+              Priority
+            </label>
+            <select
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value)}
+              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+            >
+              <option value="">All Priorities</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Normal">Normal</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-bold uppercase text-slate-400 block mb-1">
+              Search Keyword
+            </label>
+            <div className="relative">
+              <Search size={13} className="absolute left-2.5 top-2.5 text-slate-500" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search ticket, title, user, tag..."
+                className="w-full pl-8 pr-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200 placeholder-slate-500"
+              />
             </div>
           </div>
-          <div className="text-right text-xs text-slate-400 mt-2 sm:mt-0">
-            <div>Report Date: {today()}</div>
-            <div>IT Lead: {systemSettings.leadEngineer}</div>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="mkt-card p-4">
+          <div className="text-[11px] text-slate-400 font-bold uppercase">Total Tickets</div>
+          <div className="text-2xl font-bold text-white mt-1">{totalTickets}</div>
+          <div className="text-[11px] text-slate-400 mt-1">Across all enterprise departments</div>
+        </div>
+        <div className="mkt-card p-4">
+          <div className="text-[11px] text-slate-400 font-bold uppercase">Open / In Progress</div>
+          <div className="text-2xl font-bold text-amber-400 mt-1">{openCount}</div>
+          <div className="text-[11px] text-amber-400/80 mt-1">Requiring technician support</div>
+        </div>
+        <div className="mkt-card p-4">
+          <div className="text-[11px] text-slate-400 font-bold uppercase">Resolved Work</div>
+          <div className="text-2xl font-bold text-emerald-400 mt-1">{resolvedCount}</div>
+          <div className="text-[11px] text-emerald-400/80 mt-1">
+            {totalTickets > 0 ? `${Math.round((resolvedCount / totalTickets) * 100)}% resolution` : '100%'}
           </div>
         </div>
-
-        {/* High Level Metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400">Total Logged Tickets</div>
-            <div className="text-xl font-bold text-white mt-1">{tickets.length} Tickets</div>
-            <div className="text-[11px] text-slate-400 mt-1">Across all 4 departments</div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400">Resolution Rate</div>
-            <div className="text-xl font-bold text-emerald-400 mt-1">
-              {tickets.length > 0
-                ? `${Math.round((resolvedTickets.length / tickets.length) * 100)}%`
-                : '100%'}
-            </div>
-            <div className="text-[11px] text-emerald-400 mt-1">{resolvedTickets.length} Resolved</div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400">Managed Hardware Devices</div>
-            <div className="text-xl font-bold text-cyan-400 mt-1">{devices.length} Units</div>
-            <div className="text-[11px] text-cyan-400 mt-1">{operationalDevices.length} Operational</div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
-            <div className="text-[11px] text-slate-400">High / Critical Issues</div>
-            <div className="text-xl font-bold text-amber-400 mt-1">{criticalTickets.length} Tickets</div>
-            <div className="text-[11px] text-slate-400 mt-1">Fiber, NAS & displays</div>
-          </div>
+        <div className="mkt-card p-4">
+          <div className="text-[11px] text-slate-400 font-bold uppercase">Hardware Assets</div>
+          <div className="text-2xl font-bold text-cyan-400 mt-1">{devices.length} Units</div>
+          <div className="text-[11px] text-cyan-400/80 mt-1">{operationalDevices} Operational</div>
         </div>
+      </div>
 
-        {/* Tickets Detailed Audit Table */}
-        <div className="space-y-3">
-          <h2 className="text-sm font-bold text-white">IT Service Tickets Full Audit Trail</h2>
+      {/* Printable Report Canvas */}
+      <div className={`mkt-card p-6 space-y-6 ${previewMode ? 'bg-white text-slate-900 shadow-2xl ring-2 ring-indigo-500' : ''}`}>
+        {/* Printable Official Header */}
+        <PrintHeader
+          title={activeDef.label}
+          department="IT Support & Infrastructure Department"
+          dateRange={dateRangeStr}
+          metaItems={[
+            { label: 'Department', value: deptFilter || 'All Departments' },
+            { label: 'Technician', value: techFilter || 'All Technicians' },
+            { label: 'Priority', value: priorityFilter || 'All Priorities' },
+            { label: 'Total Records', value: `${filteredData.length}` },
+          ]}
+        />
+
+        {/* 1. IT Ticket Report Table */}
+        {activeReport === 'ticket' && (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className={`w-full text-left border-collapse text-xs ${previewMode ? 'text-slate-800' : 'text-slate-300'}`}>
               <thead>
-                <tr className="border-b border-slate-700 text-[11px] uppercase tracking-wider text-slate-400">
+                <tr className={`border-b ${previewMode ? 'border-slate-300 bg-slate-100 text-slate-700' : 'border-slate-700 bg-slate-800/60 text-slate-400'} text-[11px] uppercase tracking-wider font-bold`}>
+                  <th className="py-2.5 px-3">SL</th>
                   <th className="py-2.5 px-3">Ticket ID</th>
-                  <th className="py-2.5 px-3">Issue Title</th>
-                  <th className="py-2.5 px-3">User & Dept</th>
+                  <th className="py-2.5 px-3">Issue Title & Details</th>
+                  <th className="py-2.5 px-3">Requesting User</th>
                   <th className="py-2.5 px-3">Category</th>
                   <th className="py-2.5 px-3">Priority</th>
                   <th className="py-2.5 px-3">Technician</th>
                   <th className="py-2.5 px-3">Status</th>
-                  <th className="py-2.5 px-3">Resolved Date</th>
+                  <th className="py-2.5 px-3">Created</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
-                {tickets.map((tick) => (
-                  <tr key={tick.id} className="hover:bg-slate-800/30">
-                    <td className="py-2.5 px-3 font-mono font-bold text-amber-400">{tick.id}</td>
-                    <td className="py-2.5 px-3">
-                      <div className="font-semibold text-white">{tick.title}</div>
-                      <div className="text-[11px] text-slate-400 max-w-[250px] truncate">
-                        {tick.description}
-                      </div>
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-200">
-                      <div>{tick.requestingEmployee}</div>
-                      <div className="text-[11px] text-slate-500">{tick.department}</div>
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-300">{tick.issueCategory}</td>
-                    <td className="py-2.5 px-3">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                          tick.priority === 'Critical'
-                            ? 'bg-red-500/20 text-red-300'
-                            : tick.priority === 'High'
-                            ? 'bg-orange-500/20 text-orange-300'
-                            : 'bg-blue-500/20 text-blue-300'
-                        }`}
-                      >
-                        {tick.priority}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-300 font-medium">
-                      {tick.assignedTechnician}
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                          tick.status === 'Resolved'
-                            ? 'bg-emerald-500/20 text-emerald-300'
-                            : tick.status === 'In Progress'
-                            ? 'bg-amber-500/20 text-amber-300'
-                            : 'bg-blue-500/20 text-blue-300'
-                        }`}
-                      >
-                        {tick.status}
-                      </span>
-                    </td>
-                    <td className="py-2.5 px-3 font-mono text-[11px] text-slate-400">
-                      {tick.completionDate || 'Pending'}
+              <tbody className={`divide-y ${previewMode ? 'divide-slate-200' : 'divide-slate-800'}`}>
+                {filteredData.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="py-6 text-center text-slate-500">
+                      No IT tickets found matching the selected criteria.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  filteredData.map((t, idx) => (
+                    <tr key={t.id} className={previewMode ? 'hover:bg-slate-50' : 'hover:bg-slate-800/30'}>
+                      <td className="py-2.5 px-3 font-mono text-slate-500">{idx + 1}</td>
+                      <td className="py-2.5 px-3 font-mono font-bold text-indigo-400">{t.id}</td>
+                      <td className="py-2.5 px-3">
+                        <div className={`font-semibold ${previewMode ? 'text-slate-900' : 'text-white'}`}>{t.title}</div>
+                        <div className="text-[11px] text-slate-400 max-w-[280px] truncate">{t.description}</div>
+                      </td>
+                      <td className="py-2.5 px-3">
+                        <div className="font-medium">{t.requestingEmployee}</div>
+                        <div className="text-[10px] text-slate-500">{t.department}</div>
+                      </td>
+                      <td className="py-2.5 px-3">{t.issueCategory}</td>
+                      <td className="py-2.5 px-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            t.priority === 'Critical'
+                              ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                              : t.priority === 'High'
+                              ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                              : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                          }`}
+                        >
+                          {t.priority}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 font-medium">{t.assignedTechnician || 'Unassigned'}</td>
+                      <td className="py-2.5 px-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            t.status === 'Resolved' || t.status === 'Closed'
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : t.status === 'In Progress'
+                              ? 'bg-amber-500/20 text-amber-400'
+                              : 'bg-indigo-500/20 text-indigo-400'
+                          }`}
+                        >
+                          {t.status}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 font-mono text-[11px] text-slate-400">
+                        {t.createdDate ? fmt(t.createdDate) : 'N/A'}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
-        </div>
+        )}
 
-        {/* Hardware Devices Inventory Summary */}
-        <div className="space-y-3 pt-3 border-t border-slate-800">
-          <h2 className="text-sm font-bold text-white">Hardware Asset Allocation Summary</h2>
+        {/* 2. Device Management Report Table */}
+        {activeReport === 'device' && (
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-xs">
+            <table className={`w-full text-left border-collapse text-xs ${previewMode ? 'text-slate-800' : 'text-slate-300'}`}>
               <thead>
-                <tr className="border-b border-slate-700 text-[11px] uppercase tracking-wider text-slate-400">
-                  <th className="py-2 px-3">Asset Tag</th>
-                  <th className="py-2 px-3">Model</th>
-                  <th className="py-2 px-3">Type</th>
-                  <th className="py-2 px-3">Assigned User</th>
-                  <th className="py-2 px-3">Department</th>
-                  <th className="py-2 px-3">IP Address</th>
-                  <th className="py-2 px-3">Status</th>
+                <tr className={`border-b ${previewMode ? 'border-slate-300 bg-slate-100 text-slate-700' : 'border-slate-700 bg-slate-800/60 text-slate-400'} text-[11px] uppercase tracking-wider font-bold`}>
+                  <th className="py-2.5 px-3">SL</th>
+                  <th className="py-2.5 px-3">Asset Tag</th>
+                  <th className="py-2.5 px-3">Brand & Model</th>
+                  <th className="py-2.5 px-3">Type</th>
+                  <th className="py-2.5 px-3">Hardware Specifications</th>
+                  <th className="py-2.5 px-3">Serial Number</th>
+                  <th className="py-2.5 px-3">Assigned User</th>
+                  <th className="py-2.5 px-3">Department</th>
+                  <th className="py-2.5 px-3">IP Address</th>
+                  <th className="py-2.5 px-3">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
-                {devices.map((d) => (
-                  <tr key={d.id} className="hover:bg-slate-800/30">
-                    <td className="py-2 px-3 font-mono font-bold text-cyan-400">{d.deviceTag}</td>
-                    <td className="py-2 px-3 text-white font-medium">{d.brandModel}</td>
-                    <td className="py-2 px-3 text-slate-400">{d.deviceType}</td>
-                    <td className="py-2 px-3 text-slate-200">{d.assignedTo}</td>
-                    <td className="py-2 px-3 text-slate-300">{d.department}</td>
-                    <td className="py-2 px-3 font-mono text-slate-400">{d.ipAddress}</td>
-                    <td className="py-2 px-3">
-                      <span className="text-emerald-400 font-semibold">{d.status}</span>
+              <tbody className={`divide-y ${previewMode ? 'divide-slate-200' : 'divide-slate-800'}`}>
+                {filteredData.length === 0 ? (
+                  <tr>
+                    <td colSpan={10} className="py-6 text-center text-slate-500">
+                      No hardware assets found.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  filteredData.map((d, idx) => (
+                    <tr key={d.id} className={previewMode ? 'hover:bg-slate-50' : 'hover:bg-slate-800/30'}>
+                      <td className="py-2.5 px-3 font-mono text-slate-500">{idx + 1}</td>
+                      <td className="py-2.5 px-3 font-mono font-bold text-cyan-400">{d.deviceTag}</td>
+                      <td className={`py-2.5 px-3 font-medium ${previewMode ? 'text-slate-900' : 'text-white'}`}>{d.brandModel}</td>
+                      <td className="py-2.5 px-3 text-slate-400">{d.deviceType}</td>
+                      <td className="py-2.5 px-3 text-[11px] text-slate-400 max-w-[200px] truncate">{d.specifications || '-'}</td>
+                      <td className="py-2.5 px-3 font-mono text-slate-400">{d.serialNumber || '-'}</td>
+                      <td className="py-2.5 px-3 font-medium">{d.assignedTo || 'Unassigned'}</td>
+                      <td className="py-2.5 px-3">{d.department}</td>
+                      <td className="py-2.5 px-3 font-mono text-indigo-400">{d.ipAddress || '-'}</td>
+                      <td className="py-2.5 px-3">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          d.status === 'Operational' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+                        }`}>
+                          {d.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
+        )}
+
+        {/* 3. Technician Activity Report Table */}
+        {activeReport === 'technician' && (
+          <div className="overflow-x-auto">
+            <table className={`w-full text-left border-collapse text-xs ${previewMode ? 'text-slate-800' : 'text-slate-300'}`}>
+              <thead>
+                <tr className={`border-b ${previewMode ? 'border-slate-300 bg-slate-100 text-slate-700' : 'border-slate-700 bg-slate-800/60 text-slate-400'} text-[11px] uppercase tracking-wider font-bold`}>
+                  <th className="py-2.5 px-3">SL</th>
+                  <th className="py-2.5 px-3">Technician Name</th>
+                  <th className="py-2.5 px-3">Assigned Tickets</th>
+                  <th className="py-2.5 px-3">Resolved</th>
+                  <th className="py-2.5 px-3">Pending</th>
+                  <th className="py-2.5 px-3">Critical / High Fixed</th>
+                  <th className="py-2.5 px-3">Resolution Rate</th>
+                  <th className="py-2.5 px-3">Covered Categories</th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${previewMode ? 'divide-slate-200' : 'divide-slate-800'}`}>
+                {filteredData.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="py-6 text-center text-slate-500">
+                      No technician activity records found.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredData.map((tech, idx) => (
+                    <tr key={tech.technician} className={previewMode ? 'hover:bg-slate-50' : 'hover:bg-slate-800/30'}>
+                      <td className="py-2.5 px-3 font-mono text-slate-500">{idx + 1}</td>
+                      <td className={`py-2.5 px-3 font-bold ${previewMode ? 'text-slate-900' : 'text-white'}`}>{tech.technician}</td>
+                      <td className="py-2.5 px-3 font-bold text-indigo-400">{tech.totalTickets}</td>
+                      <td className="py-2.5 px-3 font-bold text-emerald-400">{tech.resolved}</td>
+                      <td className="py-2.5 px-3 font-bold text-amber-400">{tech.pending}</td>
+                      <td className="py-2.5 px-3 font-bold text-rose-400">{tech.criticalResolved}</td>
+                      <td className="py-2.5 px-3">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-400">
+                          {tech.rate}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-[11px] text-slate-400 max-w-[250px] truncate">{tech.categories || '-'}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* 4. Resolved Ticket Report Table */}
+        {activeReport === 'resolved' && (
+          <div className="overflow-x-auto">
+            <table className={`w-full text-left border-collapse text-xs ${previewMode ? 'text-slate-800' : 'text-slate-300'}`}>
+              <thead>
+                <tr className={`border-b ${previewMode ? 'border-slate-300 bg-slate-100 text-slate-700' : 'border-slate-700 bg-slate-800/60 text-slate-400'} text-[11px] uppercase tracking-wider font-bold`}>
+                  <th className="py-2.5 px-3">SL</th>
+                  <th className="py-2.5 px-3">Ticket ID</th>
+                  <th className="py-2.5 px-3">Issue Title</th>
+                  <th className="py-2.5 px-3">Requester & Dept</th>
+                  <th className="py-2.5 px-3">Technician</th>
+                  <th className="py-2.5 px-3">Resolved Date</th>
+                  <th className="py-2.5 px-3">Resolution Details & Notes</th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${previewMode ? 'divide-slate-200' : 'divide-slate-800'}`}>
+                {filteredData.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-6 text-center text-slate-500">
+                      No resolved tickets found for the selected period.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredData.map((t, idx) => (
+                    <tr key={t.id} className={previewMode ? 'hover:bg-slate-50' : 'hover:bg-slate-800/30'}>
+                      <td className="py-2.5 px-3 font-mono text-slate-500">{idx + 1}</td>
+                      <td className="py-2.5 px-3 font-mono font-bold text-emerald-400">{t.id}</td>
+                      <td className={`py-2.5 px-3 font-semibold ${previewMode ? 'text-slate-900' : 'text-white'}`}>{t.title}</td>
+                      <td className="py-2.5 px-3">
+                        <div>{t.requestingEmployee}</div>
+                        <div className="text-[10px] text-slate-500">{t.department}</div>
+                      </td>
+                      <td className="py-2.5 px-3 font-medium">{t.assignedTechnician}</td>
+                      <td className="py-2.5 px-3 font-mono text-slate-400">
+                        {t.completionDate ? fmt(t.completionDate) : fmt(t.createdDate)}
+                      </td>
+                      <td className="py-2.5 px-3 text-[11px] text-slate-400 max-w-[320px]">
+                        {t.resolutionDetails || 'Issue successfully diagnosed and resolved.'}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* 5. Pending Ticket Report Table */}
+        {activeReport === 'pending' && (
+          <div className="overflow-x-auto">
+            <table className={`w-full text-left border-collapse text-xs ${previewMode ? 'text-slate-800' : 'text-slate-300'}`}>
+              <thead>
+                <tr className={`border-b ${previewMode ? 'border-slate-300 bg-slate-100 text-slate-700' : 'border-slate-700 bg-slate-800/60 text-slate-400'} text-[11px] uppercase tracking-wider font-bold`}>
+                  <th className="py-2.5 px-3">SL</th>
+                  <th className="py-2.5 px-3">Ticket ID</th>
+                  <th className="py-2.5 px-3">Pending Issue Title</th>
+                  <th className="py-2.5 px-3">Requester & Dept</th>
+                  <th className="py-2.5 px-3">Priority</th>
+                  <th className="py-2.5 px-3">Assigned Tech</th>
+                  <th className="py-2.5 px-3">Logged Date</th>
+                  <th className="py-2.5 px-3">Status</th>
+                  <th className="py-2.5 px-3">Issue Description</th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${previewMode ? 'divide-slate-200' : 'divide-slate-800'}`}>
+                {filteredData.length === 0 ? (
+                  <tr>
+                    <td colSpan={9} className="py-6 text-center text-slate-500">
+                      Zero pending tickets! All IT support requests are resolved.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredData.map((t, idx) => (
+                    <tr key={t.id} className={previewMode ? 'hover:bg-slate-50' : 'hover:bg-slate-800/30'}>
+                      <td className="py-2.5 px-3 font-mono text-slate-500">{idx + 1}</td>
+                      <td className="py-2.5 px-3 font-mono font-bold text-amber-400">{t.id}</td>
+                      <td className={`py-2.5 px-3 font-semibold ${previewMode ? 'text-slate-900' : 'text-white'}`}>{t.title}</td>
+                      <td className="py-2.5 px-3">
+                        <div>{t.requestingEmployee}</div>
+                        <div className="text-[10px] text-slate-500">{t.department}</div>
+                      </td>
+                      <td className="py-2.5 px-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            t.priority === 'Critical'
+                              ? 'bg-red-500/20 text-red-400'
+                              : t.priority === 'High'
+                              ? 'bg-orange-500/20 text-orange-400'
+                              : 'bg-blue-500/20 text-blue-400'
+                          }`}
+                        >
+                          {t.priority}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 font-medium">{t.assignedTechnician || 'Pending Assignment'}</td>
+                      <td className="py-2.5 px-3 font-mono text-slate-400">{t.createdDate ? fmt(t.createdDate) : 'N/A'}</td>
+                      <td className="py-2.5 px-3">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400">
+                          {t.status}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-[11px] text-slate-400 max-w-[280px] truncate">{t.description}</td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* 6. IT Work History Report Table */}
+        {activeReport === 'history' && (
+          <div className="overflow-x-auto">
+            <table className={`w-full text-left border-collapse text-xs ${previewMode ? 'text-slate-800' : 'text-slate-300'}`}>
+              <thead>
+                <tr className={`border-b ${previewMode ? 'border-slate-300 bg-slate-100 text-slate-700' : 'border-slate-700 bg-slate-800/60 text-slate-400'} text-[11px] uppercase tracking-wider font-bold`}>
+                  <th className="py-2.5 px-3">SL</th>
+                  <th className="py-2.5 px-3">Ticket ID</th>
+                  <th className="py-2.5 px-3">Event / Work Order</th>
+                  <th className="py-2.5 px-3">Department</th>
+                  <th className="py-2.5 px-3">Technician</th>
+                  <th className="py-2.5 px-3">Logged Date</th>
+                  <th className="py-2.5 px-3">Resolved Date</th>
+                  <th className="py-2.5 px-3">Status</th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${previewMode ? 'divide-slate-200' : 'divide-slate-800'}`}>
+                {filteredData.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="py-6 text-center text-slate-500">
+                      No IT work history found.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredData.map((t, idx) => (
+                    <tr key={t.id} className={previewMode ? 'hover:bg-slate-50' : 'hover:bg-slate-800/30'}>
+                      <td className="py-2.5 px-3 font-mono text-slate-500">{idx + 1}</td>
+                      <td className="py-2.5 px-3 font-mono font-bold text-indigo-400">{t.id}</td>
+                      <td className="py-2.5 px-3">
+                        <div className={`font-semibold ${previewMode ? 'text-slate-900' : 'text-white'}`}>{t.title}</div>
+                        <div className="text-[11px] text-slate-400 max-w-[280px] truncate">{t.resolutionDetails || t.description}</div>
+                      </td>
+                      <td className="py-2.5 px-3">{t.department}</td>
+                      <td className="py-2.5 px-3 font-medium">{t.assignedTechnician}</td>
+                      <td className="py-2.5 px-3 font-mono text-slate-400">{t.createdDate ? fmt(t.createdDate) : 'N/A'}</td>
+                      <td className="py-2.5 px-3 font-mono text-slate-400">{t.completionDate ? fmt(t.completionDate) : 'Pending'}</td>
+                      <td className="py-2.5 px-3">
+                        <span
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            t.status === 'Resolved' || t.status === 'Closed'
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : 'bg-amber-500/20 text-amber-400'
+                          }`}
+                        >
+                          {t.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* 3-Role Official Corporate Signatures */}
+        <div className="pt-8 border-t border-slate-800/80">
+          <PrintSignatures
+            signatories={[
+              { title: 'IT Support Specialist', note: 'Prepared By' },
+              { title: 'IT Systems Manager', note: 'Verified By' },
+              { title: 'Director / MD', note: 'Approved By' },
+            ]}
+          />
         </div>
       </div>
     </div>
