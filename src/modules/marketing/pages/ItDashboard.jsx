@@ -54,31 +54,35 @@ export default function ItDashboard() {
       </div>
 
       {/* KPI Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="mkt-kpi-grid">
         <div
           onClick={() => navigate('/marketing/tickets')}
-          className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-amber-500/40 transition-all cursor-pointer"
+          className="mkt-stat-card"
         >
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs">Active Tickets</span>
-            <AlertCircle size={16} className="text-amber-400" />
+          <div className="mkt-stat-header">
+            <span className="mkt-stat-label">Active Tickets</span>
+            <div className="mkt-stat-icon icon-amber">
+              <AlertCircle size={16} />
+            </div>
           </div>
-          <div className="text-2xl font-bold text-amber-400">{openTickets.length}</div>
-          <div className="text-[11px] text-slate-400 mt-1">
+          <div className="mkt-stat-val text-amber-400">{openTickets.length}</div>
+          <div className="mkt-stat-sub">
             <span className="text-red-400 font-semibold">{criticalTickets.length} Critical / High</span>
           </div>
         </div>
 
         <div
           onClick={() => navigate('/marketing/tickets')}
-          className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all cursor-pointer"
+          className="mkt-stat-card"
         >
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs">Resolved Tickets</span>
-            <CheckCircle2 size={16} className="text-emerald-400" />
+          <div className="mkt-stat-header">
+            <span className="mkt-stat-label">Resolved Tickets</span>
+            <div className="mkt-stat-icon icon-green">
+              <CheckCircle2 size={16} />
+            </div>
           </div>
-          <div className="text-2xl font-bold text-emerald-400">{resolvedTickets.length}</div>
-          <div className="text-[11px] text-emerald-400 mt-1">
+          <div className="mkt-stat-val text-emerald-400">{resolvedTickets.length}</div>
+          <div className="mkt-stat-sub text-emerald-400">
             {tickets.length > 0
               ? `${Math.round((resolvedTickets.length / tickets.length) * 100)}% Resolution Rate`
               : '0%'}
@@ -87,39 +91,46 @@ export default function ItDashboard() {
 
         <div
           onClick={() => navigate('/marketing/devices')}
-          className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 transition-all cursor-pointer"
+          className="mkt-stat-card"
         >
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs">Hardware Inventory</span>
-            <Laptop size={16} className="text-cyan-400" />
+          <div className="mkt-stat-header">
+            <span className="mkt-stat-label">Hardware Inventory</span>
+            <div className="mkt-stat-icon icon-cyan">
+              <Laptop size={16} />
+            </div>
           </div>
-          <div className="text-2xl font-bold text-white">{devices.length}</div>
-          <div className="text-[11px] text-cyan-400 mt-1">{operationalDevices.length} Fully Operational</div>
+          <div className="mkt-stat-val text-white">{devices.length}</div>
+          <div className="mkt-stat-sub text-cyan-400">{operationalDevices.length} Fully Operational</div>
         </div>
 
         <div
           onClick={() => navigate('/marketing/software')}
-          className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-sky-500/40 transition-all cursor-pointer"
+          className="mkt-stat-card"
         >
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs">Software & Licenses</span>
-            <Shield size={16} className="text-sky-400" />
+          <div className="mkt-stat-header">
+            <span className="mkt-stat-label">Software & Licenses</span>
+            <div className="mkt-stat-icon icon-blue">
+              <Shield size={16} />
+            </div>
           </div>
-          <div className="text-2xl font-bold text-white">{softwareAccounts.length}</div>
-          <div className="text-[11px] text-sky-400 mt-1">Active License Pools</div>
+          <div className="mkt-stat-val text-white">{softwareAccounts.length}</div>
+          <div className="mkt-stat-sub text-sky-400">Active License Pools</div>
         </div>
       </div>
 
       {/* Urgent Tickets Queue */}
-      <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Ticket size={18} className="text-amber-400" />
-            <h2 className="text-sm font-semibold text-white">Active IT Support Ticket Queue</h2>
+      <div className="mkt-card space-y-4">
+        <div className="mkt-card-header">
+          <div>
+            <h2 className="mkt-card-title flex items-center gap-2">
+              <Ticket size={16} className="text-amber-400" />
+              <span>Active IT Support Ticket Queue</span>
+            </h2>
+            <p className="mkt-card-desc">Pending issues, technician assignments and priority triage</p>
           </div>
           <button
             onClick={() => navigate('/marketing/tickets')}
-            className="text-xs text-amber-400 hover:text-amber-300 font-medium transition-colors"
+            className="text-xs text-amber-400 hover:text-amber-300 font-semibold transition-colors"
           >
             All Helpdesk Tickets →
           </button>
@@ -156,12 +167,12 @@ export default function ItDashboard() {
                   <td className="py-3 px-3 text-slate-300">{tick.issueCategory}</td>
                   <td className="py-3 px-3">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                      className={`mkt-badge ${
                         tick.priority === 'Critical'
-                          ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                          ? 'mkt-badge-red'
                           : tick.priority === 'High'
-                          ? 'bg-orange-500/20 text-orange-300 border border-orange-500/30'
-                          : 'bg-blue-500/20 text-blue-300'
+                          ? 'mkt-badge-amber'
+                          : 'mkt-badge-blue'
                       }`}
                     >
                       {tick.priority}
@@ -172,12 +183,12 @@ export default function ItDashboard() {
                   </td>
                   <td className="py-3 px-3">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                        tick.status === 'Resolved'
-                          ? 'bg-emerald-500/20 text-emerald-300'
+                      className={`mkt-badge ${
+                        tick.status === 'Resolved' || tick.status === 'Closed'
+                          ? 'mkt-badge-green'
                           : tick.status === 'In Progress'
-                          ? 'bg-amber-500/20 text-amber-300'
-                          : 'bg-blue-500/20 text-blue-300'
+                          ? 'mkt-badge-amber'
+                          : 'mkt-badge-blue'
                       }`}
                     >
                       {tick.status}
@@ -186,7 +197,7 @@ export default function ItDashboard() {
                   <td className="py-3 px-3 text-right">
                     <button
                       onClick={() => openTicketDetails(tick)}
-                      className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs transition-colors"
+                      className="btn-mkt-action"
                     >
                       View / Slip
                     </button>
@@ -201,15 +212,15 @@ export default function ItDashboard() {
       {/* Two Column Grid: Hardware Device Distribution & Network Maintenance Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Device Health Overview */}
-        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+        <div className="mkt-card space-y-3">
+          <div className="mkt-card-header">
+            <h2 className="mkt-card-title flex items-center gap-2">
               <Server size={16} className="text-cyan-400" />
-              Computer & Network Inventory Breakdown
+              <span>Computer & Network Inventory</span>
             </h2>
             <button
               onClick={() => navigate('/marketing/devices')}
-              className="text-xs text-cyan-400 hover:text-cyan-300"
+              className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold"
             >
               Manage Inventory →
             </button>
@@ -219,11 +230,11 @@ export default function ItDashboard() {
             {devices.slice(0, 4).map((dev) => (
               <div
                 key={dev.id}
-                className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/50 flex items-center justify-between text-xs"
+                className="p-3 rounded-xl bg-slate-900/50 border border-slate-800/80 flex items-center justify-between text-xs hover:border-cyan-500/30 transition-all"
               >
                 <div>
                   <div className="font-semibold text-white flex items-center gap-2">
-                    <span className="font-mono text-cyan-400">{dev.deviceTag}</span>
+                    <span className="font-mono text-cyan-400 font-bold">{dev.deviceTag}</span>
                     <span>{dev.brandModel}</span>
                   </div>
                   <div className="text-[11px] text-slate-400 mt-0.5">
@@ -231,10 +242,10 @@ export default function ItDashboard() {
                   </div>
                 </div>
                 <span
-                  className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                  className={`mkt-badge ${
                     dev.status === 'Operational'
-                      ? 'bg-emerald-500/20 text-emerald-300'
-                      : 'bg-amber-500/20 text-amber-300'
+                      ? 'mkt-badge-green'
+                      : 'mkt-badge-amber'
                   }`}
                 >
                   {dev.status}
@@ -245,15 +256,15 @@ export default function ItDashboard() {
         </div>
 
         {/* Maintenance Log Summary */}
-        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-white flex items-center gap-2">
+        <div className="mkt-card space-y-3">
+          <div className="mkt-card-header">
+            <h2 className="mkt-card-title flex items-center gap-2">
               <Network size={16} className="text-emerald-400" />
-              Network & Preventive Maintenance Logs
+              <span>Network & Preventive Logs</span>
             </h2>
             <button
               onClick={() => navigate('/marketing/maintenance')}
-              className="text-xs text-emerald-400 hover:text-emerald-300"
+              className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold"
             >
               All Logs →
             </button>
@@ -263,14 +274,14 @@ export default function ItDashboard() {
             {maintenance.map((m) => (
               <div
                 key={m.id}
-                className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/50 space-y-1 text-xs"
+                className="p-3 rounded-xl bg-slate-900/50 border border-slate-800/80 space-y-1 text-xs hover:border-emerald-500/30 transition-all"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-white">{m.type}</span>
-                  <span className="text-[10px] text-slate-400">{m.date}</span>
+                  <span className="text-[10px] text-slate-400 font-mono">{m.date}</span>
                 </div>
                 <p className="text-[11px] text-slate-300">{m.findings}</p>
-                <div className="text-[10px] text-emerald-400 flex items-center justify-between pt-1 border-t border-slate-700/40">
+                <div className="text-[10px] text-emerald-400 flex items-center justify-between pt-1 border-t border-slate-800/60">
                   <span>Action: {m.actionTaken}</span>
                   <span>Tech: {m.technician}</span>
                 </div>

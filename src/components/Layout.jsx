@@ -718,7 +718,9 @@ export default function Layout() {
                         to={item.to}
                         end={item.end}
                         title={sidebarCollapsed ? `${groupObj.group}: ${item.label}` : undefined}
-                        className={({ isActive }) => `sidebar-nav-link ${isActive ? 'active' : ''}`}
+                        className={({ isActive }) =>
+                          `sidebar-nav-link ${isActive ? `active active-${activeDept}` : ''}`
+                        }
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         <Icon size={17} className="nav-icon" />
