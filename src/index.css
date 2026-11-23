@@ -1275,8 +1275,21 @@ img, svg, canvas, iframe {
 .mkt-card,
 .erp-card,
 .stat,
-.glass-panel {
-  background: linear-gradient(135deg, rgba(14, 22, 42, 0.7) 0%, rgba(9, 14, 28, 0.68) 100%) !important;
+.glass-panel,
+.panel,
+.action-hub,
+.hero-action-card,
+.dept-card,
+.summary-box,
+.content-card,
+.overview-card,
+.client-card,
+.ticket-card,
+.box,
+.service-order-card,
+.work-card,
+.client-box {
+  background: linear-gradient(135deg, rgba(14, 22, 42, 0.72) 0%, rgba(9, 14, 28, 0.68) 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 14px !important;
   backdrop-filter: blur(16px) !important;
@@ -1294,10 +1307,120 @@ img, svg, canvas, iframe {
 .mkt-card:hover,
 .erp-card:hover,
 .stat:hover,
-.glass-panel:hover {
+.glass-panel:hover,
+.panel:hover,
+.action-hub:hover,
+.hero-action-card:hover,
+.dept-card:hover,
+.summary-box:hover,
+.content-card:hover,
+.overview-card:hover,
+.client-card:hover,
+.ticket-card:hover,
+.box:hover,
+.service-order-card:hover,
+.work-card:hover,
+.client-box:hover {
   border-color: rgba(56, 189, 248, 0.28) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 20px rgba(56, 189, 248, 0.1) !important;
   transform: translateY(-2px);
+}
+
+/* Department Hero Banners & Action Hubs */
+.admin-hero-banner,
+.mkt-hero-banner,
+.action-hub,
+.page-head {
+  background: linear-gradient(135deg, rgba(14, 23, 44, 0.85) 0%, rgba(9, 14, 28, 0.88) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 14px !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Universal Button Design System */
+.btn-primary,
+.btn.primary,
+.btn-primary-highlight,
+.btn-action-primary,
+.btn-mkt-primary,
+.btn-add-work,
+.btn-login-submit {
+  background: linear-gradient(135deg, #0052cc 0%, #1a73e8 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 4px 14px rgba(0, 82, 204, 0.35) !important;
+  font-weight: 700 !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-primary:hover,
+.btn.primary:hover,
+.btn-primary-highlight:hover,
+.btn-action-primary:hover,
+.btn-mkt-primary:hover,
+.btn-add-work:hover,
+.btn-login-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1a73e8 0%, #0052cc 100%) !important;
+  box-shadow: 0 6px 20px rgba(0, 82, 204, 0.5), 0 0 16px rgba(56, 189, 248, 0.3) !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-secondary,
+.btn.secondary,
+.btn-action-secondary,
+.btn-mkt-secondary {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #cbd5e1 !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-secondary:hover,
+.btn.secondary:hover,
+.btn-action-secondary:hover,
+.btn-mkt-secondary:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-danger,
+.btn.danger,
+.btn-mkt-danger {
+  background: rgba(229, 25, 45, 0.14) !important;
+  border: 1px solid rgba(229, 25, 45, 0.3) !important;
+  color: #fca5a5 !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-danger:hover,
+.btn.danger:hover,
+.btn-mkt-danger:hover {
+  background: rgba(229, 25, 45, 0.25) !important;
+  color: #ffffff !important;
+  border-color: rgba(229, 25, 45, 0.5) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Universal Status Badges & Pills */
+.badge,
+.status-badge,
+.card-pill,
+.mkt-badge,
+.user-role-badge,
+.sidebar-status-pill,
+.dept-pill {
+  border-radius: 9999px !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  padding: 2.5px 8.5px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  line-height: 1.2 !important;
 }
 
 /* 4. Universal Dark Glass Form Inputs & Dropdowns */

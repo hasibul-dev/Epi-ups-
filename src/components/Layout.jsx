@@ -52,6 +52,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   CheckSquare,
+  ChevronRight,
 } from 'lucide-react';
 
 export default function Layout() {
@@ -61,6 +62,7 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [dataModalOpen, setDataModalOpen] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState({});
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     try {
       return localStorage.getItem('epi_sidebar_collapsed') === 'true';
@@ -103,6 +105,13 @@ export default function Layout() {
       } catch {}
       return next;
     });
+  };
+
+  const toggleGroup = (groupTitle) => {
+    setCollapsedGroups((prev) => ({
+      ...prev,
+      [groupTitle]: !prev[groupTitle],
+    }));
   };
 
   const handleResetDemo = async () => {
@@ -705,48 +714,71 @@ export default function Layout() {
 
           <div className="sidebar-scroll">
             <nav className="sidebar-nav-list">
-              {navGroups.map((groupObj, gIdx) => (
-                <div key={gIdx} className="sidebar-group">
-                  {!sidebarCollapsed && (
-                    <div className="sidebar-group-title">{groupObj.group}</div>
-                  )}
-                  {groupObj.items.map((item, idx) => {
-                    const Icon = item.icon || FileText;
-                    return (
-                      <NavLink
-                        key={idx}
-                        to={item.to}
-                        end={item.end}
-                        title={sidebarCollapsed ? `${groupObj.group}: ${item.label}` : undefined}
-                        className={({ isActive }) =>
-                          `sidebar-nav-link ${isActive ? `active active-${activeDept}` : ''}`
-                        }
-                        onClick={() => setMobileMenuOpen(false)}
+              {navGroups.map((groupObj, gIdx) => {
+                const isGroupCollapsed = !sidebarCollapsed && !!collapsedGroups[groupObj.group];
+                return (
+                  <div key={gIdx} className="sidebar-group">
+                    {!sidebarCollapsed && (
+                      <div
+                        className="sidebar-group-title"
+                        onClick={() => toggleGroup(groupObj.group)}
+                        title="Click to collapse / expand group"
+                        style={{
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          userSelect: 'none',
+                          transition: 'color 0.18s ease',
+                        }}
                       >
-                        <Icon size={17} className="nav-icon" />
-                        {!sidebarCollapsed && <span>{item.label}</span>}
-                        {item.badge > 0 && (
-                          <span
-                            className="sidebar-badge"
-                            style={
-                              activeDept === 'sales'
-                                ? { background: '#0052cc' }
-                                : activeDept === 'service'
-                                ? { background: '#059669' }
-                                : activeDept === 'marketing'
-                                ? { background: '#7c3aed' }
-                                : undefined
-                            }
-                            title={`${item.badge} pending / scheduled`}
-                          >
-                            {item.badge}
-                          </span>
+                        <span>{groupObj.group}</span>
+                        {isGroupCollapsed ? (
+                          <ChevronRight size={12} style={{ opacity: 0.6 }} />
+                        ) : (
+                          <ChevronDown size={12} style={{ opacity: 0.6 }} />
                         )}
-                      </NavLink>
-                    );
-                  })}
-                </div>
-              ))}
+                      </div>
+                    )}
+                    {!isGroupCollapsed &&
+                      groupObj.items.map((item, idx) => {
+                        const Icon = item.icon || FileText;
+                        return (
+                          <NavLink
+                            key={idx}
+                            to={item.to}
+                            end={item.end}
+                            title={sidebarCollapsed ? `${groupObj.group}: ${item.label}` : undefined}
+                            className={({ isActive }) =>
+                              `sidebar-nav-link ${isActive ? `active active-${activeDept}` : ''}`
+                            }
+                            onClick={() => setMobileMenuOpen(false)}
+                          >
+                            <Icon size={17} className="nav-icon" />
+                            {!sidebarCollapsed && <span>{item.label}</span>}
+                            {item.badge > 0 && (
+                              <span
+                                className="sidebar-badge"
+                                style={
+                                  activeDept === 'sales'
+                                    ? { background: '#0052cc' }
+                                    : activeDept === 'service'
+                                    ? { background: '#059669' }
+                                    : activeDept === 'marketing'
+                                    ? { background: '#7c3aed' }
+                                    : undefined
+                                }
+                                title={`${item.badge} pending / scheduled`}
+                              >
+                                {item.badge}
+                              </span>
+                            )}
+                          </NavLink>
+                        );
+                      })}
+                  </div>
+                );
+              })}
             </nav>
           </div>
 
