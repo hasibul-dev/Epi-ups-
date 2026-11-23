@@ -215,6 +215,10 @@ export default function Layout() {
     (t) => t.status !== 'Done' && t.status !== 'Completed'
   ).length;
 
+  const mktTodayCount = (snapshot?.marketingData?.marketingTasks || []).filter(
+    (t) => t.dueDate === tDate || t.startDate === tDate
+  ).length;
+
   const mktActiveCampaigns = (snapshot?.marketingData?.campaigns || []).filter(
     (c) => c.status === 'Active'
   ).length;
@@ -341,7 +345,10 @@ export default function Layout() {
           {
             group: 'DIGITAL MARKETING',
             items: [
-              { to: '/marketing', label: 'Digital Marketing', icon: Megaphone, end: true, badge: mktPendingTasks },
+              { to: '/marketing', label: 'Overview', icon: LayoutDashboard, end: true },
+              { to: '/marketing/all-works', label: 'All Works', icon: Layers, badge: mktPendingTasks },
+              { to: '/marketing/today', label: "Today's Work", icon: CalendarCheck, badge: mktTodayCount },
+              { to: '/marketing/history', label: 'Work History & Reports', icon: History },
             ],
           },
         ];
