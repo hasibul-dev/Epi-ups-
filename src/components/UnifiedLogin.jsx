@@ -12,6 +12,9 @@ import {
   Wrench,
   Landmark,
   Share2,
+  Eye,
+  EyeOff,
+  Sparkles,
 } from 'lucide-react';
 
 export default function UnifiedLogin() {
@@ -149,6 +152,11 @@ export default function UnifiedLogin() {
 
   return (
     <div className="login-wrapper">
+      {/* Ambient background lighting glow orbs */}
+      <div className="login-ambient-orb login-orb-1" aria-hidden="true" />
+      <div className="login-ambient-orb login-orb-2" aria-hidden="true" />
+      <div className="login-ambient-orb login-orb-3" aria-hidden="true" />
+
       <div className="login-card" style={{ maxWidth: 560 }}>
         {/* Brand Banner */}
         <div className="login-brand-header">
@@ -157,11 +165,11 @@ export default function UnifiedLogin() {
           </div>
           <h1 className="login-title">EPI UPS</h1>
           <span className="login-brand-sub">Bangladesh Limited</span>
-          <p className="login-subtitle">Centralized Management System</p>
+          <p className="login-subtitle">Centralized Enterprise Management System</p>
         </div>
 
         <div className="login-sso-badge">
-          <Shield size={14} />
+          <Sparkles size={13} className="text-sky-400" />
           <span>Department-Guarded Single Sign-On (SSO) Portal</span>
         </div>
 
@@ -277,8 +285,10 @@ export default function UnifiedLogin() {
                 className="input-inline-btn"
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
+                title={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -302,11 +312,14 @@ export default function UnifiedLogin() {
             style={{
               background: currentDeptObj.gradient || `linear-gradient(135deg, ${currentDeptObj.accent} 0%, #1a73e8 100%)`,
               border: 'none',
-              boxShadow: `0 4px 14px ${currentDeptObj.glow || currentDeptObj.border}`,
+              boxShadow: `0 4px 18px ${currentDeptObj.glow || currentDeptObj.border}`,
             }}
           >
             {loading ? (
-              <span>Authenticating credentials...</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <span className="login-spinner-sm" />
+                <span>Authenticating credentials...</span>
+              </span>
             ) : (
               <>
                 <span>Sign In to {currentDeptObj.name}</span>

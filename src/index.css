@@ -6,10 +6,12 @@
 
 /* ==========================================================================
    EPI UNIFIED APPLICATION SHELL & LAYOUT STYLES
+   PREMIUM DARK GLASSMORPHISM DESIGN SYSTEM
    ========================================================================== */
 
-/* Balanced Enterprise Typography Scale */
+/* Balanced Enterprise Typography & Dark Glassmorphism Design Tokens */
 :root {
+  /* Typography Scale */
   --font-page-title: 20px;       /* 19-22px */
   --font-section-title: 16px;    /* 15-17px */
   --font-card-title: 13.5px;     /* 13-14px */
@@ -19,6 +21,52 @@
   --font-meta: 10.5px;           /* 10-11px */
   --font-sidebar: 12.5px;        /* 12-13px */
   --font-btn: 12px;              /* 11-12.5px */
+
+  /* Global Dark Glassmorphism Canvas */
+  --bg-deep: #030712;
+  --bg-midnight: #050811;
+  --bg-navy: #080d1a;
+  --bg-charcoal: #0c1426;
+
+  /* Glass Surfaces */
+  --glass-bg: rgba(13, 21, 40, 0.65);
+  --glass-bg-card: linear-gradient(135deg, rgba(15, 23, 42, 0.72) 0%, rgba(9, 14, 28, 0.68) 100%);
+  --glass-bg-hover: linear-gradient(135deg, rgba(22, 36, 68, 0.8) 0%, rgba(14, 23, 44, 0.75) 100%);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-strong: rgba(255, 255, 255, 0.14);
+  --glass-border-accent: rgba(56, 189, 248, 0.35);
+
+  --glass-blur: blur(16px);
+  --glass-blur-lg: blur(28px);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+  --glass-shadow-lg: 0 16px 48px -8px rgba(0, 0, 0, 0.65), 0 0 24px rgba(56, 189, 248, 0.12);
+
+  /* Primary Electric Blue Accent */
+  --electric-blue: #38bdf8;
+  --electric-blue-bright: #1a73e8;
+  --electric-blue-deep: #0052cc;
+  --electric-blue-glow: 0 0 24px rgba(56, 189, 248, 0.25);
+
+  /* Secondary Subtle Purple Accent */
+  --purple-subtle: #c084fc;
+  --purple-bright: #a855f7;
+  --purple-deep: #7e22ce;
+  --purple-glow: 0 0 24px rgba(168, 85, 247, 0.25);
+
+  /* Status Colors */
+  --emerald-success: #10b981;
+  --emerald-glow: 0 0 20px rgba(16, 185, 129, 0.25);
+  --amber-warning: #f59e0b;
+  --amber-glow: 0 0 20px rgba(245, 158, 11, 0.25);
+  --crimson-danger: #ef4444;
+  --crimson-glow: 0 0 20px rgba(239, 68, 68, 0.25);
+
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
 }
 
 * {
@@ -29,12 +77,20 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--navy-950, #050811);
+  background-color: #030712;
+  background-image: 
+    radial-gradient(circle at 12% 10%, rgba(37, 99, 235, 0.12) 0px, transparent 40%),
+    radial-gradient(circle at 88% 12%, rgba(168, 85, 247, 0.09) 0px, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.45) 0px, transparent 65%),
+    radial-gradient(circle at 18% 85%, rgba(14, 165, 233, 0.08) 0px, transparent 40%),
+    radial-gradient(circle at 82% 85%, rgba(124, 58, 237, 0.07) 0px, transparent 45%);
+  background-attachment: fixed;
   color: #f1f5f9;
   font-size: var(--font-body);
   line-height: 1.5;
   min-height: 100vh;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, .page-title, .admin-hero-info h2 {
@@ -1096,6 +1152,307 @@ img, svg, canvas, iframe {
   .login-card {
     padding: 24px 16px !important;
     border-radius: 16px;
+  }
+}
+
+/* ==========================================================================
+   PREMIUM DARK GLASSMORPHISM DESIGN SYSTEM ENHANCEMENTS
+   Applies across the entire ERP: Login, Admin, Sales, Service, Accounts, Marketing
+   ========================================================================== */
+
+/* 1. Ambient Background Lighting Orbs (Used in Login and Key Pages) */
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  background: #030712 !important;
+}
+
+.login-ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.55;
+  animation: floatOrb 14s ease-in-out infinite alternate;
+}
+
+.login-orb-1 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.45) 0%, rgba(0, 82, 204, 0.1) 70%, transparent 100%);
+  top: 10%;
+  left: 15%;
+  animation-duration: 16s;
+}
+
+.login-orb-2 {
+  width: 460px;
+  height: 460px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(126, 34, 206, 0.08) 70%, transparent 100%);
+  bottom: 10%;
+  right: 15%;
+  animation-duration: 20s;
+  animation-delay: -6s;
+}
+
+.login-orb-3 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, rgba(14, 165, 233, 0.08) 70%, transparent 100%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-duration: 18s;
+  animation-delay: -10s;
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(35px, -30px) scale(1.08); }
+  100% { transform: translate(-30px, 30px) scale(0.95); }
+}
+
+/* 2. Glassmorphism Login Panel */
+.login-card {
+  width: 100%;
+  max-width: 560px;
+  background: linear-gradient(135deg, rgba(14, 23, 44, 0.82) 0%, rgba(9, 14, 28, 0.85) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.85), 0 0 32px rgba(56, 189, 248, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  border-radius: 20px !important;
+  padding: 38px 34px !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  position: relative;
+  z-index: 10;
+  animation: modalFadeScale 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.login-logo-ring {
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 20px rgba(56, 189, 248, 0.15);
+  backdrop-filter: blur(16px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.login-logo-ring:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 32px -4px rgba(0, 0, 0, 0.7), 0 0 28px rgba(56, 189, 248, 0.3);
+}
+
+.login-spinner-sm {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 3. Universal Glassmorphism Cards Across All Departments */
+.card,
+.stat-card,
+.dashboard-card,
+.admin-card,
+.sales-card,
+.service-card,
+.mkt-card,
+.erp-card,
+.stat,
+.glass-panel {
+  background: linear-gradient(135deg, rgba(14, 22, 42, 0.7) 0%, rgba(9, 14, 28, 0.68) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 14px !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease, box-shadow 0.22s ease !important;
+}
+
+.card:hover,
+.stat-card:hover,
+.dashboard-card:hover,
+.admin-card:hover,
+.sales-card:hover,
+.service-card:hover,
+.mkt-card:hover,
+.erp-card:hover,
+.stat:hover,
+.glass-panel:hover {
+  border-color: rgba(56, 189, 248, 0.28) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 12px 36px rgba(0, 0, 0, 0.55), 0 0 20px rgba(56, 189, 248, 0.1) !important;
+  transform: translateY(-2px);
+}
+
+/* 4. Universal Dark Glass Form Inputs & Dropdowns */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="search"],
+select,
+textarea,
+.text-input,
+.input {
+  background: rgba(10, 16, 30, 0.68) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 12.5px !important;
+  outline: none !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.text-input:focus,
+.input:focus {
+  border-color: #38bdf8 !important;
+  background: rgba(14, 23, 44, 0.85) !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.22), inset 0 1px 2px rgba(0, 0, 0, 0.35) !important;
+}
+
+select option {
+  background: #090e1c !important;
+  color: #f1f5f9 !important;
+  padding: 6px !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* 5. Universal Dark Glass Tables */
+.table-wrap,
+.table-responsive,
+.table-wrapper,
+.admin-table-container,
+.service-table-container,
+.sales-table-wrapper,
+.erp-table-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+  background: rgba(9, 14, 28, 0.5) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+
+table.t, table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+table th, .t th {
+  background: rgba(14, 23, 44, 0.85) !important;
+  backdrop-filter: blur(10px) !important;
+  color: #94a3b8 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  font-size: 11px !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+table td, .t td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  color: #e2e8f0 !important;
+}
+
+table tr:hover td, .t tr:hover td {
+  background: rgba(56, 189, 248, 0.04) !important;
+}
+
+/* 6. Modals & Dialogs with Dark Glass Blur */
+.modal-bg,
+.modal-backdrop {
+  background: rgba(3, 7, 18, 0.78) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.modal,
+.modal-dialog,
+.modal-content {
+  background: linear-gradient(145deg, rgba(14, 23, 44, 0.95) 0%, rgba(9, 14, 28, 0.96) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  box-shadow: 0 24px 64px -8px rgba(0, 0, 0, 0.85), 0 0 32px rgba(56, 189, 248, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  border-radius: 16px !important;
+  animation: modalFadeScale 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* 7. Keyframes & Animation Tokens */
+@keyframes modalFadeScale {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 8. Topbar & Sidebar Glass Enhancements */
+.topbar {
+  background: rgba(6, 11, 24, 0.85) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+.app-sidebar {
+  background: rgba(6, 11, 24, 0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 4px 0 28px rgba(0, 0, 0, 0.35) !important;
+}
+
+.sidebar-nav-link:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+  transform: translateX(2px);
+}
+
+.sidebar-nav-link.active {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 16px rgba(56, 189, 248, 0.12) !important;
+}
+
+/* 9. Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
