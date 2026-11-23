@@ -341,21 +341,7 @@ export default function Layout() {
           {
             group: 'DIGITAL MARKETING',
             items: [
-              { to: '/marketing', label: 'Marketing Dashboard', icon: LayoutDashboard, end: true },
-              { to: '/marketing/tasks', label: 'Work / Task Management', icon: CheckSquare, badge: mktPendingTasks },
-              { to: '/marketing/social', label: 'Content & Social Posts', icon: Share2 },
-              { to: '/marketing/campaigns', label: 'Campaign Management', icon: Target, badge: mktActiveCampaigns },
-              { to: '/marketing/marketing-reports', label: 'Marketing Reports & Print', icon: FileText },
-            ],
-          },
-          {
-            group: 'IT SUPPORT HELPDESK',
-            items: [
-              { to: '/marketing/it-dashboard', label: 'IT Support Dashboard', icon: Activity },
-              { to: '/marketing/tickets', label: 'IT Work Management', icon: Headphones, badge: itOpenTickets },
-              { to: '/marketing/devices', label: 'Basic Device Management', icon: Laptop },
-              { to: '/marketing/it-history', label: 'IT Work History', icon: History },
-              { to: '/marketing/it-reports', label: 'IT Reports & Print', icon: FileCheck },
+              { to: '/marketing', label: 'Digital Marketing', icon: Megaphone, end: true, badge: mktPendingTasks },
             ],
           },
         ];
@@ -444,11 +430,11 @@ export default function Layout() {
                 to="/marketing"
                 className={({ isActive }) => `dept-tab ${isActive || activeDept === 'marketing' ? 'active-marketing' : ''}`}
               >
-                <Share2 size={14} />
-                <span>Marketing & IT</span>
-                {(mktPendingTasks + itOpenTickets) > 0 && (
+                <Megaphone size={14} />
+                <span>Digital Marketing</span>
+                {mktPendingTasks > 0 && (
                   <span className="sidebar-badge" style={{ background: '#7c3aed', fontSize: 10, padding: '1px 6px' }}>
-                    {mktPendingTasks + itOpenTickets}
+                    {mktPendingTasks}
                   </span>
                 )}
               </NavLink>
@@ -662,7 +648,7 @@ export default function Layout() {
                 {activeDept === 'sales' && 'SALES DEPARTMENT'}
                 {activeDept === 'service' && 'SERVICE DEPARTMENT'}
                 {activeDept === 'accounts' && 'ACCOUNTS & ERP'}
-                {activeDept === 'marketing' && 'DIGITAL MARKETING & IT'}
+                {activeDept === 'marketing' && 'DIGITAL MARKETING'}
               </span>
             )}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 'auto' }}>
@@ -740,8 +726,8 @@ export default function Layout() {
                   className={({ isActive }) => `mobile-dept-btn ${isActive || activeDept === 'marketing' ? 'active-marketing' : ''}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <Share2 size={13} />
-                  <span>Mkt & IT</span>
+                  <Megaphone size={13} />
+                  <span>Digital Marketing</span>
                 </NavLink>
               )}
             </div>

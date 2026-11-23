@@ -239,6 +239,62 @@ test('Work Task Assignment & Automatic Notification Generation', () => {
   assert.ok(!snapAfterDelete.marketingTasks.find((t) => t.id === task.id), 'Task deleted');
 });
 
+test('Employee Work Progress, Completion Notes & Work History Retention', () => {
+  // 1. Assign work to employee
+  const task = marketingStore.saveTask(
+    {
+      title: 'Digital Marketing Test: Summer UPS Promo Video Creation',
+      category: 'Video / Animation',
+      assignedTo: 'Samia Jahan',
+      assignedBy: 'Super Administrator',
+      startDate: '2026-11-23',
+      dueDate: '2026-11-25',
+      priority: 'High',
+      status: 'Assigned',
+      desc: 'Create 30-sec promo reel for 20kVA Online UPS.',
+    },
+    { name: 'Super Administrator', role: 'superadmin' }
+  );
+
+  // 2. Employee starts work & updates progress
+  const inProgress = marketingStore.updateTaskProgress(
+    task.id,
+    {
+      progress: 60,
+      status: 'In Progress',
+      note: 'Storyboard approved. Rendering 3D animation sequence.',
+    },
+    { name: 'Samia Jahan', role: 'employee' }
+  );
+  assert.strictEqual(inProgress.status, 'In Progress');
+  assert.strictEqual(inProgress.progress, 60);
+  assert.ok(inProgress.history.length >= 2, 'History tracks status transitions');
+
+  // 3. Employee completes work with completion notes & attachments
+  const completed = marketingStore.completeTask(
+    task.id,
+    {
+      completionNotes: 'Video rendered in 4K MP4 format and uploaded to Drive. Subtitles embedded.',
+      completionAttachment: 'drive.google.com/file/d/sample-ups-promo.mp4',
+    },
+    { name: 'Samia Jahan', role: 'employee' }
+  );
+  assert.strictEqual(completed.status, 'Completed');
+  assert.strictEqual(completed.progress, 100);
+  assert.ok(completed.completedDate, 'Records completion date');
+  assert.strictEqual(completed.completionNotes, 'Video rendered in 4K MP4 format and uploaded to Drive. Subtitles embedded.');
+
+  // 4. Verify in Work History
+  const historyList = marketingStore.getWorkHistory({ employee: 'Samia Jahan' });
+  const inHistory = historyList.find((t) => t.id === task.id);
+  assert.ok(inHistory, 'Completed work appears in Work History');
+  assert.strictEqual(inHistory.assignedBy, 'Super Administrator', 'Original assigner preserved');
+  assert.strictEqual(inHistory.startDate, '2026-11-23', 'Original assignment date preserved');
+
+  // Cleanup test task
+  marketingStore.deleteTask(task.id);
+});
+
 // ----------------------------------------------------
 // TEST GROUP 3: Central Auth & RBAC Default Users
 // ----------------------------------------------------

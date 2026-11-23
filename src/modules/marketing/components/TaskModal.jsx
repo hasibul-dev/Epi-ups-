@@ -1,22 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { X, CheckSquare, Save, Calendar, Clock, User, AlertCircle, FileText, Tag, Flag } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import {
+  X,
+  CheckSquare,
+  Save,
+  Calendar,
+  Clock,
+  User,
+  AlertCircle,
+  FileText,
+  Tag,
+  Flag,
+  Paperclip,
+} from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
-import { today, addDays } from '../../sales/utils/helpers.js';
+import { centralStore } from '../../admin/services/centralStorage.js';
+import { today } from '../../sales/utils/helpers.js';
 
 const TASK_CATEGORIES = [
   'SEO / Website',
   'Advertising',
   'Social Media',
-  'Copywriting',
-  'Design',
-  'IT Support',
-  'Network & Infrastructure',
-  'Event / Trade Show',
-  'Technical Documentation',
+  'Graphic Design',
+  'Content / Copywriting',
+  'Video / Animation',
+  'Event / Campaign',
+  'Technical / IT Support',
   'Other',
 ];
 
-const EMPLOYEES = [
+const DEFAULT_EMPLOYEES = [
   { name: 'Tanvir Ahmed', role: 'Lead Marketing Specialist' },
   { name: 'Samia Jahan', role: 'Content & Social Media' },
   { name: 'Rafiul Islam', role: 'Digital Ads Specialist' },
@@ -27,12 +39,34 @@ const EMPLOYEES = [
   { name: 'Chief Accountant', role: 'Accounts & ERP' },
 ];
 
-const PRIORITIES = ['Low', 'Normal', 'High', 'Urgent'];
-const STATUS_OPTIONS = ['To Do', 'In Progress', 'Completed'];
+const PRIORITIES = ['Urgent', 'High', 'Normal', 'Low'];
+const STATUS_OPTIONS = ['Assigned', 'In Progress', 'Completed', 'On Hold'];
 
 export default function TaskModal() {
   const { taskModal, closeTaskModal, saveTask, user } = useMarketing();
   const { open, item } = taskModal;
+
+  // Retrieve actual employee records from central database
+  const employeeList = useMemo(() => {
+    try {
+      const dbUsers = centralStore.getUsers();
+      if (Array.isArray(dbUsers) && dbUsers.length > 0) {
+        const mapped = dbUsers.map((u) => ({
+          name: u.name || u.userId,
+          role: u.role || 'Employee',
+        }));
+        // Merge with defaults avoiding duplicate names
+        const names = new Set(mapped.map((m) => m.name.toLowerCase()));
+        DEFAULT_EMPLOYEES.forEach((def) => {
+          if (!names.has(def.name.toLowerCase())) {
+            mapped.push(def);
+          }
+        });
+        return mapped;
+      }
+    } catch {}
+    return DEFAULT_EMPLOYEES;
+  }, []);
 
   const [form, setForm] = useState({
     title: '',
@@ -43,8 +77,9 @@ export default function TaskModal() {
     dueDate: today(),
     dueTime: '18:00',
     priority: 'Normal',
-    status: 'To Do',
+    status: 'Assigned',
     desc: '',
+    attachment: '',
   });
 
   const [isCustomAssignee, setIsCustomAssignee] = useState(false);
@@ -52,18 +87,19 @@ export default function TaskModal() {
 
   useEffect(() => {
     if (item) {
-      const isKnown = EMPLOYEES.some((e) => e.name === item.assignedTo);
+      const isKnown = employeeList.some((e) => e.name.toLowerCase() === (item.assignedTo || '').toLowerCase());
       setForm({
         title: item.title || '',
         category: item.category || 'SEO / Website',
-        assignedTo: isKnown ? item.assignedTo : (item.assignedTo ? 'Other' : 'Tanvir Ahmed'),
+        assignedTo: isKnown ? item.assignedTo : (item.assignedTo ? 'CUSTOM_OTHER' : 'Tanvir Ahmed'),
         customAssignee: isKnown ? '' : (item.assignedTo || ''),
         startDate: item.startDate || today(),
         dueDate: item.dueDate || today(),
         dueTime: item.dueTime || '18:00',
         priority: item.priority || 'Normal',
-        status: item.status || 'To Do',
+        status: item.status || 'Assigned',
         desc: item.desc || '',
+        attachment: item.attachment || '',
       });
       setIsCustomAssignee(!isKnown && Boolean(item.assignedTo));
     } else {
@@ -76,13 +112,14 @@ export default function TaskModal() {
         dueDate: today(),
         dueTime: '18:00',
         priority: 'Normal',
-        status: 'To Do',
+        status: 'Assigned',
         desc: '',
+        attachment: '',
       });
       setIsCustomAssignee(false);
     }
     setError('');
-  }, [item, open, user]);
+  }, [item, open, user, employeeList]);
 
   if (!open) return null;
 
@@ -104,7 +141,7 @@ export default function TaskModal() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.title.trim()) {
-      setError('Task Title is required');
+      setError('Work Title is required');
       return;
     }
 
@@ -117,13 +154,14 @@ export default function TaskModal() {
       title: form.title.trim(),
       category: form.category,
       assignedTo: finalAssignedTo,
-      assignedBy: item?.assignedBy || user?.name || 'Super Admin',
+      assignedBy: item?.assignedBy || user?.name || 'Super Administrator',
       startDate: form.startDate || today(),
       dueDate: form.dueDate || today(),
       dueTime: form.dueTime || '18:00',
       priority: form.priority,
       status: form.status,
       desc: form.desc.trim(),
+      attachment: form.attachment.trim(),
     });
     closeTaskModal();
   };
@@ -138,10 +176,10 @@ export default function TaskModal() {
             </div>
             <div>
               <h3 className="text-base font-bold text-white tracking-wide">
-                {item ? 'Edit Work Item & Deliverable' : 'Assign New Work Item'}
+                {item ? 'Edit Work Order' : 'Assign New Work'}
               </h3>
               <p className="text-xs text-slate-400">
-                Configure task parameters, assign team members, and set delivery deadlines
+                Allocate marketing deliverables to employees with deadlines, requirements & brief files
               </p>
             </div>
           </div>
@@ -162,10 +200,10 @@ export default function TaskModal() {
             </div>
           )}
 
-          {/* Task Title */}
+          {/* Work Title */}
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              Task Title / Action Item <span className="text-rose-400">*</span>
+              Work Title <span className="text-rose-400">*</span>
             </label>
             <input
               type="text"
@@ -178,12 +216,12 @@ export default function TaskModal() {
             />
           </div>
 
-          {/* Category & Assignee */}
+          {/* Category & Assigned Employee */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
                 <Tag size={13} className="text-purple-400" />
-                <span>Category</span>
+                <span>Work Category</span>
               </label>
               <select
                 name="category"
@@ -210,12 +248,12 @@ export default function TaskModal() {
                 onChange={handleChange}
                 className="mkt-select"
               >
-                {EMPLOYEES.map((emp) => (
+                {employeeList.map((emp) => (
                   <option key={emp.name} value={emp.name}>
-                    {emp.name} — {emp.role}
+                    {emp.name} ({emp.role})
                   </option>
                 ))}
-                <option value="CUSTOM_OTHER">+ Custom Employee / External...</option>
+                <option value="CUSTOM_OTHER">+ External / Custom Employee...</option>
               </select>
 
               {isCustomAssignee && (
@@ -225,7 +263,7 @@ export default function TaskModal() {
                     name="customAssignee"
                     value={form.customAssignee}
                     onChange={handleChange}
-                    placeholder="Enter employee name or vendor..."
+                    placeholder="Enter employee or contractor name..."
                     className="mkt-input text-xs"
                     autoFocus
                   />
@@ -234,12 +272,12 @@ export default function TaskModal() {
             </div>
           </div>
 
-          {/* Start Date, Due Date, Due Time */}
+          {/* Assignment Date, Deadline, Time */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
               <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
                 <Calendar size={13} className="text-slate-400" />
-                <span>Start Date</span>
+                <span>Assignment Date</span>
               </label>
               <input
                 type="date"
@@ -253,7 +291,7 @@ export default function TaskModal() {
             <div>
               <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
                 <Calendar size={13} className="text-amber-400" />
-                <span>Due Date <span className="text-rose-400">*</span></span>
+                <span>Deadline Date <span className="text-rose-400">*</span></span>
               </label>
               <input
                 type="date"
@@ -268,7 +306,7 @@ export default function TaskModal() {
             <div>
               <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
                 <Clock size={13} className="text-sky-400" />
-                <span>Due Time</span>
+                <span>Deadline Time</span>
               </label>
               <input
                 type="time"
@@ -285,7 +323,7 @@ export default function TaskModal() {
             <div>
               <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
                 <Flag size={13} className="text-rose-400" />
-                <span>Priority Level</span>
+                <span>Priority</span>
               </label>
               <select
                 name="priority"
@@ -295,7 +333,7 @@ export default function TaskModal() {
               >
                 {PRIORITIES.map((p) => (
                   <option key={p} value={p}>
-                    {p === 'Urgent' ? '🔴 Urgent (Critical Deadline)' : p === 'High' ? '🟠 High' : p === 'Normal' ? '🔵 Normal' : '⚪ Low'}
+                    {p === 'Urgent' ? '🔴 Urgent' : p === 'High' ? '🟠 High' : p === 'Normal' ? '🔵 Normal' : '⚪ Low'}
                   </option>
                 ))}
               </select>
@@ -304,7 +342,7 @@ export default function TaskModal() {
             <div>
               <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
                 <CheckSquare size={13} className="text-emerald-400" />
-                <span>Task Status</span>
+                <span>Initial Status</span>
               </label>
               <select
                 name="status"
@@ -314,18 +352,34 @@ export default function TaskModal() {
               >
                 {STATUS_OPTIONS.map((st) => (
                   <option key={st} value={st}>
-                    {st === 'Completed' ? '✅ Completed' : st === 'In Progress' ? '⏳ In Progress' : '📋 To Do'}
+                    {st === 'Completed' ? '✅ Completed' : st === 'In Progress' ? '⏳ In Progress' : st === 'On Hold' ? '⏸️ On Hold' : '📋 Assigned'}
                   </option>
                 ))}
               </select>
             </div>
           </div>
 
-          {/* Description */}
+          {/* Optional Attachment */}
+          <div>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
+              <Paperclip size={13} className="text-sky-400" />
+              <span>Optional Attachment / Brief Link / Document Reference</span>
+            </label>
+            <input
+              type="text"
+              name="attachment"
+              value={form.attachment}
+              onChange={handleChange}
+              placeholder="e.g. brief_hospital_ups_seo.docx, drive.google.com/..., or specs_40kva.pdf"
+              className="mkt-input text-xs"
+            />
+          </div>
+
+          {/* Work Description */}
           <div>
             <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
               <FileText size={13} className="text-slate-400" />
-              <span>Description, Instructions & Deliverable Scope</span>
+              <span>Work Description & Scope</span>
             </label>
             <textarea
               name="desc"
@@ -333,14 +387,14 @@ export default function TaskModal() {
               value={form.desc}
               onChange={handleChange}
               placeholder="Outline specific objectives, technical specifications, links, or handoff criteria..."
-              className="mkt-input !py-2.5 resize-none"
+              className="mkt-input !py-2.5 resize-none text-xs"
             />
           </div>
 
           {/* Footer Actions */}
           <div className="flex items-center justify-between pt-4 border-t border-slate-800">
             <span className="text-[11px] text-slate-400">
-              Assigned by: <strong className="text-slate-200">{item?.assignedBy || user?.name || 'Super Admin'}</strong>
+              Assigned by: <strong className="text-slate-200">{item?.assignedBy || user?.name || 'Super Administrator'}</strong>
             </span>
             <div className="flex items-center gap-2.5">
               <button
@@ -355,7 +409,7 @@ export default function TaskModal() {
                 className="btn-mkt-primary"
               >
                 <Save size={14} />
-                <span>{item ? 'Update Work Item' : 'Assign Work'}</span>
+                <span>{item ? 'Update Work' : 'Assign Work'}</span>
               </button>
             </div>
           </div>

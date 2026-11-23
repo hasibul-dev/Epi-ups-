@@ -402,22 +402,44 @@ export function createInitialMarketingItData() {
     },
   ];
 
-  // 6. Marketing Tasks
+  // 6. Marketing Tasks & Work Items
   const marketingTasks = [
     {
       id: 'mt-01',
       title: 'Draft technical blog on 3-Phase vs 1-Phase UPS considerations for hospitals',
       category: 'SEO / Website',
       assignedTo: 'Tanvir Ahmed',
-      assignedBy: 'Super Admin',
+      assignedBy: 'Super Administrator',
       startDate: past5D,
       dueDate: T,
       dueTime: '17:00',
       priority: 'High',
       status: 'In Progress',
+      progress: 75,
+      attachment: 'brief_hospital_ups_seo.docx',
       desc: 'Create an in-depth 1200-word SEO article for the website resource center with comparison table.',
-      createdAt: past5D,
-      updatedAt: past2D,
+      completionNotes: '',
+      completionAttachment: '',
+      completedAt: '',
+      completedDate: '',
+      completedTime: '',
+      completedBy: '',
+      createdAt: past5D + 'T09:00:00Z',
+      updatedAt: past2D + 'T14:30:00Z',
+      history: [
+        {
+          timestamp: past5D + 'T09:00:00Z',
+          action: 'Assigned',
+          by: 'Super Administrator',
+          note: 'Work assigned with deadline ' + T + ' 17:00',
+        },
+        {
+          timestamp: past2D + 'T14:30:00Z',
+          action: 'Progress Update',
+          by: 'Tanvir Ahmed',
+          note: 'First draft completed (900 words). Working on 3-Phase wiring diagram.',
+        },
+      ],
     },
     {
       id: 'mt-02',
@@ -430,30 +452,73 @@ export function createInitialMarketingItData() {
       dueTime: '18:00',
       priority: 'High',
       status: 'Completed',
-      completedAt: past2D,
+      progress: 100,
+      attachment: 'pixel_audit_parameters.pdf',
       desc: 'Verify lead form submission triggers and match data in Google Analytics 4.',
-      createdAt: past10D,
-      updatedAt: past2D,
+      completionNotes: 'All 4 standard events (Lead, Contact, ViewContent, FormSubmit) verified and firing accurately on GTM and Meta Event Manager. GA4 deduplication confirmed.',
+      completionAttachment: 'pixel_conversion_report_final.pdf',
+      completedAt: past2D + 'T16:45:00Z',
+      completedDate: past2D,
+      completedTime: '16:45',
+      completedBy: 'Rafiul Islam',
+      createdAt: past10D + 'T10:00:00Z',
+      updatedAt: past2D + 'T16:45:00Z',
+      history: [
+        {
+          timestamp: past10D + 'T10:00:00Z',
+          action: 'Assigned',
+          by: 'Tanvir Ahmed',
+          note: 'Work assigned with deadline ' + past2D,
+        },
+        {
+          timestamp: past5D + 'T11:00:00Z',
+          action: 'Started',
+          by: 'Rafiul Islam',
+          note: 'Inspected GTM container and Meta Event Manager diagnostics.',
+        },
+        {
+          timestamp: past2D + 'T16:45:00Z',
+          action: 'Completed',
+          by: 'Rafiul Islam',
+          note: 'Event verification complete. Conversion report attached.',
+        },
+      ],
     },
     {
       id: 'mt-03',
       title: 'Prepare product presentation slides for upcoming pharmaceutical client pitch',
-      category: 'Copywriting',
+      category: 'Content / Copywriting',
       assignedTo: 'Tanvir Ahmed',
-      assignedBy: 'MD. MAHMUDUL HASAN',
+      assignedBy: 'Sales Manager',
       startDate: past2D,
       dueDate: T,
       dueTime: '15:30',
       priority: 'Urgent',
-      status: 'To Do',
-      desc: 'Coordinate with Sales Manager to update slide deck with recent diagnostic center photos.',
-      createdAt: past2D,
-      updatedAt: T,
+      status: 'Assigned',
+      progress: 20,
+      attachment: 'client_specs_square_pharma.pdf',
+      desc: 'Coordinate with Sales Manager to update slide deck with recent diagnostic center photos and UPS specs.',
+      completionNotes: '',
+      completionAttachment: '',
+      completedAt: '',
+      completedDate: '',
+      completedTime: '',
+      completedBy: '',
+      createdAt: past2D + 'T09:30:00Z',
+      updatedAt: T + 'T08:00:00Z',
+      history: [
+        {
+          timestamp: past2D + 'T09:30:00Z',
+          action: 'Assigned',
+          by: 'Sales Manager',
+          note: 'Urgent presentation deck required for Square Pharmaceuticals procurement committee.',
+        },
+      ],
     },
     {
       id: 'mt-04',
-      title: 'Design 4 Instagram story graphics for weekend retail discount promotion',
-      category: 'Social Media',
+      title: 'Design 4 Instagram and LinkedIn story graphics for weekend retail promotion',
+      category: 'Graphic Design',
       assignedTo: 'Samia Jahan',
       assignedBy: 'Tanvir Ahmed',
       startDate: past2D,
@@ -461,29 +526,67 @@ export function createInitialMarketingItData() {
       dueTime: '16:00',
       priority: 'Normal',
       status: 'In Progress',
+      progress: 50,
+      attachment: 'retail_copy_offers.txt',
       desc: 'Highlight Line Interactive 650VA UPS with 1-year replacement guarantee.',
-      createdAt: past2D,
-      updatedAt: past2D,
+      completionNotes: '',
+      completionAttachment: '',
+      completedAt: '',
+      completedDate: '',
+      completedTime: '',
+      completedBy: '',
+      createdAt: past2D + 'T11:00:00Z',
+      updatedAt: past2D + 'T15:00:00Z',
+      history: [
+        {
+          timestamp: past2D + 'T11:00:00Z',
+          action: 'Assigned',
+          by: 'Tanvir Ahmed',
+          note: 'Assigned for weekend retail social campaign.',
+        },
+      ],
     },
     {
       id: 'mt-05',
       title: 'Configure MikroTik VLAN & DHCP reservation for Service Department test bench',
-      category: 'IT Support',
+      category: 'Technical / IT Support',
       assignedTo: 'Md. Al-Amin',
-      assignedBy: 'Super Admin',
+      assignedBy: 'Super Administrator',
       startDate: past5D,
       dueDate: past2D,
       dueTime: '14:00',
       priority: 'Urgent',
-      status: 'To Do',
-      desc: 'Isolate incoming customer UPS units on subnet 192.168.20.0/24 to prevent IP conflict.',
-      createdAt: past5D,
-      updatedAt: past5D,
+      status: 'On Hold',
+      progress: 30,
+      attachment: 'network_topology_map.png',
+      desc: 'Isolate incoming customer UPS units on subnet 192.168.20.0/24 to prevent IP conflict with main ERP.',
+      completionNotes: '',
+      completionAttachment: '',
+      completedAt: '',
+      completedDate: '',
+      completedTime: '',
+      completedBy: '',
+      createdAt: past5D + 'T10:00:00Z',
+      updatedAt: past2D + 'T16:00:00Z',
+      history: [
+        {
+          timestamp: past5D + 'T10:00:00Z',
+          action: 'Assigned',
+          by: 'Super Administrator',
+          note: 'Assigned high-priority network segmentation.',
+        },
+        {
+          timestamp: past2D + 'T16:00:00Z',
+          action: 'Status Change',
+          by: 'Md. Al-Amin',
+          note: 'Placed On Hold pending replacement managed switch installation.',
+        },
+      ],
     },
     {
       id: 'mt-06',
       title: 'Monthly offsite NAS backup & cloud sync verification for ERP database',
-      category: 'IT Support',
+      category: 'Technical / IT Support',
       assignedTo: 'Kamrul Hasan',
       assignedBy: 'Md. Al-Amin',
       startDate: T,
@@ -491,9 +594,25 @@ export function createInitialMarketingItData() {
       dueTime: '19:00',
       priority: 'Normal',
       status: 'In Progress',
-      desc: 'Verify weekly full snapshot replication to encrypted cloud storage bucket.',
-      createdAt: T,
-      updatedAt: T,
+      progress: 80,
+      attachment: 'backup_checksheet_sop.pdf',
+      desc: 'Verify weekly full snapshot replication to encrypted cloud storage bucket and check hash digests.',
+      completionNotes: '',
+      completionAttachment: '',
+      completedAt: '',
+      completedDate: '',
+      completedTime: '',
+      completedBy: '',
+      createdAt: T + 'T08:30:00Z',
+      updatedAt: T + 'T14:00:00Z',
+      history: [
+        {
+          timestamp: T + 'T08:30:00Z',
+          action: 'Assigned',
+          by: 'Md. Al-Amin',
+          note: 'Assigned routine monthly NAS backup drill.',
+        },
+      ],
     },
   ];
 
@@ -1115,29 +1234,58 @@ class MarketingItStoreEngine {
     this.persist();
   }
 
-  // --- MARKETING TASK CRUD ---
+  // --- MARKETING WORK MANAGEMENT / TASK CRUD ---
   saveTask(task, currentUser = null) {
     const isEdit = Boolean(task.id);
     const id = isEdit ? task.id : `mt-${Date.now().toString(36)}`;
     const nowIso = new Date().toISOString();
     const existing = isEdit ? this.memory.marketingTasks.find((t) => t.id === id) : null;
 
+    const isCompleted = task.status === 'Completed';
+
+    const history = Array.isArray(existing?.history) ? [...existing.history] : [];
+    if (!isEdit) {
+      history.push({
+        timestamp: nowIso,
+        action: 'Assigned',
+        by: currentUser?.name || task.assignedBy || 'Super Administrator',
+        note: `Work assigned to ${task.assignedTo || 'Unassigned'} with deadline ${task.dueDate || today()} ${task.dueTime || '18:00'}`,
+      });
+    } else if (task.status && existing && existing.status !== task.status) {
+      history.push({
+        timestamp: nowIso,
+        action: `Status: ${task.status}`,
+        by: currentUser?.name || 'Authorized User',
+        note: task.completionNotes || task.desc || `Status transitioned to ${task.status}`,
+      });
+    }
+
     const record = {
       ...task,
       id,
       title: (task.title || '').trim(),
-      category: task.category || existing?.category || 'General',
+      category: task.category || existing?.category || 'SEO / Website',
       startDate: task.startDate || existing?.startDate || today(),
       dueDate: task.dueDate || existing?.dueDate || today(),
       dueTime: task.dueTime || existing?.dueTime || '18:00',
       priority: task.priority || existing?.priority || 'Normal',
-      status: task.status || existing?.status || 'To Do',
+      status: task.status || existing?.status || 'Assigned',
+      progress: typeof task.progress === 'number'
+        ? Math.min(100, Math.max(0, task.progress))
+        : (isCompleted ? 100 : (existing?.progress ?? (task.status === 'In Progress' ? 50 : 0))),
       assignedTo: (task.assignedTo || existing?.assignedTo || 'Tanvir Ahmed').trim(),
-      assignedBy: (task.assignedBy || existing?.assignedBy || currentUser?.name || 'Administrator').trim(),
+      assignedBy: (task.assignedBy || existing?.assignedBy || currentUser?.name || 'Super Administrator').trim(),
       desc: (task.desc || existing?.desc || '').trim(),
+      attachment: task.attachment || existing?.attachment || '',
+      completionNotes: (task.completionNotes || existing?.completionNotes || '').trim(),
+      completionAttachment: (task.completionAttachment || existing?.completionAttachment || '').trim(),
+      completedAt: isCompleted ? (existing?.completedAt || task.completedAt || nowIso) : '',
+      completedDate: isCompleted ? (existing?.completedDate || task.completedDate || today()) : '',
+      completedTime: isCompleted ? (existing?.completedTime || task.completedTime || new Date().toTimeString().slice(0, 5)) : '',
+      completedBy: isCompleted ? (existing?.completedBy || task.completedBy || currentUser?.name || task.assignedTo || 'Employee') : '',
       createdAt: isEdit ? (existing?.createdAt || task.createdAt || nowIso) : nowIso,
       updatedAt: nowIso,
-      completedAt: task.status === 'Completed' ? (existing?.completedAt || nowIso) : '',
+      history,
     };
 
     if (isEdit) {
@@ -1183,20 +1331,20 @@ class MarketingItStoreEngine {
         });
       }
 
-      // 3. Completion notification to assigner
+      // 3. Completion notification to assigner/administrator
       if (existing && existing.status !== 'Completed' && record.status === 'Completed') {
-        const assigner = record.assignedBy || 'Administrator';
+        const assigner = record.assignedBy || 'Super Administrator';
         this.addNotification({
           id: `notif-${Date.now().toString(36)}-done`,
           recipient: assigner,
-          sender: currentUser?.name || record.assignedTo || 'Team Member',
+          sender: currentUser?.name || record.assignedTo || 'Employee',
           taskId: record.id,
           taskTitle: record.title,
           type: 'completed',
           priority: record.priority,
           dueDate: record.dueDate,
           dueTime: record.dueTime,
-          message: `Task "${record.title}" was marked as Completed by ${currentUser?.name || record.assignedTo}.`,
+          message: `Work "${record.title}" was completed by ${currentUser?.name || record.assignedTo}. Notes: ${record.completionNotes || 'Delivered successfully.'}`,
           read: false,
           createdAt: nowIso,
         });
@@ -1228,7 +1376,116 @@ class MarketingItStoreEngine {
     return record;
   }
 
+  // Helper: Employee updates their progress & work notes
+  updateTaskProgress(taskId, { progress, status, note, attachment }, currentUser = null) {
+    const existing = this.memory.marketingTasks.find((t) => t.id === taskId);
+    if (!existing) return null;
+
+    const nextStatus = status || existing.status;
+    const nextProgress = typeof progress === 'number' ? progress : (nextStatus === 'Completed' ? 100 : existing.progress);
+    const nowIso = new Date().toISOString();
+
+    const history = Array.isArray(existing.history) ? [...existing.history] : [];
+    history.push({
+      timestamp: nowIso,
+      action: nextStatus === 'Completed' ? 'Submitted Completed' : `Progress (${nextProgress}%)`,
+      by: currentUser?.name || existing.assignedTo || 'Employee',
+      note: note || `Work progress updated to ${nextProgress}% (${nextStatus})`,
+    });
+
+    const isDone = nextStatus === 'Completed';
+
+    const updated = {
+      ...existing,
+      status: nextStatus,
+      progress: nextProgress,
+      completionNotes: isDone ? (note || existing.completionNotes) : existing.completionNotes,
+      completionAttachment: attachment || existing.completionAttachment,
+      completedAt: isDone ? (existing.completedAt || nowIso) : '',
+      completedDate: isDone ? (existing.completedDate || today()) : '',
+      completedTime: isDone ? (existing.completedTime || new Date().toTimeString().slice(0, 5)) : '',
+      completedBy: isDone ? (currentUser?.name || existing.assignedTo) : '',
+      updatedAt: nowIso,
+      history,
+    };
+
+    this.memory.marketingTasks = this.memory.marketingTasks.map((t) => (t.id === taskId ? updated : t));
+
+    // Notify administrator
+    const assigner = updated.assignedBy || 'Super Administrator';
+    this.addNotification({
+      id: `notif-${Date.now().toString(36)}-update`,
+      recipient: assigner,
+      sender: currentUser?.name || existing.assignedTo || 'Employee',
+      taskId: updated.id,
+      taskTitle: updated.title,
+      type: isDone ? 'completed' : 'progress',
+      priority: updated.priority,
+      dueDate: updated.dueDate,
+      message: `${currentUser?.name || existing.assignedTo} updated work "${updated.title}" -> ${nextStatus} (${nextProgress}%). ${note ? 'Note: ' + note : ''}`.trim(),
+      read: false,
+      createdAt: nowIso,
+    });
+
+    this.persist();
+    return updated;
+  }
+
+  // Helper: Mark work completed with notes and files
+  completeTask(taskId, { completionNotes, completionAttachment }, currentUser = null) {
+    return this.updateTaskProgress(
+      taskId,
+      {
+        progress: 100,
+        status: 'Completed',
+        note: completionNotes,
+        attachment: completionAttachment,
+      },
+      currentUser
+    );
+  }
+
+  // Helper: Get Work History
+  getWorkHistory(filters = {}) {
+    const { employee, category, startDate, endDate, search } = filters;
+    let list = (this.memory.marketingTasks || []).filter((t) => t.status === 'Completed');
+
+    if (employee && employee !== 'All') {
+      list = list.filter((t) => t.assignedTo?.toLowerCase() === employee.toLowerCase());
+    }
+
+    if (category && category !== 'All') {
+      list = list.filter((t) => t.category === category);
+    }
+
+    if (startDate) {
+      list = list.filter((t) => (t.completedDate || t.dueDate || t.startDate) >= startDate);
+    }
+
+    if (endDate) {
+      list = list.filter((t) => (t.completedDate || t.dueDate || t.startDate) <= endDate);
+    }
+
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter(
+        (t) =>
+          (t.title && t.title.toLowerCase().includes(q)) ||
+          (t.assignedTo && t.assignedTo.toLowerCase().includes(q)) ||
+          (t.completionNotes && t.completionNotes.toLowerCase().includes(q)) ||
+          (t.category && t.category.toLowerCase().includes(q))
+      );
+    }
+
+    return list.sort((a, b) => {
+      const dateA = a.completedDate || a.completedAt || a.dueDate || '';
+      const dateB = b.completedDate || b.completedAt || b.dueDate || '';
+      return dateB.localeCompare(dateA);
+    });
+  }
+
   deleteTask(id) {
+    // Preserve completed tasks from accidental deletion unless forced
     this.memory.marketingTasks = this.memory.marketingTasks.filter((t) => t.id !== id);
     if (Array.isArray(this.memory.notifications)) {
       this.memory.notifications = this.memory.notifications.filter((n) => n.taskId !== id);

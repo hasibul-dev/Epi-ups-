@@ -1051,3 +1051,53 @@
   box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2);
 }
 
+/* ==========================================================================
+   PRINT STYLES FOR DIGITAL MARKETING WORK REPORTS
+   ========================================================================== */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .app-sidebar,
+  .app-header,
+  .dept-subnav-bar,
+  .no-print {
+    display: none !important;
+  }
+
+  .marketing-modal-backdrop {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
+  }
+
+  .marketing-modal-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .print-container {
+    padding: 0 !important;
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th, td {
+    border: 1px solid #cbd5e1 !important;
+  }
+}
+
+

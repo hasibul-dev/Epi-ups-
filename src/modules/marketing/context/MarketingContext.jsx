@@ -15,6 +15,8 @@ export function MarketingProvider({ children }) {
   const [assetModal, setAssetModal] = useState({ open: false, item: null });
   const [creativeModal, setCreativeModal] = useState({ open: false, item: null });
   const [taskModal, setTaskModal] = useState({ open: false, item: null });
+  const [taskUpdateModal, setTaskUpdateModal] = useState({ open: false, item: null });
+  const [taskPrintModal, setTaskPrintModal] = useState({ open: false, item: null, type: 'single' });
   const [ticketModal, setTicketModal] = useState({ open: false, item: null });
   const [deviceModal, setDeviceModal] = useState({ open: false, item: null });
   const [ticketDetails, setTicketDetails] = useState({ open: false, item: null });
@@ -58,6 +60,12 @@ export function MarketingProvider({ children }) {
   const openTaskModal = (item = null) => setTaskModal({ open: true, item });
   const closeTaskModal = () => setTaskModal({ open: false, item: null });
 
+  const openTaskUpdateModal = (item = null) => setTaskUpdateModal({ open: true, item });
+  const closeTaskUpdateModal = () => setTaskUpdateModal({ open: false, item: null });
+
+  const openTaskPrintModal = (item = null, type = 'single') => setTaskPrintModal({ open: true, item, type });
+  const closeTaskPrintModal = () => setTaskPrintModal({ open: false, item: null, type: 'single' });
+
   const openTicketModal = (item = null) => setTicketModal({ open: true, item });
   const closeTicketModal = () => setTicketModal({ open: false, item: null });
 
@@ -83,8 +91,14 @@ export function MarketingProvider({ children }) {
   const saveCreativeRequest = (r) => marketingStore.saveCreativeRequest(r);
   const deleteCreativeRequest = (id) => marketingStore.deleteCreativeRequest(id);
 
+  // Digital Marketing Work Management Actions
   const saveTask = (t) => marketingStore.saveTask(t, user);
   const deleteTask = (id) => marketingStore.deleteTask(id);
+  const updateTaskProgress = (taskId, progressData) =>
+    marketingStore.updateTaskProgress(taskId, progressData, user);
+  const completeTask = (taskId, completionData) =>
+    marketingStore.completeTask(taskId, completionData, user);
+  const getWorkHistory = (filters) => marketingStore.getWorkHistory(filters);
 
   // Notifications
   const notifications = data.notifications || [];
@@ -165,6 +179,14 @@ export function MarketingProvider({ children }) {
         openTaskModal,
         closeTaskModal,
 
+        taskUpdateModal,
+        openTaskUpdateModal,
+        closeTaskUpdateModal,
+
+        taskPrintModal,
+        openTaskPrintModal,
+        closeTaskPrintModal,
+
         ticketModal,
         openTicketModal,
         closeTicketModal,
@@ -190,6 +212,9 @@ export function MarketingProvider({ children }) {
         deleteCreativeRequest,
         saveTask,
         deleteTask,
+        updateTaskProgress,
+        completeTask,
+        getWorkHistory,
         notifications,
         unreadNotificationsCount,
         markNotificationAsRead,
