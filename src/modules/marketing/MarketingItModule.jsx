@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MarketingProvider, useMarketing } from './context/MarketingContext.jsx';
 
@@ -31,6 +31,7 @@ import TaskModal from './components/TaskModal.jsx';
 import TicketModal from './components/TicketModal.jsx';
 import DeviceModal from './components/DeviceModal.jsx';
 import TicketDetailsModal from './components/TicketDetailsModal.jsx';
+import MarketingNotificationsDrawer from './components/MarketingNotificationsDrawer.jsx';
 
 import {
   LayoutDashboard,
@@ -52,6 +53,7 @@ import {
   History,
   Plus,
   Download,
+  Bell,
 } from 'lucide-react';
 
 const ROUTE_MAP = {
@@ -80,12 +82,13 @@ const ROUTE_MAP = {
 function MarketingItInner() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data, openTaskModal, openTicketModal, exportBackup } = useMarketing();
+  const { data, openTaskModal, openTicketModal, exportBackup, unreadNotificationsCount } = useMarketing();
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
 
   const rawSlug = location.pathname.replace(/^\/marketing\/?/, '').split('/')[0] || '';
   const currentTab = ROUTE_MAP[rawSlug] || 'overview';
 
-  const pendingTasksCount = (data.tasks || []).filter(
+  const pendingTasksCount = (data.marketingTasks || data.tasks || []).filter(
     (t) => t.status !== 'Done' && t.status !== 'Completed'
   ).length;
 
@@ -207,7 +210,32 @@ function MarketingItInner() {
           })}
         </div>
 
-        <div className="dept-subnav-actions">
+        <div className="dept-subnav-actions flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsNotifOpen(true)}
+            className="btn btn-secondary relative"
+            title="Work Assignment Notifications"
+            style={{
+              padding: '8px 14px',
+              fontSize: 13,
+              minHeight: 38,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              borderRadius: 8,
+              color: '#cbd5e1',
+            }}
+          >
+            <Bell size={14} className="text-purple-400" />
+            <span>Alerts</span>
+            {unreadNotificationsCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-[10px] font-bold text-white animate-pulse">
+                {unreadNotificationsCount}
+              </span>
+            )}
+          </button>
+
           <button
             type="button"
             onClick={exportBackup}
@@ -235,7 +263,11 @@ function MarketingItInner() {
         {renderPage()}
       </main>
 
-      {/* Modals */}
+      {/* Modals & Drawers */}
+      <MarketingNotificationsDrawer
+        isOpen={isNotifOpen}
+        onClose={() => setIsNotifOpen(false)}
+      />
       <CampaignModal />
       <PostModal />
       <AdModal />

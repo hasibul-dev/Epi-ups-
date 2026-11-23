@@ -409,40 +409,91 @@ export function createInitialMarketingItData() {
       title: 'Draft technical blog on 3-Phase vs 1-Phase UPS considerations for hospitals',
       category: 'SEO / Website',
       assignedTo: 'Tanvir Ahmed',
-      dueDate: next5D,
-      priority: 'Normal',
+      assignedBy: 'Super Admin',
+      startDate: past5D,
+      dueDate: T,
+      dueTime: '17:00',
+      priority: 'High',
       status: 'In Progress',
-      desc: 'Create an in-depth 1200-word SEO article for the website resource center.',
+      desc: 'Create an in-depth 1200-word SEO article for the website resource center with comparison table.',
+      createdAt: past5D,
+      updatedAt: past2D,
     },
     {
       id: 'mt-02',
       title: 'Audit Facebook Pixel and LinkedIn Insight Tag conversion events',
       category: 'Advertising',
       assignedTo: 'Rafiul Islam',
+      assignedBy: 'Tanvir Ahmed',
+      startDate: past10D,
       dueDate: past2D,
+      dueTime: '18:00',
       priority: 'High',
       status: 'Completed',
+      completedAt: past2D,
       desc: 'Verify lead form submission triggers and match data in Google Analytics 4.',
+      createdAt: past10D,
+      updatedAt: past2D,
     },
     {
       id: 'mt-03',
       title: 'Prepare product presentation slides for upcoming pharmaceutical client pitch',
       category: 'Copywriting',
       assignedTo: 'Tanvir Ahmed',
-      dueDate: next2D,
-      priority: 'High',
+      assignedBy: 'MD. MAHMUDUL HASAN',
+      startDate: past2D,
+      dueDate: T,
+      dueTime: '15:30',
+      priority: 'Urgent',
       status: 'To Do',
       desc: 'Coordinate with Sales Manager to update slide deck with recent diagnostic center photos.',
+      createdAt: past2D,
+      updatedAt: T,
     },
     {
       id: 'mt-04',
       title: 'Design 4 Instagram story graphics for weekend retail discount promotion',
       category: 'Social Media',
       assignedTo: 'Samia Jahan',
-      dueDate: next5D,
+      assignedBy: 'Tanvir Ahmed',
+      startDate: past2D,
+      dueDate: next2D,
+      dueTime: '16:00',
       priority: 'Normal',
       status: 'In Progress',
       desc: 'Highlight Line Interactive 650VA UPS with 1-year replacement guarantee.',
+      createdAt: past2D,
+      updatedAt: past2D,
+    },
+    {
+      id: 'mt-05',
+      title: 'Configure MikroTik VLAN & DHCP reservation for Service Department test bench',
+      category: 'IT Support',
+      assignedTo: 'Md. Al-Amin',
+      assignedBy: 'Super Admin',
+      startDate: past5D,
+      dueDate: past2D,
+      dueTime: '14:00',
+      priority: 'Urgent',
+      status: 'To Do',
+      desc: 'Isolate incoming customer UPS units on subnet 192.168.20.0/24 to prevent IP conflict.',
+      createdAt: past5D,
+      updatedAt: past5D,
+    },
+    {
+      id: 'mt-06',
+      title: 'Monthly offsite NAS backup & cloud sync verification for ERP database',
+      category: 'IT Support',
+      assignedTo: 'Kamrul Hasan',
+      assignedBy: 'Md. Al-Amin',
+      startDate: T,
+      dueDate: T,
+      dueTime: '19:00',
+      priority: 'Normal',
+      status: 'In Progress',
+      desc: 'Verify weekly full snapshot replication to encrypted cloud storage bucket.',
+      createdAt: T,
+      updatedAt: T,
     },
   ];
 
@@ -789,6 +840,66 @@ export function createInitialMarketingItData() {
     },
   ];
 
+  // 12. In-App Notifications for Task Assignments, Updates & Alerts
+  const notifications = [
+    {
+      id: 'notif-01',
+      recipient: 'Tanvir Ahmed',
+      sender: 'Super Admin',
+      taskId: 'mt-01',
+      taskTitle: 'Draft technical blog on 3-Phase vs 1-Phase UPS considerations for hospitals',
+      type: 'assignment',
+      priority: 'High',
+      dueDate: T,
+      dueTime: '17:00',
+      message: 'Super Admin assigned you "Draft technical blog on 3-Phase vs 1-Phase UPS considerations for hospitals". Priority: High. Deadline: ' + T + ' 17:00',
+      read: false,
+      createdAt: past2D + 'T10:30:00Z',
+    },
+    {
+      id: 'notif-02',
+      recipient: 'Tanvir Ahmed',
+      sender: 'MD. MAHMUDUL HASAN',
+      taskId: 'mt-03',
+      taskTitle: 'Prepare product presentation slides for upcoming pharmaceutical client pitch',
+      type: 'assignment',
+      priority: 'Urgent',
+      dueDate: T,
+      dueTime: '15:30',
+      message: 'MD. MAHMUDUL HASAN assigned you "Prepare product presentation slides for upcoming pharmaceutical client pitch". Priority: Urgent. Deadline: ' + T + ' 15:30',
+      read: false,
+      createdAt: past2D + 'T14:20:00Z',
+    },
+    {
+      id: 'notif-03',
+      recipient: 'Md. Al-Amin',
+      sender: 'System Alert',
+      taskId: 'mt-05',
+      taskTitle: 'Configure MikroTik VLAN & DHCP reservation for Service Department test bench',
+      type: 'overdue',
+      priority: 'Urgent',
+      dueDate: past2D,
+      dueTime: '14:00',
+      message: '⚠️ OVERDUE ALERT: Task "Configure MikroTik VLAN & DHCP reservation for Service Department test bench" is past due date (' + past2D + '). Please review.',
+      read: false,
+      createdAt: past2D + 'T15:00:00Z',
+    },
+    {
+      id: 'notif-04',
+      recipient: 'Tanvir Ahmed',
+      sender: 'Rafiul Islam',
+      taskId: 'mt-02',
+      taskTitle: 'Audit Facebook Pixel and LinkedIn Insight Tag conversion events',
+      type: 'completed',
+      priority: 'High',
+      dueDate: past2D,
+      dueTime: '18:00',
+      message: 'Rafiul Islam marked task "Audit Facebook Pixel and LinkedIn Insight Tag conversion events" as Completed.',
+      read: true,
+      createdAt: past2D + 'T18:15:00Z',
+    },
+  ];
+
   return {
     campaigns,
     posts,
@@ -801,6 +912,7 @@ export function createInitialMarketingItData() {
     devices,
     softwareAccounts,
     maintenance,
+    notifications,
     systemSettings: {
       departmentName: 'Digital Marketing & IT Support',
       companyName: 'EPI UPS Bangladesh Limited',
@@ -831,7 +943,11 @@ class MarketingItStoreEngine {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed && Array.isArray(parsed.campaigns) && Array.isArray(parsed.tickets)) {
+          if (!Array.isArray(parsed.notifications)) {
+            parsed.notifications = [];
+          }
           this.memory = parsed;
+          this.checkOverdueNotifications();
           return;
         }
       }
@@ -840,12 +956,16 @@ class MarketingItStoreEngine {
     }
 
     this.memory = createInitialMarketingItData();
+    this.checkOverdueNotifications();
     this.persist();
   }
 
   getSnapshot() {
     if (!this.memory) {
       this.init();
+    }
+    if (!Array.isArray(this.memory.notifications)) {
+      this.memory.notifications = [];
     }
     return this.memory;
   }
@@ -996,22 +1116,213 @@ class MarketingItStoreEngine {
   }
 
   // --- MARKETING TASK CRUD ---
-  saveTask(task) {
+  saveTask(task, currentUser = null) {
     const isEdit = Boolean(task.id);
     const id = isEdit ? task.id : `mt-${Date.now().toString(36)}`;
-    const record = { ...task, id };
+    const nowIso = new Date().toISOString();
+    const existing = isEdit ? this.memory.marketingTasks.find((t) => t.id === id) : null;
+
+    const record = {
+      ...task,
+      id,
+      title: (task.title || '').trim(),
+      category: task.category || existing?.category || 'General',
+      startDate: task.startDate || existing?.startDate || today(),
+      dueDate: task.dueDate || existing?.dueDate || today(),
+      dueTime: task.dueTime || existing?.dueTime || '18:00',
+      priority: task.priority || existing?.priority || 'Normal',
+      status: task.status || existing?.status || 'To Do',
+      assignedTo: (task.assignedTo || existing?.assignedTo || 'Tanvir Ahmed').trim(),
+      assignedBy: (task.assignedBy || existing?.assignedBy || currentUser?.name || 'Administrator').trim(),
+      desc: (task.desc || existing?.desc || '').trim(),
+      createdAt: isEdit ? (existing?.createdAt || task.createdAt || nowIso) : nowIso,
+      updatedAt: nowIso,
+      completedAt: task.status === 'Completed' ? (existing?.completedAt || nowIso) : '',
+    };
 
     if (isEdit) {
       this.memory.marketingTasks = this.memory.marketingTasks.map((t) => (t.id === id ? record : t));
+
+      // 1. Re-assignment notification
+      if (existing && existing.assignedTo !== record.assignedTo && record.assignedTo) {
+        this.addNotification({
+          id: `notif-${Date.now().toString(36)}-reassign`,
+          recipient: record.assignedTo,
+          sender: currentUser?.name || record.assignedBy || 'Administrator',
+          taskId: record.id,
+          taskTitle: record.title,
+          type: 'assignment',
+          priority: record.priority,
+          dueDate: record.dueDate,
+          dueTime: record.dueTime,
+          message: `${currentUser?.name || record.assignedBy || 'Administrator'} reassigned "${record.title}" to you. Priority: ${record.priority}. Due: ${record.dueDate} ${record.dueTime || ''}`.trim(),
+          read: false,
+          createdAt: nowIso,
+        });
+      }
+
+      // 2. Deadline update notification
+      if (
+        existing &&
+        (existing.dueDate !== record.dueDate || existing.dueTime !== record.dueTime) &&
+        record.assignedTo
+      ) {
+        this.addNotification({
+          id: `notif-${Date.now().toString(36)}-deadline`,
+          recipient: record.assignedTo,
+          sender: currentUser?.name || record.assignedBy || 'Administrator',
+          taskId: record.id,
+          taskTitle: record.title,
+          type: 'update',
+          priority: record.priority,
+          dueDate: record.dueDate,
+          dueTime: record.dueTime,
+          message: `Deadline updated for "${record.title}". New deadline: ${record.dueDate} ${record.dueTime || ''}`.trim(),
+          read: false,
+          createdAt: nowIso,
+        });
+      }
+
+      // 3. Completion notification to assigner
+      if (existing && existing.status !== 'Completed' && record.status === 'Completed') {
+        const assigner = record.assignedBy || 'Administrator';
+        this.addNotification({
+          id: `notif-${Date.now().toString(36)}-done`,
+          recipient: assigner,
+          sender: currentUser?.name || record.assignedTo || 'Team Member',
+          taskId: record.id,
+          taskTitle: record.title,
+          type: 'completed',
+          priority: record.priority,
+          dueDate: record.dueDate,
+          dueTime: record.dueTime,
+          message: `Task "${record.title}" was marked as Completed by ${currentUser?.name || record.assignedTo}.`,
+          read: false,
+          createdAt: nowIso,
+        });
+      }
     } else {
       this.memory.marketingTasks.unshift(record);
+
+      // New task assignment notification
+      if (record.assignedTo) {
+        this.addNotification({
+          id: `notif-${Date.now().toString(36)}-assign`,
+          recipient: record.assignedTo,
+          sender: currentUser?.name || record.assignedBy || 'Administrator',
+          taskId: record.id,
+          taskTitle: record.title,
+          type: 'assignment',
+          priority: record.priority,
+          dueDate: record.dueDate,
+          dueTime: record.dueTime,
+          message: `${currentUser?.name || record.assignedBy || 'Administrator'} assigned you "${record.title}". Priority: ${record.priority}. Deadline: ${record.dueDate} ${record.dueTime || ''}`.trim(),
+          read: false,
+          createdAt: nowIso,
+        });
+      }
     }
+
+    this.checkOverdueNotifications();
     this.persist();
     return record;
   }
 
   deleteTask(id) {
     this.memory.marketingTasks = this.memory.marketingTasks.filter((t) => t.id !== id);
+    if (Array.isArray(this.memory.notifications)) {
+      this.memory.notifications = this.memory.notifications.filter((n) => n.taskId !== id);
+    }
+    this.persist();
+  }
+
+  // --- IN-APP NOTIFICATIONS ENGINE ---
+  checkOverdueNotifications() {
+    if (!Array.isArray(this.memory?.marketingTasks)) return;
+    const currentToday = today();
+    const nowIso = new Date().toISOString();
+
+    if (!Array.isArray(this.memory.notifications)) {
+      this.memory.notifications = [];
+    }
+
+    this.memory.marketingTasks.forEach((t) => {
+      if (t.dueDate && t.dueDate < currentToday && t.status !== 'Completed') {
+        const alreadyNotified = this.memory.notifications.some(
+          (n) => n.taskId === t.id && n.type === 'overdue' && n.dueDate === t.dueDate
+        );
+        if (!alreadyNotified) {
+          this.memory.notifications.unshift({
+            id: `notif-overdue-${t.id}-${t.dueDate}`,
+            recipient: t.assignedTo || 'Marketing Team',
+            sender: 'System Alert',
+            taskId: t.id,
+            taskTitle: t.title,
+            type: 'overdue',
+            priority: 'Urgent',
+            dueDate: t.dueDate,
+            dueTime: t.dueTime || '',
+            message: `⚠️ OVERDUE TASK ALERT: "${t.title}" is overdue (deadline was ${t.dueDate}). Please update progress immediately.`,
+            read: false,
+            createdAt: nowIso,
+          });
+        }
+      }
+    });
+  }
+
+  addNotification(notif) {
+    if (!Array.isArray(this.memory.notifications)) {
+      this.memory.notifications = [];
+    }
+    // Prevent duplicate notification by key signature
+    const isDuplicate = this.memory.notifications.some(
+      (n) =>
+        n.taskId === notif.taskId &&
+        n.type === notif.type &&
+        n.recipient === notif.recipient &&
+        n.dueDate === notif.dueDate
+    );
+    if (!isDuplicate) {
+      this.memory.notifications.unshift(notif);
+      if (this.memory.notifications.length > 100) {
+        this.memory.notifications = this.memory.notifications.slice(0, 100);
+      }
+    }
+  }
+
+  markNotificationAsRead(id) {
+    if (!Array.isArray(this.memory.notifications)) return;
+    this.memory.notifications = this.memory.notifications.map((n) =>
+      n.id === id ? { ...n, read: true } : n
+    );
+    this.persist();
+  }
+
+  markAllNotificationsAsRead(recipient = null) {
+    if (!Array.isArray(this.memory.notifications)) return;
+    this.memory.notifications = this.memory.notifications.map((n) => {
+      if (!recipient || n.recipient === recipient || recipient === 'Super Admin' || recipient === 'admin') {
+        return { ...n, read: true };
+      }
+      return n;
+    });
+    this.persist();
+  }
+
+  deleteNotification(id) {
+    if (!Array.isArray(this.memory.notifications)) return;
+    this.memory.notifications = this.memory.notifications.filter((n) => n.id !== id);
+    this.persist();
+  }
+
+  clearAllNotifications(recipient = null) {
+    if (!Array.isArray(this.memory.notifications)) return;
+    if (!recipient || recipient === 'Super Admin' || recipient === 'admin') {
+      this.memory.notifications = [];
+    } else {
+      this.memory.notifications = this.memory.notifications.filter((n) => n.recipient !== recipient);
+    }
     this.persist();
   }
 
@@ -1159,6 +1470,7 @@ class MarketingItStoreEngine {
         devices: Array.isArray(target.devices) ? target.devices : [],
         softwareAccounts: Array.isArray(target.softwareAccounts) ? target.softwareAccounts : [],
         maintenance: Array.isArray(target.maintenance) ? target.maintenance : [],
+        notifications: Array.isArray(target.notifications) ? target.notifications : [],
         systemSettings: target.systemSettings || this.memory.systemSettings,
       };
       this.persist();

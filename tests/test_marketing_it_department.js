@@ -55,6 +55,8 @@ test('Seed data creates valid entities for both Marketing & IT', () => {
   assert.ok(seed.devices.length >= 8, 'at least 8 initial devices');
   assert.ok(Array.isArray(seed.softwareAccounts), 'softwareAccounts array exists');
   assert.ok(Array.isArray(seed.maintenance), 'maintenance array exists');
+  assert.ok(Array.isArray(seed.notifications), 'notifications array exists');
+  assert.ok(seed.notifications.length >= 3, 'at least 3 initial notifications');
   assert.ok(seed.systemSettings?.departmentName, 'systemSettings departmentName exists');
 });
 
@@ -177,6 +179,64 @@ test('Device Hardware CRUD: Create, Edit, Delete', () => {
   marketingStore.deleteDevice(newDev.id);
   const snap2 = marketingStore.getSnapshot();
   assert.ok(!snap2.devices.find((d) => d.id === newDev.id), 'Device removed');
+});
+
+test('Work Task Assignment & Automatic Notification Generation', () => {
+  // 1. Create a task assigned to a team member
+  const task = marketingStore.saveTask(
+    {
+      title: 'Automated Test: Deploy Marketing Landing Page for 40kVA UPS',
+      category: 'SEO / Website',
+      assignedTo: 'Tanvir Ahmed',
+      assignedBy: 'Super Admin',
+      startDate: '2026-11-23',
+      dueDate: '2026-11-25',
+      dueTime: '17:00',
+      priority: 'Urgent',
+      status: 'To Do',
+      desc: 'Verify speed index and mobile responsiveness.',
+    },
+    { name: 'Super Admin', role: 'superadmin' }
+  );
+
+  assert.ok(task.id, 'Task created with unique id');
+  assert.strictEqual(task.assignedTo, 'Tanvir Ahmed');
+  assert.strictEqual(task.priority, 'Urgent');
+
+  // Verify automatic assignment notification generated
+  const snap = marketingStore.getSnapshot();
+  const assignNotif = snap.notifications.find(
+    (n) => n.taskId === task.id && n.type === 'assignment' && n.recipient === 'Tanvir Ahmed'
+  );
+  assert.ok(assignNotif, 'Assignment notification automatically created for recipient');
+  assert.strictEqual(assignNotif.priority, 'Urgent');
+  assert.ok(assignNotif.message.includes('Super Admin assigned you'), 'Notification message mentions assigner');
+
+  // 2. Mark task completed -> should notify assigner
+  marketingStore.saveTask(
+    {
+      ...task,
+      status: 'Completed',
+    },
+    { name: 'Tanvir Ahmed', role: 'marketing_manager' }
+  );
+
+  const snapAfterComplete = marketingStore.getSnapshot();
+  const completeNotif = snapAfterComplete.notifications.find(
+    (n) => n.taskId === task.id && n.type === 'completed'
+  );
+  assert.ok(completeNotif, 'Completion notification automatically generated for assigner');
+
+  // 3. Mark notification as read
+  marketingStore.markNotificationAsRead(assignNotif.id);
+  const snapAfterRead = marketingStore.getSnapshot();
+  const updatedNotif = snapAfterRead.notifications.find((n) => n.id === assignNotif.id);
+  assert.strictEqual(updatedNotif.read, true, 'Notification marked as read');
+
+  // Cleanup test task
+  marketingStore.deleteTask(task.id);
+  const snapAfterDelete = marketingStore.getSnapshot();
+  assert.ok(!snapAfterDelete.marketingTasks.find((t) => t.id === task.id), 'Task deleted');
 });
 
 // ----------------------------------------------------

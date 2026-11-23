@@ -83,8 +83,21 @@ export function MarketingProvider({ children }) {
   const saveCreativeRequest = (r) => marketingStore.saveCreativeRequest(r);
   const deleteCreativeRequest = (id) => marketingStore.deleteCreativeRequest(id);
 
-  const saveTask = (t) => marketingStore.saveTask(t);
+  const saveTask = (t) => marketingStore.saveTask(t, user);
   const deleteTask = (id) => marketingStore.deleteTask(id);
+
+  // Notifications
+  const notifications = data.notifications || [];
+  const unreadNotificationsCount = notifications.filter(
+    (n) => !n.read && (!user?.name || n.recipient === user?.name || isSuperAdmin || isMarketingManager)
+  ).length;
+
+  const markNotificationAsRead = (id) => marketingStore.markNotificationAsRead(id);
+  const markAllNotificationsAsRead = (recipient) =>
+    marketingStore.markAllNotificationsAsRead(recipient || (isSuperAdmin ? null : user?.name));
+  const deleteNotification = (id) => marketingStore.deleteNotification(id);
+  const clearAllNotifications = (recipient) =>
+    marketingStore.clearAllNotifications(recipient || (isSuperAdmin ? null : user?.name));
 
   const saveTicket = (t) => marketingStore.saveTicket(t);
   const deleteTicket = (id) => marketingStore.deleteTicket(id);
@@ -177,6 +190,12 @@ export function MarketingProvider({ children }) {
         deleteCreativeRequest,
         saveTask,
         deleteTask,
+        notifications,
+        unreadNotificationsCount,
+        markNotificationAsRead,
+        markAllNotificationsAsRead,
+        deleteNotification,
+        clearAllNotifications,
         saveTicket,
         deleteTicket,
         resolveTicket,
