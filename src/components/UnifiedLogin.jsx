@@ -7,22 +7,14 @@ import {
   KeyRound,
   AlertCircle,
   ArrowRight,
-  Shield,
-  Briefcase,
-  Wrench,
-  Landmark,
-  Share2,
   Eye,
   EyeOff,
-  Sparkles,
-  CheckCircle2,
-  Zap,
+  ShieldCheck,
 } from 'lucide-react';
 
 export default function UnifiedLogin() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [selectedDept, setSelectedDept] = useState('admin');
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(true);
@@ -30,121 +22,42 @@ export default function UnifiedLogin() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const departments = [
-    {
-      id: 'admin',
-      name: 'Executive Admin',
-      shortName: 'Executive Admin',
-      title: 'Super Administrator',
-      icon: Shield,
-      accent: '#ff4d5e',
-      bg: 'rgba(229, 25, 45, 0.12)',
-      border: 'rgba(229, 25, 45, 0.38)',
-      glow: 'rgba(229, 25, 45, 0.25)',
-      gradient: 'linear-gradient(135deg, #e5192d 0%, #ff4d5e 100%)',
-    },
-    {
-      id: 'sales',
-      name: 'Sales Department',
-      shortName: 'Sales',
-      title: 'Commercial & Sales',
-      icon: Briefcase,
-      accent: '#38bdf8',
-      bg: 'rgba(26, 115, 232, 0.12)',
-      border: 'rgba(26, 115, 232, 0.38)',
-      glow: 'rgba(26, 115, 232, 0.25)',
-      gradient: 'linear-gradient(135deg, #0052cc 0%, #1a73e8 100%)',
-    },
-    {
-      id: 'service',
-      name: 'Service Department',
-      shortName: 'Service',
-      title: 'Technical & Engineering',
-      icon: Wrench,
-      accent: '#34d399',
-      bg: 'rgba(16, 185, 129, 0.12)',
-      border: 'rgba(16, 185, 129, 0.38)',
-      glow: 'rgba(16, 185, 129, 0.25)',
-      gradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
-    },
-    {
-      id: 'accounts',
-      name: 'Accounts & ERP',
-      shortName: 'Accounts',
-      title: 'Finance & Accounting',
-      icon: Landmark,
-      accent: '#fbbf24',
-      bg: 'rgba(245, 158, 11, 0.12)',
-      border: 'rgba(245, 158, 11, 0.38)',
-      glow: 'rgba(245, 158, 11, 0.25)',
-      gradient: 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)',
-    },
-    {
-      id: 'marketing',
-      name: 'Digital Marketing & IT Support',
-      shortName: 'Marketing & IT',
-      title: 'Digital Marketing & IT Support',
-      icon: Share2,
-      accent: '#c084fc',
-      bg: 'rgba(168, 85, 247, 0.12)',
-      border: 'rgba(168, 85, 247, 0.38)',
-      glow: 'rgba(168, 85, 247, 0.25)',
-      gradient: 'linear-gradient(135deg, #7e22ce 0%, #a855f7 100%)',
-    },
-  ];
-
-  const currentDeptObj = departments.find((d) => d.id === selectedDept) || departments[0];
-
-  const handleSelectDept = (deptId) => {
-    setSelectedDept(deptId);
-    setError('');
-  };
-
-  const handleQuickFill = (userVal, passVal, deptVal) => {
-    setUserId(userVal);
-    setPassword(passVal);
-    setSelectedDept(deptVal);
-    setError('');
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (!userId.trim()) {
-      setError('Please enter your assigned User ID.');
+    const cleanUser = userId.trim();
+    if (!cleanUser) {
+      setError('Please enter your assigned User ID or Work Email.');
       return;
     }
     if (!password) {
-      setError('Please enter your password.');
+      setError('Please enter your account password.');
       return;
     }
 
     try {
       setLoading(true);
-      const res = await login(userId.trim(), password, remember);
+      const res = await login(cleanUser, password, remember);
       const authUser = res?.user;
 
       if (!authUser) {
         throw new Error('Authentication failed. No user record returned.');
       }
 
+      // Automatic department redirection based on authenticated user record
       const isSuper = authUser.role === 'superadmin';
       const userDepts = authUser.departments || [];
 
-      if (!isSuper && !userDepts.includes(selectedDept)) {
-        throw new Error(
-          `Access Denied: Your account (@${authUser.userId}) is not authorized to access ${currentDeptObj.name}. Please select your assigned department or contact the Administrator.`
-        );
-      }
-
-      if (selectedDept === 'sales') {
+      if (isSuper) {
+        navigate('/admin');
+      } else if (userDepts.includes('sales')) {
         navigate('/sales');
-      } else if (selectedDept === 'service') {
+      } else if (userDepts.includes('service')) {
         navigate('/service');
-      } else if (selectedDept === 'accounts') {
+      } else if (userDepts.includes('accounts')) {
         navigate('/accounts');
-      } else if (selectedDept === 'marketing') {
+      } else if (userDepts.includes('marketing')) {
         navigate('/marketing');
       } else {
         navigate('/admin');
@@ -157,111 +70,57 @@ export default function UnifiedLogin() {
 
   return (
     <div className="login-wrapper">
-      {/* Dynamic ambient lighting canvas */}
+      {/* Dynamic ambient lighting canvas with floating subtle gradient orbs */}
       <div className="login-ambient-orb login-orb-1" aria-hidden="true" />
       <div className="login-ambient-orb login-orb-2" aria-hidden="true" />
       <div className="login-ambient-orb login-orb-3" aria-hidden="true" />
 
-      <div className="login-card" style={{ maxWidth: 560 }}>
-        {/* Brand Banner */}
+      {/* Main Glassmorphism Login Card */}
+      <div className="login-card login-card-redesign">
+        {/* Top Gradient Highlight Bar */}
+        <div className="login-card-top-bar" />
+
+        {/* 1. EPI UPS Logo, Title & Taglines */}
         <div className="login-brand-header">
+          {/* 1. Logo */}
           <div className="login-logo-ring">
             <img src="/logo.png" alt="EPI UPS Logo" className="login-logo-img" />
           </div>
+
+          {/* 2. EPI UPS */}
           <h1 className="login-title">EPI UPS</h1>
+
+          {/* 3. BANGLADESH LIMITED */}
           <span className="login-brand-sub">BANGLADESH LIMITED</span>
+
+          {/* 4. Centralized Enterprise ERP Management Console */}
           <p className="login-subtitle">Centralized Enterprise ERP Management Console</p>
         </div>
 
+        {/* 5. Secure Enterprise Single Sign-On badge */}
         <div className="login-sso-badge">
-          <Sparkles size={13} className="text-sky-400" />
-          <span>Role-Guarded Enterprise Single Sign-On (SSO) Portal</span>
-        </div>
-
-        {/* Department Switcher Pills */}
-        <div style={{ marginBottom: 16 }}>
-          <div
-            style={{
-              fontSize: 11.5,
-              fontWeight: 700,
-              color: '#94a3b8',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-              marginBottom: 10,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <span>Target Department</span>
-            <span style={{ fontSize: 11, color: currentDeptObj.accent, fontWeight: 600 }}>
-              {currentDeptObj.name}
-            </span>
-          </div>
-
-          <div className="login-dept-grid">
-            {departments.map((dept) => {
-              const Icon = dept.icon;
-              const isSelected = selectedDept === dept.id;
-              return (
-                <button
-                  key={dept.id}
-                  type="button"
-                  onClick={() => handleSelectDept(dept.id)}
-                  className={`login-dept-pill ${isSelected ? `selected selected-${dept.id}` : ''}`}
-                  title={`Select ${dept.name}`}
-                  aria-pressed={isSelected}
-                >
-                  <Icon size={14} className="login-dept-icon" />
-                  <span className="login-dept-label">{dept.shortName}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Active Department Indicator */}
-        <div
-          style={{
-            padding: '9px 13px',
-            borderRadius: 10,
-            background: currentDeptObj.bg,
-            border: `1px solid ${currentDeptObj.border}`,
-            marginBottom: 16,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            fontSize: 12,
-            transition: 'all 0.2s ease',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-            <currentDeptObj.icon size={15} style={{ color: currentDeptObj.accent }} />
-            <span style={{ color: '#f1f5f9' }}>
-              Target: <strong style={{ color: currentDeptObj.accent }}>{currentDeptObj.name}</strong>
-            </span>
-          </div>
-          <span style={{ fontSize: 10.5, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-            <CheckCircle2 size={12} color="#10b981" />
-            <span>Active Target</span>
-          </span>
+          <ShieldCheck size={14} className="text-cyan-400 flex-shrink-0" />
+          <span>Secure Enterprise Single Sign-On</span>
         </div>
 
         {/* Error Alert Box */}
         {error && (
-          <div className="login-alert-danger" style={{ marginBottom: 18 }}>
-            <AlertCircle size={18} />
+          <div className="login-alert-danger" role="alert">
+            <AlertCircle size={17} className="flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {/* Credentials Form */}
         <form onSubmit={handleSubmit} className="login-form">
+          {/* 6. User ID or Work Email input */}
           <div className="form-group-field">
-            <label className="form-label">
-              <User size={15} /> User ID or Work Email
+            <label className="form-label" htmlFor="login-username-input">
+              <User size={14} className="text-sky-400" />
+              <span>User ID or Work Email</span>
             </label>
             <input
+              id="login-username-input"
               type="text"
               className="text-input"
               placeholder="e.g. admin, sales1, service1"
@@ -274,12 +133,15 @@ export default function UnifiedLogin() {
             />
           </div>
 
+          {/* 7. Password input & 8. Show / Hide Password icon */}
           <div className="form-group-field">
-            <label className="form-label">
-              <KeyRound size={15} /> Password
+            <label className="form-label" htmlFor="login-password-input">
+              <KeyRound size={14} className="text-purple-400" />
+              <span>Password</span>
             </label>
             <div className="input-with-action">
               <input
+                id="login-password-input"
                 type={showPassword ? 'text' : 'password'}
                 className="text-input"
                 placeholder="Enter account password"
@@ -297,11 +159,12 @@ export default function UnifiedLogin() {
                 title={showPassword ? 'Hide password' : 'Show password'}
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
           </div>
 
+          {/* Session options */}
           <div className="login-options-row">
             <label className="checkbox-label">
               <input
@@ -314,127 +177,30 @@ export default function UnifiedLogin() {
             </label>
           </div>
 
+          {/* 9. One Sign In button */}
           <button
             type="submit"
-            className="login-submit-btn"
-            disabled={loading}
-            style={{
-              background: currentDeptObj.gradient || `linear-gradient(135deg, ${currentDeptObj.accent} 0%, #1a73e8 100%)`,
-              border: 'none',
-              boxShadow: `0 4px 18px ${currentDeptObj.glow || currentDeptObj.border}`,
-            }}
+            className="login-submit-btn-premium group"
+            disabled={loading || !userId.trim() || !password}
           >
             {loading ? (
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+              <span className="flex items-center justify-center gap-2">
                 <span className="login-spinner-sm" />
                 <span>Authenticating credentials...</span>
               </span>
             ) : (
-              <>
-                <span>Sign In to {currentDeptObj.name}</span>
-                <ArrowRight size={17} />
-              </>
+              <span className="flex items-center justify-center gap-2">
+                <span>Sign In to Enterprise ERP</span>
+                <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
+              </span>
             )}
           </button>
         </form>
 
-        {/* Quick Demo Credentials Bar */}
-        <div
-          style={{
-            marginTop: 20,
-            padding: '12px 14px',
-            borderRadius: 12,
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginBottom: 8,
-            }}
-          >
-            <span
-              style={{
-                fontSize: 10.5,
-                fontWeight: 750,
-                color: '#94a3b8',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
-              }}
-            >
-              <Zap size={12} color="#fbbf24" /> Quick Demo Test Logins
-            </span>
-            <span style={{ fontSize: 10.5, color: '#64748b' }}>Pass: password123</span>
-          </div>
-
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('admin', 'password123', 'admin')}
-              className="btn-glass-action btn-glass-red"
-              style={{ fontSize: 11, padding: '3px 8px' }}
-              title="Super Administrator (Full access)"
-            >
-              Admin
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('sales1', 'password123', 'sales')}
-              className="btn-glass-action btn-glass-blue"
-              style={{ fontSize: 11, padding: '3px 8px' }}
-              title="Sales Manager"
-            >
-              Sales
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('service1', 'password123', 'service')}
-              className="btn-glass-action btn-glass-emerald"
-              style={{ fontSize: 11, padding: '3px 8px' }}
-              title="Service Lead Engineer"
-            >
-              Service
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('accounts1', 'password123', 'accounts')}
-              className="btn-glass-action btn-glass-amber"
-              style={{ fontSize: 11, padding: '3px 8px' }}
-              title="Chief Accountant"
-            >
-              Accounts ERP
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('marketing1', 'password123', 'marketing')}
-              className="btn-glass-action btn-glass-purple"
-              style={{ fontSize: 11, padding: '3px 8px' }}
-              title="Marketing Manager"
-            >
-              Marketing
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('it1', 'password123', 'marketing')}
-              className="btn-glass-action btn-glass-cyan"
-              style={{ fontSize: 11, padding: '3px 8px' }}
-              title="IT Support Engineer"
-            >
-              IT Support
-            </button>
-          </div>
-        </div>
-
-        {/* Footer Meta */}
+        {/* 10. Small security and copyright footer */}
         <div className="login-footer-meta">
           <div className="meta-security-badge">
-            <Lock size={12} />
+            <Lock size={12} className="text-emerald-400" />
             <span>Enterprise-Grade Bcrypt Encryption & RBAC Guarded</span>
           </div>
           <p className="login-copy">
