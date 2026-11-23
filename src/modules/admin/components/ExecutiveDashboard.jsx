@@ -23,6 +23,13 @@ import {
   Share2,
 } from 'lucide-react';
 import { centralStore } from '../services/centralStorage.js';
+import {
+  PageHeader,
+  StatCard,
+  EnterpriseCard,
+  StatusBadge,
+  ActionButton,
+} from '../../../components/EnterpriseUI.jsx';
 
 export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
   const { token, user: currentUser } = useCentralAuth();
@@ -49,7 +56,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
     try {
       setRefreshing(true);
       const res = await fetch('/api/admin/stats', {
-        headers: { 'Authorization': `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
@@ -68,411 +75,739 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
   }, [loadData]);
 
   return (
-    <div className="central-admin-content executive-dashboard-page">
+    <div className="central-admin-content executive-dashboard-page" style={{ padding: '0 4px' }}>
       {/* Alert Notice Toast */}
       {alertNotice && (
-        <div className={`alert-toast alert-${alertNotice.type}`}>
+        <div className={`alert-toast alert-${alertNotice.type}`} style={{ marginBottom: 16 }}>
           <span>{alertNotice.msg}</span>
-          <button className="alert-toast-close" onClick={() => setAlertNotice(null)}>×</button>
+          <button className="alert-toast-close" onClick={() => setAlertNotice(null)}>
+            ×
+          </button>
         </div>
       )}
 
-      {/* Hero Welcome & Control Overview Banner */}
-      <div className="admin-hero-banner">
-        <div className="admin-hero-info">
-          <div className="admin-hero-badge">
-            <span className="live-pulse-dot" />
-            <span>EXECUTIVE CONTROL CENTER</span>
-          </div>
-          <h2>Executive Operations & System Overview</h2>
-          <p>
-            Welcome, <strong>{currentUser?.name || 'Administrator'}</strong>. Real-time enterprise monitoring, department operations, and security overview for EPI UPS Bangladesh Limited.
-          </p>
-        </div>
-        <div className="admin-hero-actions">
-          <button
-            type="button"
-            className="btn-action-secondary"
-            onClick={() => {
-              try {
-                centralStore.exportDatabase();
-                setAlertNotice({ type: 'success', msg: 'System database exported successfully.' });
-              } catch (e) {
-                alert('Export failed: ' + e.message);
-              }
-            }}
-            title="Download JSON backup of all accounts and audit logs"
-          >
-            <Download size={14} />
-            <span>Export Backup</span>
-          </button>
-
-          <label
-            className="btn-action-secondary"
-            style={{ cursor: 'pointer', margin: 0 }}
-            title="Restore database from JSON backup file"
-          >
-            <Upload size={14} />
-            <span>Import Backup</span>
-            <input
-              type="file"
-              accept=".json"
-              style={{ display: 'none' }}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (evt) => {
-                  try {
-                    const res = centralStore.importDatabase(evt.target.result);
-                    setAlertNotice({ type: 'success', msg: `Backup restored! Loaded ${res.userCount} accounts.` });
-                    loadData();
-                  } catch (err) {
-                    alert('Import error: ' + err.message);
-                  }
-                };
-                reader.readAsText(file);
-                e.target.value = '';
+      {/* Modern Enterprise Page Header */}
+      <PageHeader
+        badge="Executive Command Root"
+        badgeColor="blue"
+        title="Executive Operations & Systems Command"
+        subtitle={`Welcome, ${
+          currentUser?.name || 'Administrator'
+        }. Real-time enterprise telemetry, cross-department access enforcement, and security audits for EPI UPS Bangladesh Limited.`}
+        actions={
+          <>
+            <ActionButton
+              variant="secondary"
+              icon={Download}
+              size="md"
+              onClick={() => {
+                try {
+                  centralStore.exportDatabase();
+                  setAlertNotice({ type: 'success', msg: 'System database exported successfully.' });
+                } catch (e) {
+                  alert('Export failed: ' + e.message);
+                }
               }}
-            />
-          </label>
-
-          <button
-            type="button"
-            className="btn-action-secondary"
-            onClick={loadData}
-            disabled={refreshing}
-            title="Refresh statistics"
-          >
-            <RefreshCw size={14} className={refreshing ? 'spin-anim' : ''} />
-            <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
-          </button>
-
-          {onNavigateUsers && (
-            <button
-              type="button"
-              className="btn-action-primary"
-              onClick={onNavigateUsers}
-              title="Go to Employee & User Management"
+              title="Download JSON backup of all accounts and audit logs"
             >
-              <Users size={15} />
-              <span>User Management</span>
-            </button>
-          )}
-        </div>
+              Export Backup
+            </ActionButton>
+
+            <label
+              className="enterprise-btn btn-secondary size-md"
+              style={{ cursor: 'pointer', margin: 0 }}
+              title="Restore database from JSON backup file"
+            >
+              <Upload size={14} />
+              <span>Import Backup</span>
+              <input
+                type="file"
+                accept=".json"
+                style={{ display: 'none' }}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  const reader = new FileReader();
+                  reader.onload = (evt) => {
+                    try {
+                      const res = centralStore.importDatabase(evt.target.result);
+                      setAlertNotice({
+                        type: 'success',
+                        msg: `Backup restored! Loaded ${res.userCount} accounts.`,
+                      });
+                      loadData();
+                    } catch (err) {
+                      alert('Import error: ' + err.message);
+                    }
+                  };
+                  reader.readAsText(file);
+                  e.target.value = '';
+                }}
+              />
+            </label>
+
+            <ActionButton
+              variant="secondary"
+              icon={RefreshCw}
+              size="md"
+              onClick={loadData}
+              disabled={refreshing}
+              title="Refresh real-time statistics"
+            >
+              {refreshing ? 'Refreshing...' : 'Refresh'}
+            </ActionButton>
+
+            {onNavigateUsers && (
+              <ActionButton
+                variant="primary"
+                icon={Users}
+                size="md"
+                onClick={onNavigateUsers}
+                title="Manage corporate staff and permissions"
+              >
+                User Management
+              </ActionButton>
+            )}
+          </>
+        }
+      />
+
+      {/* 1. Primary KPI Metric Cards (7 Modern Cards) */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gap: 14,
+          marginBottom: 20,
+        }}
+      >
+        <StatCard
+          title="Total Staff"
+          value={stats.totalEmployees}
+          subtitle="Registered users"
+          icon={Users}
+          color="blue"
+        />
+        <StatCard
+          title="Active Accounts"
+          value={stats.activeEmployees}
+          subtitle="Authorized & ready"
+          icon={UserCheck}
+          color="green"
+          trend="100% Active"
+          trendType="up"
+        />
+        <StatCard
+          title="Inactive Accounts"
+          value={stats.inactiveEmployees}
+          subtitle="Deactivated access"
+          icon={UserX}
+          color="red"
+        />
+        <StatCard
+          title="Sales Team"
+          value={stats.salesUsers}
+          subtitle="CRM & pipeline"
+          icon={Briefcase}
+          color="blue"
+          onClick={() => onLaunchDept('sales')}
+        />
+        <StatCard
+          title="Service Team"
+          value={stats.serviceUsers}
+          subtitle="Field technicians"
+          icon={Wrench}
+          color="cyan"
+          onClick={() => onLaunchDept('service')}
+        />
+        <StatCard
+          title="Accounts & ERP"
+          value={stats.accountsUsers}
+          subtitle="Finance & billing"
+          icon={Landmark}
+          color="amber"
+          onClick={() => onLaunchDept('accounts')}
+        />
+        <StatCard
+          title="Marketing & IT"
+          value={stats.marketingUsers || 0}
+          subtitle="Growth & helpdesk"
+          icon={Share2}
+          color="purple"
+          onClick={() => onLaunchDept('marketing')}
+        />
       </div>
 
-      {/* KPI Stat Cards Grid */}
-      <div className="stat-cards-grid">
-        <div className="stat-card">
-          <div className="stat-card-icon icon-blue">
-            <Users size={22} />
-          </div>
-          <div className="stat-card-data">
-            <span className="stat-label">Total Employees</span>
-            <span className="stat-val">{stats.totalEmployees}</span>
-            <span className="stat-subtext">Registered system users</span>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-card-icon icon-green">
-            <UserCheck size={22} />
-          </div>
-          <div className="stat-card-data">
-            <span className="stat-label">Active Accounts</span>
-            <span className="stat-val text-green">{stats.activeEmployees}</span>
-            <span className="stat-subtext">Authorized & ready</span>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-card-icon icon-red">
-            <UserX size={22} />
-          </div>
-          <div className="stat-card-data">
-            <span className="stat-label">Inactive Accounts</span>
-            <span className="stat-val text-red">{stats.inactiveEmployees}</span>
-            <span className="stat-subtext">Deactivated access</span>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-card-icon icon-sales">
-            <Briefcase size={22} />
-          </div>
-          <div className="stat-card-data">
-            <span className="stat-label">Sales Department</span>
-            <span className="stat-val">{stats.salesUsers}</span>
-            <span className="stat-subtext">CRM & pipeline staff</span>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-card-icon icon-service">
-            <Wrench size={22} />
-          </div>
-          <div className="stat-card-data">
-            <span className="stat-label">Service Department</span>
-            <span className="stat-val">{stats.serviceUsers}</span>
-            <span className="stat-subtext">Engineers & field technicians</span>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-card-icon icon-accounts">
-            <Landmark size={22} />
-          </div>
-          <div className="stat-card-data">
-            <span className="stat-label">Accounts & ERP</span>
-            <span className="stat-val">{stats.accountsUsers}</span>
-            <span className="stat-subtext">Finance & invoicing team</span>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-card-icon icon-marketing" style={{ color: '#c084fc', background: 'rgba(168, 85, 247, 0.15)' }}>
-            <Share2 size={22} />
-          </div>
-          <div className="stat-card-data">
-            <span className="stat-label">Marketing & IT</span>
-            <span className="stat-val" style={{ color: '#c084fc' }}>{stats.marketingUsers || 0}</span>
-            <span className="stat-subtext">Digital growth & tech support</span>
-          </div>
-        </div>
-      </div>
-
-      {/* System Status & Important Notifications Banner */}
-      <div className="system-health-banner">
-        <div className="health-item">
-          <div className="health-icon health-green">
-            <CheckCircle2 size={18} />
-          </div>
-          <div className="health-info">
-            <span className="health-title">Browser-Local Storage</span>
-            <span className="health-desc">Zero cloud DB required. IndexedDB & LocalStorage synchronized.</span>
-          </div>
-        </div>
-
-        <div className="health-item">
-          <div className="health-icon health-blue">
-            <ShieldCheck size={18} />
-          </div>
-          <div className="health-info">
-            <span className="health-title">Security & RBAC</span>
-            <span className="health-desc">Bcrypt hash encryption with strict departmental route guards.</span>
-          </div>
-        </div>
-
-        <div className="health-item">
-          <div className="health-icon health-purple">
-            <Activity size={18} />
-          </div>
-          <div className="health-info">
-            <span className="health-title">Live Systems Online</span>
-            <span className="health-desc">All 4 enterprise modules fully operational and integrated.</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Department Workspaces Quick Launcher Banner */}
-      <div className="dept-launch-section">
-        <div className="section-title-wrap">
-          <div className="section-title-icon">
-            <Sparkles size={18} />
+      {/* 2. System Status & Security Assurance Bar */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: 12,
+          marginBottom: 24,
+        }}
+      >
+        <div
+          style={{
+            padding: '12px 16px',
+            background: 'rgba(16, 185, 129, 0.08)',
+            border: '1px solid rgba(16, 185, 129, 0.22)',
+            borderRadius: 12,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: 'rgba(16, 185, 129, 0.16)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#34d399',
+            }}
+          >
+            <CheckCircle2 size={16} />
           </div>
           <div>
-            <h3>Department Workspaces</h3>
-            <p>Direct single-click access into operational departments for authorized administrators</p>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#f1f5f9' }}>
+              Encrypted Local Storage Vault
+            </div>
+            <div style={{ fontSize: 11, color: '#94a3b8' }}>
+              Zero cloud database dependency. All local stores synchronized.
+            </div>
           </div>
         </div>
 
-        <div className="dept-launch-grid">
-          {/* Sales Card */}
-          <div className="dept-launch-card card-sales">
-            <div className="dept-launch-header">
-              <div className="dept-icon-box sales-bg">
-                <Briefcase size={20} />
-              </div>
-              <span className="dept-status-pill">Active CRM</span>
+        <div
+          style={{
+            padding: '12px 16px',
+            background: 'rgba(56, 189, 248, 0.08)',
+            border: '1px solid rgba(56, 189, 248, 0.22)',
+            borderRadius: 12,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: 'rgba(56, 189, 248, 0.16)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#38bdf8',
+            }}
+          >
+            <ShieldCheck size={16} />
+          </div>
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#f1f5f9' }}>
+              Role-Based Access Control
             </div>
-            <h4>EPI Sales Department</h4>
-            <p>Customer database, pending work orders, follow-up schedules, quotation preparation, and daily sales activities.</p>
-            <button
-              type="button"
-              className="btn-launch-dept sales-btn"
+            <div style={{ fontSize: 11, color: '#94a3b8' }}>
+              Bcrypt salted password encryption with strict departmental route guards.
+            </div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            padding: '12px 16px',
+            background: 'rgba(168, 85, 247, 0.08)',
+            border: '1px solid rgba(168, 85, 247, 0.22)',
+            borderRadius: 12,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+          }}
+        >
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: 'rgba(168, 85, 247, 0.16)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#c084fc',
+            }}
+          >
+            <Activity size={16} />
+          </div>
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#f1f5f9' }}>
+              All 4 Operational Departments
+            </div>
+            <div style={{ fontSize: 11, color: '#94a3b8' }}>
+              Sales, Service, Accounts ERP, and Marketing & IT live.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Department Workspace Operations Launchpad */}
+      <EnterpriseCard
+        title="Department Operations Launchpad"
+        subtitle="Direct single-click executive entry into operational departmental workspaces"
+        icon={Sparkles}
+        badge="4 Live Systems"
+        className="mb-6"
+        style={{ marginBottom: 24 }}
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: 16,
+          }}
+        >
+          {/* Sales Workspace Card */}
+          <div
+            style={{
+              padding: 16,
+              borderRadius: 12,
+              background: 'rgba(0, 82, 204, 0.08)',
+              border: '1px solid rgba(56, 189, 248, 0.24)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 9,
+                    background: 'rgba(56, 189, 248, 0.15)',
+                    color: '#38bdf8',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Briefcase size={18} />
+                </div>
+                <StatusBadge status="active" label="Active CRM" variant="info" size="sm" />
+              </div>
+              <h4 style={{ fontSize: 14, fontWeight: 750, color: '#ffffff', marginBottom: 4 }}>
+                EPI Sales Department
+              </h4>
+              <p style={{ fontSize: 12, color: '#94a3b8', lineHeight: 1.4, marginBottom: 14 }}>
+                Customer database, pending work orders, follow-up schedules, quotation preparation, and
+                daily sales activities.
+              </p>
+            </div>
+            <ActionButton
+              variant="primary"
+              size="sm"
+              icon={ArrowRight}
               onClick={() => onLaunchDept('sales')}
             >
-              <span>Open Sales Workspace</span>
-              <ArrowRight size={15} />
-            </button>
+              Open Sales Workspace
+            </ActionButton>
           </div>
 
-          {/* Service Card */}
-          <div className="dept-launch-card card-service">
-            <div className="dept-launch-header">
-              <div className="dept-icon-box service-bg">
-                <Wrench size={20} />
+          {/* Service Workspace Card */}
+          <div
+            style={{
+              padding: 16,
+              borderRadius: 12,
+              background: 'rgba(5, 150, 105, 0.08)',
+              border: '1px solid rgba(52, 211, 153, 0.24)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 9,
+                    background: 'rgba(16, 185, 129, 0.15)',
+                    color: '#34d399',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Wrench size={18} />
+                </div>
+                <StatusBadge status="active" label="Active Service Hub" variant="success" size="sm" />
               </div>
-              <span className="dept-status-pill">Active Service Hub</span>
+              <h4 style={{ fontSize: 14, fontWeight: 750, color: '#ffffff', marginBottom: 4 }}>
+                EPI Service Department
+              </h4>
+              <p style={{ fontSize: 12, color: '#94a3b8', lineHeight: 1.4, marginBottom: 14 }}>
+                Equipment servicing, preventive maintenance, repair work orders, warranty tracking,
+                and calendar dispatch.
+              </p>
             </div>
-            <h4>EPI Service Department</h4>
-            <p>Equipment servicing, preventive maintenance, repair work orders, warranty tracking, and calendar dispatch.</p>
-            <button
-              type="button"
-              className="btn-launch-dept service-btn"
+            <ActionButton
+              variant="secondary"
+              size="sm"
+              icon={ArrowRight}
               onClick={() => onLaunchDept('service')}
+              style={{
+                borderColor: 'rgba(52, 211, 153, 0.4)',
+                color: '#6ee7b7',
+              }}
             >
-              <span>Open Service Workspace</span>
-              <ArrowRight size={15} />
-            </button>
+              Open Service Workspace
+            </ActionButton>
           </div>
 
-          {/* Accounts Card */}
-          <div className="dept-launch-card card-accounts">
-            <div className="dept-launch-header">
-              <div className="dept-icon-box accounts-bg">
-                <Landmark size={20} />
+          {/* Accounts & ERP Workspace Card */}
+          <div
+            style={{
+              padding: 16,
+              borderRadius: 12,
+              background: 'rgba(245, 158, 11, 0.08)',
+              border: '1px solid rgba(251, 191, 36, 0.24)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 9,
+                    background: 'rgba(245, 158, 11, 0.15)',
+                    color: '#fbbf24',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Landmark size={18} />
+                </div>
+                <StatusBadge status="active" label="Active Financials" variant="warning" size="sm" />
               </div>
-              <span className="dept-status-pill">Active Financials</span>
+              <h4 style={{ fontSize: 14, fontWeight: 750, color: '#ffffff', marginBottom: 4 }}>
+                EPI Accounts & ERP
+              </h4>
+              <p style={{ fontSize: 12, color: '#94a3b8', lineHeight: 1.4, marginBottom: 14 }}>
+                General ledger, double-entry vouchers, sales & purchase invoices, banking, payroll,
+                and 15% Mushak VAT reports.
+              </p>
             </div>
-            <h4>EPI Accounts & ERP</h4>
-            <p>General ledger, double-entry vouchers, sales & purchase invoices, banking, payroll, and 15% Mushak VAT reports.</p>
-            <button
-              type="button"
-              className="btn-launch-dept accounts-btn"
+            <ActionButton
+              variant="secondary"
+              size="sm"
+              icon={ArrowRight}
               onClick={() => onLaunchDept('accounts')}
+              style={{
+                borderColor: 'rgba(251, 191, 36, 0.4)',
+                color: '#fde68a',
+              }}
             >
-              <span>Open Accounts Workspace</span>
-              <ArrowRight size={15} />
-            </button>
+              Open Accounts Workspace
+            </ActionButton>
           </div>
 
-          {/* Digital Marketing & IT Support Card */}
-          <div className="dept-launch-card card-marketing" style={{ borderColor: 'rgba(168, 85, 247, 0.35)' }}>
-            <div className="dept-launch-header">
-              <div className="dept-icon-box marketing-bg" style={{ background: 'rgba(168, 85, 247, 0.18)', color: '#c084fc' }}>
-                <Share2 size={20} />
+          {/* Digital Marketing & IT Support Workspace Card */}
+          <div
+            style={{
+              padding: 16,
+              borderRadius: 12,
+              background: 'rgba(124, 58, 237, 0.08)',
+              border: '1px solid rgba(192, 132, 252, 0.24)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}
+              >
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 9,
+                    background: 'rgba(168, 85, 247, 0.15)',
+                    color: '#c084fc',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Share2 size={18} />
+                </div>
+                <StatusBadge status="active" label="Active Digital Hub" variant="purple" size="sm" />
               </div>
-              <span className="dept-status-pill" style={{ color: '#c084fc', borderColor: 'rgba(168, 85, 247, 0.35)' }}>Active Digital Hub</span>
+              <h4 style={{ fontSize: 14, fontWeight: 750, color: '#ffffff', marginBottom: 4 }}>
+                Digital Marketing & IT Support
+              </h4>
+              <p style={{ fontSize: 12, color: '#94a3b8', lineHeight: 1.4, marginBottom: 14 }}>
+                Social media campaigns, advertisement tracking, editorial calendar, asset library, and
+                internal IT support tickets.
+              </p>
             </div>
-            <h4>Digital Marketing & IT Support</h4>
-            <p>Social media campaigns, advertisement tracking, editorial calendar, asset library, and internal IT support tickets.</p>
-            <button
-              type="button"
-              className="btn-launch-dept marketing-btn"
-              style={{ background: 'linear-gradient(135deg, #7e22ce, #a855f7)', color: '#fff' }}
+            <ActionButton
+              variant="purple"
+              size="sm"
+              icon={ArrowRight}
               onClick={() => onLaunchDept('marketing')}
             >
-              <span>Open Marketing & IT Workspace</span>
-              <ArrowRight size={15} />
-            </button>
+              Open Marketing & IT
+            </ActionButton>
           </div>
         </div>
-      </div>
+      </EnterpriseCard>
 
-      {/* Two-Column Logs Section: Recent Logins & Recent Audit Activities */}
-      <div className="admin-logs-grid">
-        {/* Recent Login History */}
-        <div className="admin-log-box">
-          <div className="log-box-header">
-            <div className="section-title-wrap">
-              <h4>
-                <Clock size={16} /> Recent User Logins
-              </h4>
-              <p>Real-time login session audit across all departments</p>
-            </div>
-          </div>
-          <div className="log-list-scroll">
-            {stats.recentLogins.length === 0 ? (
-              <div className="log-empty-state">No login sessions recorded yet.</div>
+      {/* 4. Two-Column Telemetry: Recent User Logins & Recent Audit Activities */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+          gap: 16,
+          marginBottom: 24,
+        }}
+      >
+        {/* Recent User Logins Card */}
+        <EnterpriseCard
+          title="Recent User Logins"
+          subtitle="Real-time login session audit across all departments"
+          icon={Clock}
+          badge={`${stats.recentLogins?.length || 0} Sessions`}
+        >
+          <div style={{ maxHeight: 320, overflowY: 'auto' }}>
+            {!stats.recentLogins || stats.recentLogins.length === 0 ? (
+              <div style={{ padding: '24px 0', textAlign: 'center', color: '#64748b', fontSize: 12 }}>
+                No login sessions recorded yet.
+              </div>
             ) : (
               stats.recentLogins.map((entry, idx) => (
-                <div key={idx} className="log-entry-item">
-                  <div className="log-entry-avatar">
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    padding: '9px 12px',
+                    borderRadius: 8,
+                    marginBottom: 6,
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
+                      background: 'rgba(56, 189, 248, 0.15)',
+                      color: '#38bdf8',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontWeight: 700,
+                      fontSize: 12,
+                      flexShrink: 0,
+                    }}
+                  >
                     {entry.name ? entry.name.slice(0, 2).toUpperCase() : 'U'}
                   </div>
-                  <div className="log-entry-body">
-                    <div className="log-entry-title">
-                      <strong>{entry.name || 'Unknown User'}</strong>
-                      <span className="log-entry-userid">({entry.userId})</span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <strong style={{ fontSize: 12.5, color: '#f1f5f9' }}>
+                        {entry.name || 'Unknown User'}
+                      </strong>
+                      <span style={{ fontSize: 11, color: '#64748b' }}>({entry.userId})</span>
                     </div>
-                    <div className="log-entry-meta">
-                      <span className="log-entry-time">
-                        <Clock size={11} /> {new Date(entry.timestamp).toLocaleString()}
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        fontSize: 11,
+                        color: '#94a3b8',
+                        marginTop: 2,
+                      }}
+                    >
+                      <span>
+                        <Clock size={10} style={{ display: 'inline', marginRight: 4 }} />
+                        {new Date(entry.timestamp).toLocaleString()}
                       </span>
-                      <span className="log-entry-ip">IP: {entry.ip || 'Local Browser'}</span>
+                      <span>· IP: {entry.ip || 'Local Browser'}</span>
                     </div>
                   </div>
                 </div>
               ))
             )}
           </div>
-        </div>
+        </EnterpriseCard>
 
-        {/* Recent Audit Activities */}
-        <div className="admin-log-box">
-          <div className="log-box-header">
-            <div className="section-title-wrap">
-              <h4>
-                <Activity size={16} /> Recent System Activities
-              </h4>
-              <p>Administrative changes, security events, and audit trail</p>
-            </div>
-          </div>
-          <div className="log-list-scroll">
-            {stats.recentActivities.length === 0 ? (
-              <div className="log-empty-state">No recent activity recorded yet.</div>
+        {/* Recent System Audit Activities Card */}
+        <EnterpriseCard
+          title="Recent System Activities"
+          subtitle="Administrative changes, security events, and audit trail"
+          icon={Activity}
+          badge={`${stats.recentActivities?.length || 0} Events`}
+        >
+          <div style={{ maxHeight: 320, overflowY: 'auto' }}>
+            {!stats.recentActivities || stats.recentActivities.length === 0 ? (
+              <div style={{ padding: '24px 0', textAlign: 'center', color: '#64748b', fontSize: 12 }}>
+                No recent activity recorded yet.
+              </div>
             ) : (
               stats.recentActivities.map((act) => (
-                <div key={act.id} className="log-entry-item">
-                  <div className={`log-entry-badge-icon badge-${(act.action || 'info').toLowerCase()}`}>
+                <div
+                  key={act.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: 12,
+                    padding: '10px 12px',
+                    borderRadius: 8,
+                    marginBottom: 6,
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 7,
+                      background: 'rgba(16, 185, 129, 0.12)',
+                      color: '#34d399',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: 2,
+                    }}
+                  >
                     <ShieldCheck size={14} />
                   </div>
-                  <div className="log-entry-body">
-                    <div className="log-entry-title">
-                      <span className={`activity-action-tag tag-${(act.action || '').toLowerCase()}`}>
-                        {act.action}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      <StatusBadge status={act.action} size="sm" />
+                      <span style={{ fontSize: 11.5, color: '#94a3b8' }}>
+                        by{' '}
+                        <strong style={{ color: '#cbd5e1' }}>
+                          {act.performedBy || act.userName || 'System'}
+                        </strong>
                       </span>
-                      <span className="log-entry-user">by {act.performedBy || act.userName || 'System'}</span>
                     </div>
-                    <p className="log-entry-details">{act.details}</p>
-                    <div className="log-entry-meta">
-                      <span className="log-entry-time">
-                        <Clock size={11} /> {new Date(act.timestamp || act.at || Date.now()).toLocaleString()}
-                      </span>
-                      {act.targetUserId && (
-                        <span className="log-entry-target">Target: @{act.targetUserId}</span>
-                      )}
+                    <p style={{ fontSize: 12, color: '#e2e8f0', margin: '4px 0 2px' }}>
+                      {act.details}
+                    </p>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 8,
+                        fontSize: 11,
+                        color: '#64748b',
+                      }}
+                    >
+                      <span>{new Date(act.timestamp || act.at || Date.now()).toLocaleString()}</span>
+                      {act.targetUserId && <span>· Target: @{act.targetUserId}</span>}
                     </div>
                   </div>
                 </div>
               ))
             )}
           </div>
-        </div>
+        </EnterpriseCard>
       </div>
 
-      {/* Quick Navigation Callout to User Management */}
+      {/* 5. User Management Quick Access Callout */}
       {onNavigateUsers && (
-        <div className="user-management-callout-card">
-          <div className="callout-content">
-            <div className="callout-icon">
-              <Users size={24} />
+        <div
+          style={{
+            padding: '18px 22px',
+            borderRadius: 14,
+            background:
+              'linear-gradient(135deg, rgba(0, 82, 204, 0.16) 0%, rgba(26, 115, 232, 0.06) 100%)',
+            border: '1px solid rgba(56, 189, 248, 0.3)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 16,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                background: 'rgba(56, 189, 248, 0.18)',
+                color: '#38bdf8',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <Users size={22} />
             </div>
             <div>
-              <h4>Looking to manage corporate employees and permissions?</h4>
-              <p>Add new staff accounts, modify department access rights, deactivate users, or reset employee passwords.</p>
+              <h4 style={{ fontSize: 14, fontWeight: 750, color: '#ffffff', margin: 0 }}>
+                Corporate Staff & Permission Governance
+              </h4>
+              <p style={{ fontSize: 12, color: '#94a3b8', margin: '2px 0 0' }}>
+                Create employee accounts, modify departmental authorizations, reset passwords, and
+                deactivate staff.
+              </p>
             </div>
           </div>
-          <button
-            type="button"
-            className="btn-action-primary"
+          <ActionButton
+            variant="primary"
+            icon={ArrowRight}
+            size="md"
             onClick={onNavigateUsers}
           >
-            <span>Open User Management</span>
-            <ArrowRight size={15} />
-          </button>
+            Open User Management
+          </ActionButton>
         </div>
       )}
     </div>

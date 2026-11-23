@@ -1,7 +1,8 @@
-import { useApp } from '../context/AppContext.jsx'
-import WorkTable from '../components/WorkTable.jsx'
-import { clientType, isOverdue, isUpcomingSoon, warr } from '../services/domain.js'
-import { TODAY } from '../services/dates.js'
+import React from 'react';
+import { useApp } from '../context/AppContext.jsx';
+import WorkTable from '../components/WorkTable.jsx';
+import { clientType, isOverdue, isUpcomingSoon, warr } from '../services/domain.js';
+import { TODAY } from '../services/dates.js';
 import {
   Users,
   UserPlus,
@@ -16,198 +17,480 @@ import {
   CalendarCheck,
   CalendarClock,
   ArrowRight,
-} from 'lucide-react'
+  ShieldCheck,
+  CheckCircle2,
+  Sparkles,
+  ChevronRight,
+} from 'lucide-react';
+import {
+  PageHeader,
+  StatCard,
+  EnterpriseCard,
+  StatusBadge,
+  ActionButton,
+} from '../../../components/EnterpriseUI.jsx';
 
 export default function Dashboard({ go }) {
-  const { s, addWork, addClient } = useApp()
-  const T = TODAY()
-  const today = s.works.filter((w) => w.date === T)
-  const overdue = s.works.filter((w) => isOverdue(w))
-  const upcoming = s.works.filter((w) => isUpcomingSoon(w, 2))
+  const { s, addWork, addClient } = useApp();
+  const T = TODAY();
+  const today = (s.works || []).filter((w) => w.date === T);
+  const completedToday = today.filter((w) => w.status === 'done');
+  const overdue = (s.works || []).filter((w) => isOverdue(w));
+  const upcoming = (s.works || []).filter((w) => isUpcomingSoon(w, 2));
 
-  const salesClients = s.clients.filter((c) => clientType(c) === 'Sales')
-  const servicingClients = s.clients.filter((c) => clientType(c) === 'Servicing')
-  const maintenanceClients = s.clients.filter((c) => clientType(c) === 'Maintenance')
-  const installationWorks = s.works.filter((w) => w.category === 'Installation')
-  const generalWorks = s.works.filter((w) => w.category === 'General')
-  const expiring = salesClients.filter((c) => warr(c).active && warr(c).left <= 30).length
-
-  const Stat = ({ n, label, color, page }) => (
-    <div className="stat" style={{ cursor: 'pointer' }} onClick={() => go(page)}>
-      <b style={{ color: color || '#fff' }}>{n}</b>
-      <span>{label}</span>
-    </div>
-  )
+  const salesClients = (s.clients || []).filter((c) => clientType(c) === 'Sales');
+  const servicingClients = (s.clients || []).filter((c) => clientType(c) === 'Servicing');
+  const maintenanceClients = (s.clients || []).filter((c) => clientType(c) === 'Maintenance');
+  const installationWorks = (s.works || []).filter((w) => w.category === 'Installation');
+  const generalWorks = (s.works || []).filter((w) => w.category === 'General');
+  const expiring = salesClients.filter((c) => warr(c).active && warr(c).left <= 30).length;
 
   return (
-    <div className="dashboard-layout">
-      {/* 1. Primary Dashboard Action Hub: Sales Clients, + Add Client, + Add Work */}
-      <section className="card action-hub">
-        <div className="action-hub-header">
-          <div>
-            <h2 className="action-hub-title">⚡ EPI UPS Control Center</h2>
-            <p className="action-hub-subtitle">
-              Manage sales, servicing, maintenance, installation, and general work orders with full manual &amp; scheduled tracking
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className="btn btn-add-work"
+    <div className="service-enterprise-dashboard" style={{ padding: '0 4px' }}>
+      {/* 1. Modern Enterprise Page Header */}
+      <PageHeader
+        badge="Service Operations Root"
+        badgeColor="green"
+        title="Service & Engineering Command Center"
+        subtitle="Industrial UPS installation, preventive maintenance contracts, repair work orders, and field dispatch for EPI UPS Bangladesh Limited."
+        actions={
+          <>
+            <ActionButton
+              variant="secondary"
+              icon={Zap}
+              size="md"
               onClick={() => addWork(T, 'Installation')}
-              title="Create new Installation work order"
+              title="Schedule a new equipment installation"
             >
-              <Zap size={15} />
-              <span>+ Installation</span>
-            </button>
-            <button
-              type="button"
-              className="btn btn-add-work"
+              + Installation
+            </ActionButton>
+
+            <ActionButton
+              variant="secondary"
+              icon={CalendarPlus}
+              size="md"
               onClick={() => addWork(T)}
               title="Manually schedule a new work task"
             >
-              <CalendarPlus size={15} />
-              <span>+ Add Work</span>
-            </button>
-          </div>
-        </div>
+              + Add Work
+            </ActionButton>
 
-        <div className="hero-actions-grid">
-          <button
-            type="button"
-            className="hero-action-card hero-sales-clients"
-            onClick={() => go('clients')}
-          >
-            <div className="hero-icon">
-              <Users size={22} />
-            </div>
-            <div className="hero-body">
-              <div className="hero-title">Sales Clients</div>
-              <div className="hero-desc">
-                View, search, edit &amp; manage {salesClients.length} sales client{salesClients.length === 1 ? '' : 's'} &amp; warranties
-              </div>
-            </div>
-            <div className="hero-arrow">
-              <ArrowRight size={18} />
-            </div>
-          </button>
+            <ActionButton
+              variant="primary"
+              icon={UserPlus}
+              size="md"
+              onClick={() => addClient('Sales')}
+              title="Register a new client or maintenance contract"
+            >
+              + Add Client
+            </ActionButton>
+          </>
+        }
+      />
 
-          <button
-            type="button"
-            className="hero-action-card hero-add-client"
-            onClick={() => addClient('Sales')}
-          >
-            <div className="hero-icon">
-              <UserPlus size={22} />
-            </div>
-            <div className="hero-body">
-              <div className="hero-title">+ Add Client</div>
-              <div className="hero-desc">
-                Register a new Sales, Servicing or Maintenance client
-              </div>
-            </div>
-            <div className="hero-arrow">
-              <ArrowRight size={18} />
-            </div>
-          </button>
-        </div>
+      {/* 2. Key Metrics Stat Cards Grid (7 Modern Stat Cards) */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: 14,
+          marginBottom: 20,
+        }}
+      >
+        <StatCard
+          title="Scheduled Today"
+          value={today.length}
+          subtitle="Tasks assigned for today"
+          icon={CalendarCheck}
+          color="blue"
+          onClick={() => go('today')}
+        />
 
-        <div className="quick-section-links">
-          <button type="button" className="quick-link-pill" onClick={() => go('servicing')}>
-            <Wrench size={13} style={{ color: 'var(--accent-amber)' }} />
-            <span>Servicing</span>
-            <span className="bd y">{servicingClients.length}</span>
-          </button>
-          <button type="button" className="quick-link-pill" onClick={() => go('maintenance')}>
-            <Settings2 size={13} style={{ color: 'var(--accent-emerald)' }} />
-            <span>Maintenance</span>
-            <span className="bd g">{maintenanceClients.length}</span>
-          </button>
-          <button type="button" className="quick-link-pill" onClick={() => go('installation')}>
-            <Zap size={13} style={{ color: 'var(--epi-blue-light)' }} />
-            <span>Installation</span>
-            <span className="bd b">{installationWorks.length}</span>
-          </button>
-          <button type="button" className="quick-link-pill" onClick={() => go('general')}>
-            <ClipboardList size={13} style={{ color: 'var(--text-muted)' }} />
-            <span>General Work</span>
-            <span className="bd m">{generalWorks.length}</span>
-          </button>
-          <button type="button" className="quick-link-pill" onClick={() => go('history')}>
-            <History size={13} />
-            <span>Complete History</span>
-          </button>
-          <button type="button" className="quick-link-pill" onClick={() => go('srep')}>
-            <FileText size={13} />
-            <span>Work Reports</span>
-          </button>
-        </div>
-      </section>
+        <StatCard
+          title="Completed Today"
+          value={completedToday.length}
+          subtitle="Finished work orders"
+          icon={CheckCircle2}
+          color="green"
+          trend={`${completedToday.length} Done`}
+          trendType="up"
+          onClick={() => go('today')}
+        />
 
-      {/* 2. Key Metrics Stats Grid */}
-      <div className="grid">
-        <Stat n={today.length} label="Today's Scheduled" page="today" />
-        <Stat n={today.filter((w) => w.status === 'done').length} label="Completed Today" color="var(--accent-emerald)" page="today" />
-        <Stat n={upcoming.length} label="Upcoming (Next 2d)" color="var(--epi-blue-bright)" page="upcoming" />
-        <Stat n={overdue.length} label="Overdue Tasks" color="var(--epi-red)" page="today" />
-        <Stat n={installationWorks.length} label="Installations" color="var(--epi-blue-bright)" page="installation" />
-        <Stat n={salesClients.length} label="Sales Clients" page="clients" />
-        <Stat n={expiring} label="Warranty ≤30d" color="var(--accent-amber)" page="warranty" />
+        <StatCard
+          title="Upcoming (Next 2D)"
+          value={upcoming.length}
+          subtitle="Due within 48 hours"
+          icon={CalendarClock}
+          color="cyan"
+          onClick={() => go('upcoming')}
+        />
+
+        <StatCard
+          title="Overdue Tasks"
+          value={overdue.length}
+          subtitle="Passed scheduled deadline"
+          icon={AlertTriangle}
+          color="red"
+          trend={overdue.length > 0 ? 'Urgent Action' : 'All Clear'}
+          trendType={overdue.length > 0 ? 'down' : 'up'}
+          onClick={() => go('today')}
+        />
+
+        <StatCard
+          title="Installations"
+          value={installationWorks.length}
+          subtitle="Commissioning jobs"
+          icon={Zap}
+          color="amber"
+          onClick={() => go('installation')}
+        />
+
+        <StatCard
+          title="Sales Clients"
+          value={salesClients.length}
+          subtitle="Commercial directory"
+          icon={Users}
+          color="purple"
+          onClick={() => go('clients')}
+        />
+
+        <StatCard
+          title="Warranty ≤30D"
+          value={expiring}
+          subtitle="Expiring coverage soon"
+          icon={ShieldCheck}
+          color={expiring > 0 ? 'red' : 'green'}
+          trend={expiring > 0 ? 'Renewal Notice' : 'Protected'}
+          trendType={expiring > 0 ? 'down' : 'up'}
+          onClick={() => go('warranty')}
+        />
       </div>
 
-      {/* 3. Separate Overdue Alert Section (when overdue tasks exist) */}
-      {overdue.length > 0 && (
-        <div className="card overdue-card">
-          <div className="card-header-bar">
-            <div>
-              <h3 className="card-title" style={{ color: '#ff8f8f', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <AlertTriangle size={18} /> Overdue Work &amp; Maintenance ({overdue.length})
-              </h3>
-              <span className="card-subtitle">
-                Tasks whose scheduled date passed without completion
-              </span>
+      {/* 3. Five Industrial Sectors Command Hub */}
+      <EnterpriseCard
+        title="Industrial Sectors & Service Routing"
+        subtitle="Partitioned engineering work orders across all 5 operational industrial sectors"
+        icon={Sparkles}
+        badge="5 Sectors"
+        style={{ marginBottom: 20 }}
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: 12,
+          }}
+        >
+          {/* Servicing Sector */}
+          <div
+            onClick={() => go('servicing')}
+            style={{
+              cursor: 'pointer',
+              padding: '14px',
+              borderRadius: 12,
+              background: 'rgba(245, 158, 11, 0.06)',
+              border: '1px solid rgba(245, 158, 11, 0.22)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  background: 'rgba(245, 158, 11, 0.16)',
+                  color: '#fbbf24',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Wrench size={17} />
+              </div>
+              <div>
+                <strong style={{ fontSize: 13, color: '#ffffff' }}>Servicing</strong>
+                <div style={{ fontSize: 11, color: '#94a3b8' }}>
+                  {servicingClients.length} Accounts
+                </div>
+              </div>
             </div>
-            <button className="btn s sm" onClick={() => go('today')}>Manage Overdue</button>
+            <ChevronRight size={15} style={{ color: '#fbbf24' }} />
+          </div>
+
+          {/* Maintenance Sector */}
+          <div
+            onClick={() => go('maintenance')}
+            style={{
+              cursor: 'pointer',
+              padding: '14px',
+              borderRadius: 12,
+              background: 'rgba(16, 185, 129, 0.06)',
+              border: '1px solid rgba(16, 185, 129, 0.22)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  background: 'rgba(16, 185, 129, 0.16)',
+                  color: '#34d399',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Settings2 size={17} />
+              </div>
+              <div>
+                <strong style={{ fontSize: 13, color: '#ffffff' }}>Maintenance</strong>
+                <div style={{ fontSize: 11, color: '#94a3b8' }}>
+                  {maintenanceClients.length} Accounts
+                </div>
+              </div>
+            </div>
+            <ChevronRight size={15} style={{ color: '#34d399' }} />
+          </div>
+
+          {/* Installation Sector */}
+          <div
+            onClick={() => go('installation')}
+            style={{
+              cursor: 'pointer',
+              padding: '14px',
+              borderRadius: 12,
+              background: 'rgba(56, 189, 248, 0.06)',
+              border: '1px solid rgba(56, 189, 248, 0.22)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  background: 'rgba(56, 189, 248, 0.16)',
+                  color: '#38bdf8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Zap size={17} />
+              </div>
+              <div>
+                <strong style={{ fontSize: 13, color: '#ffffff' }}>Installation</strong>
+                <div style={{ fontSize: 11, color: '#94a3b8' }}>
+                  {installationWorks.length} Work Orders
+                </div>
+              </div>
+            </div>
+            <ChevronRight size={15} style={{ color: '#38bdf8' }} />
+          </div>
+
+          {/* General Engineering */}
+          <div
+            onClick={() => go('general')}
+            style={{
+              cursor: 'pointer',
+              padding: '14px',
+              borderRadius: 12,
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  color: '#cbd5e1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <ClipboardList size={17} />
+              </div>
+              <div>
+                <strong style={{ fontSize: 13, color: '#ffffff' }}>General Work</strong>
+                <div style={{ fontSize: 11, color: '#94a3b8' }}>
+                  {generalWorks.length} Tasks
+                </div>
+              </div>
+            </div>
+            <ChevronRight size={15} style={{ color: '#cbd5e1' }} />
+          </div>
+
+          {/* Complete Work History */}
+          <div
+            onClick={() => go('history')}
+            style={{
+              cursor: 'pointer',
+              padding: '14px',
+              borderRadius: 12,
+              background: 'rgba(168, 85, 247, 0.06)',
+              border: '1px solid rgba(168, 85, 247, 0.22)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 8,
+                  background: 'rgba(168, 85, 247, 0.16)',
+                  color: '#c084fc',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <History size={17} />
+              </div>
+              <div>
+                <strong style={{ fontSize: 13, color: '#ffffff' }}>Work History</strong>
+                <div style={{ fontSize: 11, color: '#94a3b8' }}>All Archive Records</div>
+              </div>
+            </div>
+            <ChevronRight size={15} style={{ color: '#c084fc' }} />
+          </div>
+        </div>
+      </EnterpriseCard>
+
+      {/* 4. Overdue Work Alert Banner (if any overdue) */}
+      {overdue.length > 0 && (
+        <div
+          style={{
+            padding: '16px 20px',
+            borderRadius: 14,
+            background: 'rgba(239, 68, 68, 0.08)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            marginBottom: 20,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 12,
+              flexWrap: 'wrap',
+              gap: 10,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  background: 'rgba(239, 68, 68, 0.2)',
+                  color: '#f87171',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <AlertTriangle size={18} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: 14, fontWeight: 750, color: '#fca5a5', margin: 0 }}>
+                  Overdue Work Orders & Maintenance ({overdue.length})
+                </h3>
+                <span style={{ fontSize: 11.5, color: '#94a3b8' }}>
+                  Tasks whose target completion date passed without sign-off
+                </span>
+              </div>
+            </div>
+            <ActionButton
+              variant="danger"
+              size="sm"
+              icon={ArrowRight}
+              onClick={() => go('today')}
+            >
+              Manage Overdue
+            </ActionButton>
           </div>
           <WorkTable list={overdue} />
         </div>
       )}
 
-      {/* 4. Two-column Work Overview: Today Work & Upcoming Work (Next 2 Days) */}
-      <div className="dashboard-split">
-        <div className="card split-card">
-          <div className="card-header-bar">
-            <div>
-              <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                <CalendarCheck size={17} style={{ color: 'var(--epi-blue-light)' }} /> Today Work
-              </h3>
-              <span className="card-subtitle">
-                {today.length} task{today.length === 1 ? '' : 's'} scheduled today
-              </span>
+      {/* 5. Two-Column Dispatch: Today Work & Upcoming Work */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+          gap: 16,
+          marginBottom: 24,
+        }}
+      >
+        {/* Today's Work Column */}
+        <EnterpriseCard
+          title="Today's Work Orders"
+          subtitle={`${today.length} task${today.length === 1 ? '' : 's'} scheduled for today`}
+          icon={CalendarCheck}
+          badge={`${today.length} Orders`}
+          actions={
+            <div style={{ display: 'flex', gap: 8 }}>
+              <ActionButton
+                variant="secondary"
+                size="sm"
+                onClick={() => go('today')}
+              >
+                View All
+              </ActionButton>
+              <ActionButton
+                variant="primary"
+                size="sm"
+                onClick={() => addWork(T)}
+              >
+                + Add Work
+              </ActionButton>
             </div>
-            <div className="card-actions">
-              <button className="btn s sm" onClick={() => go('today')}>View All</button>
-              <button className="btn sm" onClick={() => addWork(T)}>+ Add Work</button>
-            </div>
-          </div>
+          }
+        >
           <WorkTable list={today} empty="Nothing scheduled today 🎉" />
-        </div>
+        </EnterpriseCard>
 
-        <div className="card split-card">
-          <div className="card-header-bar">
-            <div>
-              <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                <CalendarClock size={17} style={{ color: 'var(--epi-blue-light)' }} /> Upcoming Work (Next 2 Days)
-              </h3>
-              <span className="card-subtitle">
-                {upcoming.length} task{upcoming.length === 1 ? '' : 's'} due within 2 days
-              </span>
-            </div>
-            <button className="btn s sm" onClick={() => go('upcoming')}>View All</button>
-          </div>
+        {/* Upcoming Work Orders Column */}
+        <EnterpriseCard
+          title="Upcoming Work (Next 2 Days)"
+          subtitle={`${upcoming.length} task${upcoming.length === 1 ? '' : 's'} due within 48h`}
+          icon={CalendarClock}
+          badge={`${upcoming.length} Pending`}
+          actions={
+            <ActionButton
+              variant="secondary"
+              size="sm"
+              onClick={() => go('upcoming')}
+            >
+              View All
+            </ActionButton>
+          }
+        >
           <WorkTable list={upcoming} empty="No upcoming work in the next 2 days." />
-        </div>
+        </EnterpriseCard>
       </div>
     </div>
-  )
+  );
 }
