@@ -74,9 +74,11 @@ export default function ItReportsPage() {
   const [techFilter, setTechFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
+  const [activePreset, setActivePreset] = useState('30days');
 
   // Quick Date Presets
   const setPreset = (preset) => {
+    setActivePreset(preset);
     const t = today();
     if (preset === 'today') {
       setFrom(t);
@@ -643,31 +645,31 @@ export default function ItReportsPage() {
             </span>
             <button
               onClick={() => setPreset('today')}
-              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === 'today' ? 'active' : ''}`}
             >
               Today
             </button>
             <button
               onClick={() => setPreset('7days')}
-              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === '7days' ? 'active' : ''}`}
             >
               7 Days
             </button>
             <button
               onClick={() => setPreset('30days')}
-              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === '30days' ? 'active' : ''}`}
             >
               30 Days
             </button>
             <button
               onClick={() => setPreset('thisMonth')}
-              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === 'thisMonth' ? 'active' : ''}`}
             >
               This Month
             </button>
             <button
               onClick={() => setPreset('all')}
-              className="px-2.5 py-1 text-xs rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/50 transition"
+              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === 'all' ? 'active' : ''}`}
             >
               All Time
             </button>

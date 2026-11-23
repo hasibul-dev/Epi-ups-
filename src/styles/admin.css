@@ -2735,10 +2735,10 @@ input[autocomplete*="password"],
 .modal-field input[type="password"],
 .modal-field input[type="text"]#portal-user,
 .modal-field input[type="text"]#portal-pass {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  border-color: #cbd5e1;
+  background-color: rgba(10, 16, 30, 0.75) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 input[type="password"]::placeholder,

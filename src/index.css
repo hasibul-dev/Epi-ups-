@@ -1339,70 +1339,327 @@ img, svg, canvas, iframe {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Universal Button Design System */
+/* Universal Button Design System - Premium Dark Glassmorphism */
+/* 1. Base Reset for All Buttons */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+button:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45) !important;
+}
+
+button:active {
+  transform: translateY(0) scale(0.98) !important;
+}
+
+button:disabled,
+button[disabled] {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+/* 2. Primary Actions (Electric Blue Gradient) */
 .btn-primary,
 .btn.primary,
 .btn-primary-highlight,
 .btn-action-primary,
-.btn-mkt-primary,
 .btn-add-work,
-.btn-login-submit {
+.btn-login-submit,
+.btn-blue,
+.btn-electric {
   background: linear-gradient(135deg, #0052cc 0%, #1a73e8 100%) !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.22) !important;
-  box-shadow: 0 4px 14px rgba(0, 82, 204, 0.35) !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
+  box-shadow: 0 4px 14px rgba(0, 82, 204, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
   font-weight: 700 !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
 }
 
 .btn-primary:hover,
 .btn.primary:hover,
 .btn-primary-highlight:hover,
 .btn-action-primary:hover,
-.btn-mkt-primary:hover,
 .btn-add-work:hover,
-.btn-login-submit:hover:not(:disabled) {
+.btn-login-submit:hover:not(:disabled),
+.btn-blue:hover,
+.btn-electric:hover {
   background: linear-gradient(135deg, #1a73e8 0%, #0052cc 100%) !important;
-  box-shadow: 0 6px 20px rgba(0, 82, 204, 0.5), 0 0 16px rgba(56, 189, 248, 0.3) !important;
-  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(0, 82, 204, 0.5), 0 0 16px rgba(56, 189, 248, 0.35) !important;
+  transform: translateY(-1.5px) !important;
+  filter: brightness(1.08) !important;
 }
 
+/* 3. Secondary Actions (Dark Navy Glass with subtle blue border) */
 .btn-secondary,
 .btn.secondary,
 .btn-action-secondary,
-.btn-mkt-secondary {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+.btn-mkt-secondary,
+.btn.s,
+.btn.sm.s,
+button.btn-secondary,
+.topbar-data-btn {
+  background: rgba(13, 20, 36, 0.7) !important;
+  border: 1px solid rgba(56, 189, 248, 0.22) !important;
   color: #cbd5e1 !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
 }
 
 .btn-secondary:hover,
 .btn.secondary:hover,
 .btn-action-secondary:hover,
-.btn-mkt-secondary:hover {
-  background: rgba(255, 255, 255, 0.1) !important;
+.btn-mkt-secondary:hover,
+.btn.s:hover,
+.btn.sm.s:hover,
+button.btn-secondary:hover,
+.topbar-data-btn:hover {
+  background: rgba(22, 36, 65, 0.88) !important;
   color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(56, 189, 248, 0.45) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), 0 0 10px rgba(56, 189, 248, 0.2) !important;
   transform: translateY(-1px) !important;
 }
 
+/* 4. Marketing Actions (Purple / Violet Accents) */
+.btn-mkt-primary,
+.btn-purple,
+.btn-action-marketing {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(192, 132, 252, 0.4) !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  font-weight: 700 !important;
+}
+
+.btn-mkt-primary:hover,
+.btn-purple:hover,
+.btn-action-marketing:hover {
+  background: linear-gradient(135deg, #9333ea 0%, #7c3aed 100%) !important;
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5), 0 0 16px rgba(192, 132, 252, 0.35) !important;
+  transform: translateY(-1.5px) !important;
+  filter: brightness(1.08) !important;
+}
+
+/* 5. Success Actions (Emerald Green) */
+.btn-success,
+.btn.g,
+.btn-green,
+.btn-action-success {
+  background: rgba(16, 185, 129, 0.16) !important;
+  border: 1px solid rgba(52, 211, 153, 0.38) !important;
+  color: #6ee7b7 !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.btn-success:hover,
+.btn.g:hover,
+.btn-green:hover,
+.btn-action-success:hover {
+  background: rgba(16, 185, 129, 0.28) !important;
+  color: #ffffff !important;
+  border-color: rgba(52, 211, 153, 0.65) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), 0 0 12px rgba(52, 211, 153, 0.25) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* 6. Warning Actions (Amber) */
+.btn-warning,
+.btn-amber,
+.btn-action-warning {
+  background: rgba(245, 158, 11, 0.16) !important;
+  border: 1px solid rgba(251, 191, 36, 0.38) !important;
+  color: #fde68a !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.btn-warning:hover,
+.btn-amber:hover,
+.btn-action-warning:hover {
+  background: rgba(245, 158, 11, 0.28) !important;
+  color: #ffffff !important;
+  border-color: rgba(251, 191, 36, 0.65) !important;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35), 0 0 12px rgba(251, 191, 36, 0.25) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* 7. Danger Actions (Soft Red) */
 .btn-danger,
 .btn.danger,
-.btn-mkt-danger {
-  background: rgba(229, 25, 45, 0.14) !important;
-  border: 1px solid rgba(229, 25, 45, 0.3) !important;
+.btn.d,
+.btn-mkt-danger,
+.btn-red,
+.btn-action-danger {
+  background: rgba(229, 25, 45, 0.16) !important;
+  border: 1px solid rgba(239, 68, 68, 0.38) !important;
   color: #fca5a5 !important;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 .btn-danger:hover,
 .btn.danger:hover,
-.btn-mkt-danger:hover {
-  background: rgba(229, 25, 45, 0.25) !important;
+.btn.d:hover,
+.btn-mkt-danger:hover,
+.btn-red:hover,
+.btn-action-danger:hover {
+  background: rgba(229, 25, 45, 0.28) !important;
   color: #ffffff !important;
-  border-color: rgba(229, 25, 45, 0.5) !important;
+  border-color: rgba(239, 68, 68, 0.65) !important;
+  box-shadow: 0 4px 14px rgba(229, 25, 45, 0.35), 0 0 12px rgba(239, 68, 68, 0.25) !important;
   transform: translateY(-1px) !important;
+}
+
+/* 8. Dashboard Glass Action Pill Buttons (.btn-glass-action) */
+.btn-glass-action {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 4.5px 11px !important;
+  border-radius: 9999px !important;
+  font-size: 11.5px !important;
+  font-weight: 650 !important;
+  cursor: pointer !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  text-decoration: none !important;
+  line-height: 1.2 !important;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-glass-action.btn-glass-purple {
+  background: rgba(168, 85, 247, 0.12) !important;
+  border: 1px solid rgba(168, 85, 247, 0.32) !important;
+  color: #d8b4fe !important;
+}
+
+.btn-glass-action.btn-glass-purple:hover {
+  background: rgba(168, 85, 247, 0.24) !important;
+  border-color: rgba(168, 85, 247, 0.58) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 12px rgba(168, 85, 247, 0.35) !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-glass-action.btn-glass-amber {
+  background: rgba(245, 158, 11, 0.12) !important;
+  border: 1px solid rgba(245, 158, 11, 0.32) !important;
+  color: #fcd34d !important;
+}
+
+.btn-glass-action.btn-glass-amber:hover {
+  background: rgba(245, 158, 11, 0.24) !important;
+  border-color: rgba(245, 158, 11, 0.58) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.35) !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-glass-action.btn-glass-blue {
+  background: rgba(56, 189, 248, 0.12) !important;
+  border: 1px solid rgba(56, 189, 248, 0.32) !important;
+  color: #7dd3fc !important;
+}
+
+.btn-glass-action.btn-glass-blue:hover {
+  background: rgba(56, 189, 248, 0.24) !important;
+  border-color: rgba(56, 189, 248, 0.58) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 12px rgba(56, 189, 248, 0.35) !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-glass-action.btn-glass-cyan {
+  background: rgba(34, 211, 238, 0.12) !important;
+  border: 1px solid rgba(34, 211, 238, 0.32) !important;
+  color: #67e8f9 !important;
+}
+
+.btn-glass-action.btn-glass-cyan:hover {
+  background: rgba(34, 211, 238, 0.24) !important;
+  border-color: rgba(34, 211, 238, 0.58) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 12px rgba(34, 211, 238, 0.35) !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-glass-action.btn-glass-emerald {
+  background: rgba(16, 185, 129, 0.12) !important;
+  border: 1px solid rgba(16, 185, 129, 0.32) !important;
+  color: #6ee7b7 !important;
+}
+
+.btn-glass-action.btn-glass-emerald:hover {
+  background: rgba(16, 185, 129, 0.24) !important;
+  border-color: rgba(16, 185, 129, 0.58) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 12px rgba(16, 185, 129, 0.35) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* 9. Universal Filter, Preset & Tab Buttons (Eliminating flat gray & slate styles) */
+.btn-filter,
+.preset-btn,
+.btn-preset-pill,
+.tab-btn,
+.tabs button,
+.client-pagebar button,
+.btn-table-icon,
+.btn-mkt-action,
+button[class*="bg-slate-800"],
+button[class*="bg-slate-700"],
+button[class*="bg-slate-900"],
+button[class*="bg-gray-"] {
+  background: rgba(13, 20, 36, 0.72) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #cbd5e1 !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn-filter:hover,
+.preset-btn:hover,
+.btn-preset-pill:hover,
+.tab-btn:hover,
+.tabs button:hover,
+.client-pagebar button:hover,
+.btn-table-icon:hover,
+.btn-mkt-action:hover,
+button[class*="bg-slate-800"]:hover,
+button[class*="bg-slate-700"]:hover,
+button[class*="bg-slate-900"]:hover,
+button[class*="bg-gray-"]:hover {
+  background: rgba(22, 36, 65, 0.88) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), 0 0 8px rgba(56, 189, 248, 0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Active Filter / Tab Highlights */
+.btn-filter.active,
+.preset-btn.active,
+.btn-preset-pill.active,
+.tab-btn.active,
+.tabs button.on,
+.client-pagebar button.active,
+button[class*="bg-purple-600"],
+button[class*="bg-indigo-600"],
+button[class*="bg-blue-600"] {
+  background: linear-gradient(135deg, rgba(26, 115, 232, 0.35) 0%, rgba(56, 189, 248, 0.22) 100%) !important;
+  border-color: rgba(56, 189, 248, 0.55) !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 12px rgba(26, 115, 232, 0.35), 0 0 10px rgba(56, 189, 248, 0.25) !important;
+  font-weight: 700 !important;
 }
 
 /* Universal Status Badges & Pills */

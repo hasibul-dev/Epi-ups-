@@ -130,7 +130,7 @@ export default function ItDashboard() {
           </div>
           <button
             onClick={() => navigate('/marketing/tickets')}
-            className="text-xs text-amber-400 hover:text-amber-300 font-semibold transition-colors"
+            className="btn-glass-action btn-glass-amber"
           >
             All Helpdesk Tickets →
           </button>
@@ -220,7 +220,7 @@ export default function ItDashboard() {
             </h2>
             <button
               onClick={() => navigate('/marketing/devices')}
-              className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold"
+              className="btn-glass-action btn-glass-cyan"
             >
               Manage Inventory →
             </button>

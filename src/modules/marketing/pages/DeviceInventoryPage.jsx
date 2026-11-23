@@ -209,7 +209,7 @@ export default function DeviceInventoryPage() {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => openDeviceModal(dev)}
-                            className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                            className="btn-action-secondary p-1 rounded-lg text-slate-300"
                             title="Edit Device"
                           >
                             <Edit2 size={13} />

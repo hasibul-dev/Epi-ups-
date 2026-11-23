@@ -147,7 +147,7 @@ export default function CreativeRequestsPage() {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => openCreativeModal(req)}
-                            className="p-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-300"
+                            className="btn-action-secondary p-1 rounded-lg text-slate-300"
                             title="Edit Request"
                           >
                             <Edit2 size={12} />

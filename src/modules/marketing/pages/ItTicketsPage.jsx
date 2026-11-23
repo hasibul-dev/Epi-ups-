@@ -232,7 +232,7 @@ export default function ItTicketsPage() {
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => openTicketDetails(tick)}
-                          className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs flex items-center gap-1 transition-colors"
+                          className="btn-action-secondary px-2.5 py-1 rounded-lg text-xs flex items-center gap-1"
                           title="View Details & Print Service Slip"
                         >
                           <FileText size={12} />
@@ -242,7 +242,7 @@ export default function ItTicketsPage() {
                         {tick.status !== 'Resolved' && (
                           <button
                             onClick={() => handleQuickResolve(tick)}
-                            className="p-1 rounded bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 transition-colors"
+                            className="p-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-colors"
                             title="Quick Resolve Ticket"
                           >
                             <CheckCircle2 size={14} />
@@ -251,7 +251,7 @@ export default function ItTicketsPage() {
 
                         <button
                           onClick={() => openTicketModal(tick)}
-                          className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                          className="btn-action-secondary p-1 rounded-lg text-slate-300"
                           title="Edit Ticket"
                         >
                           <Edit2 size={13} />

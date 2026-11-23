@@ -132,7 +132,7 @@ export default function MarketingDashboard() {
           <button
             type="button"
             onClick={() => navigate('/marketing/campaigns')}
-            className="text-xs text-sky-400 hover:text-sky-300 flex items-center gap-1 font-semibold transition-colors"
+            className="btn-glass-action btn-glass-purple"
           >
             <span>Manage Campaigns</span>
             <ArrowRight size={13} />
@@ -228,7 +228,7 @@ export default function MarketingDashboard() {
             <button
               type="button"
               onClick={() => navigate('/marketing/calendar')}
-              className="text-xs text-sky-400 hover:text-sky-300"
+              className="btn-glass-action btn-glass-blue"
             >
               Calendar View →
             </button>
@@ -277,7 +277,7 @@ export default function MarketingDashboard() {
             <button
               type="button"
               onClick={() => navigate('/marketing/ads')}
-              className="text-xs text-sky-400 hover:text-sky-300"
+              className="btn-glass-action btn-glass-cyan"
             >
               Ads Manager →
             </button>

@@ -687,24 +687,21 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
                 >
                   <button
                     type="button"
-                    className="btn s sm"
-                    style={{ color: '#111', borderColor: '#cbd5e1', background: '#f1f5f9' }}
+                    className="btn btn-primary sm"
                     onClick={() => printIndividual(rt.id, rt.title)}
                   >
                     🖨 Print This Report
                   </button>
                   <button
                     type="button"
-                    className="btn s sm"
-                    style={{ color: '#111', borderColor: '#cbd5e1', background: '#f1f5f9' }}
+                    className="btn btn-secondary sm"
                     onClick={() => exportReportPdf(rt.id)}
                   >
                     ⬇ Export PDF
                   </button>
                   <button
                     type="button"
-                    className="btn s sm"
-                    style={{ color: '#111', borderColor: '#cbd5e1', background: '#f1f5f9' }}
+                    className="btn btn-secondary sm"
                     onClick={() => exportReportExcel(rt.id)}
                   >
                     📊 Export Excel

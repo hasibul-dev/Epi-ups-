@@ -448,8 +448,8 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
             </div>
             {selectedIds.size > 0 && (
               <button
-                className="data-delete"
-                style={{ padding: '8px 14px', fontWeight: 800, background: '#fee2e2', color: '#b91c1c' }}
+                className="btn-danger"
+                style={{ padding: '8px 14px', fontWeight: 700 }}
                 onClick={handleBulkDelete}
               >
                 <Trash2 size={13} strokeWidth={2.2} /> Delete Selected ({selectedIds.size})

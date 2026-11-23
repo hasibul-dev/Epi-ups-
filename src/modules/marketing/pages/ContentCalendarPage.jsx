@@ -180,7 +180,7 @@ export default function ContentCalendarPage() {
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => openPostModal(post)}
-                      className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs transition-colors flex items-center gap-1"
+                      className="btn-action-secondary px-2.5 py-1 rounded-lg text-xs flex items-center gap-1"
                     >
                       <Edit2 size={12} />
                       <span>Edit</span>

@@ -168,7 +168,7 @@ export default function AssetLibraryPage() {
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => openAssetModal(asset)}
-                    className="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                    className="btn-action-secondary p-1.5 rounded-lg text-slate-300"
                     title="Edit Asset"
                   >
                     <Edit2 size={13} />

@@ -144,7 +144,7 @@ export default function CombinedDashboard() {
           <button
             type="button"
             onClick={() => navigate('/marketing/campaigns')}
-            className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 font-semibold transition-colors"
+            className="btn-glass-action btn-glass-purple"
           >
             <span>All Campaigns</span>
             <ArrowRight size={13} />
@@ -236,7 +236,7 @@ export default function CombinedDashboard() {
           <button
             type="button"
             onClick={() => navigate('/marketing/tickets')}
-            className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold transition-colors"
+            className="btn-glass-action btn-glass-amber"
           >
             <span>All Helpdesk Tickets</span>
             <ArrowRight size={13} />
@@ -331,7 +331,7 @@ export default function CombinedDashboard() {
             <button
               type="button"
               onClick={() => navigate('/marketing/campaigns')}
-              className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 font-semibold transition-colors"
+              className="btn-glass-action btn-glass-purple"
             >
               <span>View All</span>
               <ArrowRight size={13} />
@@ -417,7 +417,7 @@ export default function CombinedDashboard() {
               <button
                 type="button"
                 onClick={() => navigate('/marketing/calendar')}
-                className="text-[11px] text-sky-400 hover:text-sky-300 font-semibold"
+                className="btn-glass-action btn-glass-blue"
               >
                 Calendar View →
               </button>
@@ -460,7 +460,7 @@ export default function CombinedDashboard() {
             <button
               type="button"
               onClick={() => navigate('/marketing/tickets')}
-              className="text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold transition-colors"
+              className="btn-glass-action btn-glass-amber"
             >
               <span>All Tickets</span>
               <ArrowRight size={13} />
@@ -545,7 +545,7 @@ export default function CombinedDashboard() {
               <button
                 type="button"
                 onClick={() => navigate('/marketing/maintenance')}
-                className="text-[11px] text-cyan-400 hover:text-cyan-300 font-semibold"
+                className="btn-glass-action btn-glass-cyan"
               >
                 Maintenance →
               </button>

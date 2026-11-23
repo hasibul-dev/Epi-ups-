@@ -132,7 +132,7 @@ export default function CampaignsPage() {
                   <div className="flex items-center gap-2 self-end md:self-auto">
                     <button
                       onClick={() => openCampaignModal(camp)}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 flex items-center gap-1 transition-colors"
+                      className="btn-action-secondary px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1"
                     >
                       <Edit2 size={13} />
                       <span>Edit</span>
