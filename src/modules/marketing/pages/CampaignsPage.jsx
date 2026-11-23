@@ -64,7 +64,7 @@ export default function CampaignsPage() {
             placeholder="Search campaigns by name, focus product, or target audience..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+            className="mkt-input pl-9"
           />
         </div>
 
@@ -73,7 +73,7 @@ export default function CampaignsPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-sky-500"
+            className="mkt-select !w-auto"
           >
             <option value="All">All Statuses ({campaigns.length})</option>
             <option value="Active">Active</option>
@@ -87,7 +87,7 @@ export default function CampaignsPage() {
       {/* Campaign Cards List */}
       <div className="space-y-4">
         {filteredCampaigns.length === 0 ? (
-          <div className="p-8 text-center rounded-2xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs">
+          <div className="mkt-card p-8 text-center text-slate-400 text-xs">
             No marketing campaigns match your search criteria.
           </div>
         ) : (
@@ -106,12 +106,12 @@ export default function CampaignsPage() {
                     <div className="flex items-center gap-2">
                       <h2 className="text-base font-bold text-white">{camp.name}</h2>
                       <span
-                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${
+                        className={`mkt-badge ${
                           camp.status === 'Active'
-                            ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                            ? 'mkt-badge-green'
                             : camp.status === 'Planning'
-                            ? 'bg-blue-500/10 text-blue-300 border-blue-500/30'
-                            : 'bg-slate-800 text-slate-400 border-slate-700'
+                            ? 'mkt-badge-blue'
+                            : 'mkt-badge-neutral'
                         }`}
                       >
                         {camp.status}
@@ -120,7 +120,7 @@ export default function CampaignsPage() {
                     <div className="text-xs text-slate-400 flex flex-wrap items-center gap-3">
                       <span>Objective: <strong className="text-slate-300">{camp.objective}</strong></span>
                       <span>•</span>
-                      <span>Manager: <strong className="text-sky-300">{camp.assignedEmployee}</strong></span>
+                      <span>Manager: <strong className="text-purple-300">{camp.assignedEmployee}</strong></span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
                         <Calendar size={13} className="text-slate-500" />
@@ -132,15 +132,15 @@ export default function CampaignsPage() {
                   <div className="flex items-center gap-2 self-end md:self-auto">
                     <button
                       onClick={() => openCampaignModal(camp)}
-                      className="btn-action-secondary px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1"
+                      className="btn-mkt-secondary !py-1.5 !px-3 !h-auto !min-h-0 text-xs flex items-center gap-1.5"
                     >
-                      <Edit2 size={13} />
+                      <Edit2 size={13} className="text-purple-400" />
                       <span>Edit</span>
                     </button>
                     {isMarketingManager && (
                       <button
                         onClick={() => handleDelete(camp.id, camp.name)}
-                        className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-colors"
+                        className="btn-mkt-action btn-mkt-delete"
                         title="Delete Campaign"
                       >
                         <Trash2 size={14} />
@@ -150,7 +150,7 @@ export default function CampaignsPage() {
                 </div>
 
                 {/* Details Breakdown */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-900/50 border border-white/5">
                   <div>
                     <div className="text-[11px] text-slate-400 mb-1">Focus Product / Solution</div>
                     <div className="text-xs font-semibold text-slate-200">{camp.focusProduct}</div>
@@ -162,7 +162,7 @@ export default function CampaignsPage() {
                       {camp.platforms.map((p) => (
                         <span
                           key={p}
-                          className="px-2 py-0.5 rounded text-[10px] bg-slate-900/60 border border-slate-700 text-slate-300"
+                          className="mkt-badge mkt-badge-purple"
                         >
                           {p}
                         </span>
@@ -175,9 +175,9 @@ export default function CampaignsPage() {
                     <div className="text-xs font-medium text-slate-200">
                       ৳{camp.spend?.toLocaleString()} / ৳{camp.budget?.toLocaleString()}
                     </div>
-                    <div className="w-full h-1.5 rounded-full bg-slate-700 overflow-hidden mt-1.5">
+                    <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden mt-1.5">
                       <div
-                        className="h-full bg-gradient-to-r from-blue-600 to-sky-400 rounded-full"
+                        className="h-full bg-gradient-to-r from-purple-500 to-sky-400 rounded-full"
                         style={{ width: `${pct}%` }}
                       />
                     </div>

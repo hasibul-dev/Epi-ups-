@@ -362,7 +362,7 @@ export default function DeviceModal() {
             </button>
             <button
               type="submit"
-              className="btn-mkt-primary"
+              className="btn-mkt-it"
             >
               <Save size={14} />
               <span>{item ? 'Update Device' : 'Save Device'}</span>

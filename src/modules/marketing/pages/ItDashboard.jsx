@@ -45,7 +45,7 @@ export default function ItDashboard() {
           </button>
           <button
             onClick={() => openTicketModal()}
-            className="btn-mkt-primary"
+            className="btn-mkt-it"
           >
             <Plus size={14} />
             <span>Create IT Ticket</span>
@@ -136,36 +136,36 @@ export default function ItDashboard() {
           </button>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
+        <div className="table-responsive">
+          <table className="mkt-table">
             <thead>
-              <tr className="border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400">
-                <th className="py-2.5 px-3">Ticket ID</th>
-                <th className="py-2.5 px-3">Subject / Issue</th>
-                <th className="py-2.5 px-3">Department & User</th>
-                <th className="py-2.5 px-3">Category</th>
-                <th className="py-2.5 px-3">Priority</th>
-                <th className="py-2.5 px-3">Technician</th>
-                <th className="py-2.5 px-3">Status</th>
-                <th className="py-2.5 px-3 text-right">Action</th>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Subject / Issue</th>
+                <th>Department & User</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Technician</th>
+                <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody>
               {tickets.slice(0, 5).map((tick) => (
-                <tr key={tick.id} className="hover:bg-slate-800/40 transition-colors">
-                  <td className="py-3 px-3 font-mono font-bold text-amber-400">{tick.id}</td>
-                  <td className="py-3 px-3">
+                <tr key={tick.id}>
+                  <td className="font-mono font-bold text-amber-400">{tick.id}</td>
+                  <td>
                     <div className="font-semibold text-white max-w-[240px] truncate">{tick.title}</div>
                     <div className="text-[11px] text-slate-400">
                       Logged {tick.createdDate} at {tick.createdTime}
                     </div>
                   </td>
-                  <td className="py-3 px-3">
+                  <td>
                     <div className="text-slate-200">{tick.department}</div>
                     <div className="text-[11px] text-slate-400">{tick.requestingEmployee}</div>
                   </td>
-                  <td className="py-3 px-3 text-slate-300">{tick.issueCategory}</td>
-                  <td className="py-3 px-3">
+                  <td className="text-slate-300">{tick.issueCategory}</td>
+                  <td>
                     <span
                       className={`mkt-badge ${
                         tick.priority === 'Critical'
@@ -178,10 +178,10 @@ export default function ItDashboard() {
                       {tick.priority}
                     </span>
                   </td>
-                  <td className="py-3 px-3 text-slate-300 font-medium">
+                  <td className="text-slate-300 font-medium">
                     {tick.assignedTechnician || 'Unassigned'}
                   </td>
-                  <td className="py-3 px-3">
+                  <td>
                     <span
                       className={`mkt-badge ${
                         tick.status === 'Resolved' || tick.status === 'Closed'
@@ -194,10 +194,10 @@ export default function ItDashboard() {
                       {tick.status}
                     </span>
                   </td>
-                  <td className="py-3 px-3 text-right">
+                  <td style={{ textAlign: 'right' }}>
                     <button
                       onClick={() => openTicketDetails(tick)}
-                      className="btn-mkt-action"
+                      className="btn-mkt-secondary !py-1 !px-2.5 !h-auto !min-h-0 text-xs"
                     >
                       View / Slip
                     </button>

@@ -602,7 +602,7 @@ export default function ItReportsPage() {
           </button>
           <button
             onClick={handlePrint}
-            className="btn-mkt-primary"
+            className="btn-mkt-it"
             title="Print Official Report with Letterhead"
           >
             <Printer size={14} />
@@ -612,7 +612,7 @@ export default function ItReportsPage() {
       </div>
 
       {/* Report Switcher Tabs */}
-      <div className="mkt-card p-3">
+      <div className="mkt-card !p-3">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
           {IT_REPORTS.map((rep) => {
             const Icon = rep.icon;
@@ -623,11 +623,11 @@ export default function ItReportsPage() {
                 onClick={() => setActiveReport(rep.id)}
                 className={`flex flex-col items-center justify-center p-3 rounded-xl border text-center transition-all ${
                   isActive
-                    ? 'bg-indigo-600/20 border-indigo-500/50 text-white shadow-lg shadow-indigo-600/10'
-                    : 'bg-slate-800/40 border-slate-700/50 text-slate-400 hover:text-slate-200 hover:bg-slate-800/70'
+                    ? 'bg-sky-500/15 border-sky-500/40 text-white shadow-lg shadow-sky-500/10'
+                    : 'bg-slate-900/40 border-white/5 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
                 }`}
               >
-                <Icon size={18} className={isActive ? 'text-indigo-400' : 'text-slate-500'} />
+                <Icon size={18} className={isActive ? 'text-sky-400' : 'text-slate-500'} />
                 <span className="text-xs font-bold mt-1.5 leading-tight">{rep.label}</span>
               </button>
             );
@@ -638,38 +638,38 @@ export default function ItReportsPage() {
       {/* Filter Toolbar */}
       <div className="mkt-card p-4 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-              <Calendar size={13} className="text-indigo-400" />
+              <Calendar size={13} className="text-sky-400" />
               Presets:
             </span>
             <button
               onClick={() => setPreset('today')}
-              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === 'today' ? 'active' : ''}`}
+              className={`btn-filter ${activePreset === 'today' ? 'active' : ''}`}
             >
               Today
             </button>
             <button
               onClick={() => setPreset('7days')}
-              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === '7days' ? 'active' : ''}`}
+              className={`btn-filter ${activePreset === '7days' ? 'active' : ''}`}
             >
               7 Days
             </button>
             <button
               onClick={() => setPreset('30days')}
-              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === '30days' ? 'active' : ''}`}
+              className={`btn-filter ${activePreset === '30days' ? 'active' : ''}`}
             >
               30 Days
             </button>
             <button
               onClick={() => setPreset('thisMonth')}
-              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === 'thisMonth' ? 'active' : ''}`}
+              className={`btn-filter ${activePreset === 'thisMonth' ? 'active' : ''}`}
             >
               This Month
             </button>
             <button
               onClick={() => setPreset('all')}
-              className={`btn-filter px-2.5 py-1 text-xs rounded-lg transition ${activePreset === 'all' ? 'active' : ''}`}
+              className={`btn-filter ${activePreset === 'all' ? 'active' : ''}`}
             >
               All Time
             </button>
@@ -681,14 +681,14 @@ export default function ItReportsPage() {
               type="date"
               value={from}
               onChange={(e) => setFrom(e.target.value)}
-              className="px-2.5 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+              className="mkt-input text-xs !py-1 !px-2.5 !w-auto"
             />
             <span className="text-slate-500 text-xs">to</span>
             <input
               type="date"
               value={to}
               onChange={(e) => setTo(e.target.value)}
-              className="px-2.5 py-1 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+              className="mkt-input text-xs !py-1 !px-2.5 !w-auto"
             />
           </div>
         </div>
@@ -701,7 +701,7 @@ export default function ItReportsPage() {
             <select
               value={deptFilter}
               onChange={(e) => setDeptFilter(e.target.value)}
-              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+              className="mkt-select text-xs"
             >
               <option value="">All Departments</option>
               {allDepartments.map((dept) => (
@@ -719,7 +719,7 @@ export default function ItReportsPage() {
             <select
               value={techFilter}
               onChange={(e) => setTechFilter(e.target.value)}
-              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+              className="mkt-select text-xs"
             >
               <option value="">All Technicians</option>
               {allTechnicians.map((t) => (
@@ -737,7 +737,7 @@ export default function ItReportsPage() {
             <select
               value={priorityFilter}
               onChange={(e) => setPriorityFilter(e.target.value)}
-              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200"
+              className="mkt-select text-xs"
             >
               <option value="">All Priorities</option>
               <option value="Critical">Critical</option>
@@ -758,7 +758,7 @@ export default function ItReportsPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search ticket, title, user, tag..."
-                className="w-full pl-8 pr-2.5 py-1.5 text-xs rounded-lg bg-slate-900 border border-slate-700 text-slate-200 placeholder-slate-500"
+                className="mkt-input pl-8 text-xs"
               />
             </div>
           </div>
@@ -766,28 +766,28 @@ export default function ItReportsPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="mkt-card p-4">
-          <div className="text-[11px] text-slate-400 font-bold uppercase">Total Tickets</div>
-          <div className="text-2xl font-bold text-white mt-1">{totalTickets}</div>
-          <div className="text-[11px] text-slate-400 mt-1">Across all enterprise departments</div>
+      <div className="mkt-kpi-grid mb-4">
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Total Tickets</span>
+          <span className="mkt-stat-val text-white">{totalTickets}</span>
+          <span className="mkt-stat-sub">Across All Enterprise Departments</span>
         </div>
-        <div className="mkt-card p-4">
-          <div className="text-[11px] text-slate-400 font-bold uppercase">Open / In Progress</div>
-          <div className="text-2xl font-bold text-amber-400 mt-1">{openCount}</div>
-          <div className="text-[11px] text-amber-400/80 mt-1">Requiring technician support</div>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Open / In Progress</span>
+          <span className="mkt-stat-val text-amber-400">{openCount}</span>
+          <span className="mkt-stat-sub">Requiring Technician Support</span>
         </div>
-        <div className="mkt-card p-4">
-          <div className="text-[11px] text-slate-400 font-bold uppercase">Resolved Work</div>
-          <div className="text-2xl font-bold text-emerald-400 mt-1">{resolvedCount}</div>
-          <div className="text-[11px] text-emerald-400/80 mt-1">
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Resolved Work</span>
+          <span className="mkt-stat-val text-emerald-400">{resolvedCount}</span>
+          <span className="mkt-stat-sub">
             {totalTickets > 0 ? `${Math.round((resolvedCount / totalTickets) * 100)}% resolution` : '100%'}
-          </div>
+          </span>
         </div>
-        <div className="mkt-card p-4">
-          <div className="text-[11px] text-slate-400 font-bold uppercase">Hardware Assets</div>
-          <div className="text-2xl font-bold text-cyan-400 mt-1">{devices.length} Units</div>
-          <div className="text-[11px] text-cyan-400/80 mt-1">{operationalDevices} Operational</div>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Hardware Assets</span>
+          <span className="mkt-stat-val text-cyan-400">{devices.length} Units</span>
+          <span className="mkt-stat-sub">{operationalDevices} Operational</span>
         </div>
       </div>
 

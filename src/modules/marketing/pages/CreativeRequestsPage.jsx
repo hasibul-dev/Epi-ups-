@@ -56,11 +56,11 @@ export default function CreativeRequestsPage() {
 
       {/* Department Filter */}
       <div className="flex items-center gap-2">
-        <span className="text-xs text-slate-400">Requesting Dept:</span>
+        <span className="text-xs font-semibold text-slate-400">Requesting Dept:</span>
         <select
           value={filterDept}
           onChange={(e) => setFilterDept(e.target.value)}
-          className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-sky-500"
+          className="mkt-select !w-auto text-xs !py-1.5 !px-3"
         >
           <option value="All">All Departments</option>
           <option value="Sales Department">Sales Department</option>
@@ -78,12 +78,12 @@ export default function CreativeRequestsPage() {
           return (
             <div
               key={colStatus}
-              className="p-4 rounded-2xl bg-slate-900/50 border border-slate-800 flex flex-col space-y-3"
+              className="mkt-card !p-3.5 flex flex-col space-y-3"
             >
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+              <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
                 <div className="flex items-center gap-2">
                   <h3 className="text-xs font-bold text-white uppercase tracking-wider">{colStatus}</h3>
-                  <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-800 text-slate-300 font-mono">
+                  <span className="mkt-badge mkt-badge-purple !text-[10px] !py-0.5 !px-1.5 font-mono">
                     {colRequests.length}
                   </span>
                 </div>
@@ -98,17 +98,17 @@ export default function CreativeRequestsPage() {
                   colRequests.map((req) => (
                     <div
                       key={req.id}
-                      className="p-3.5 rounded-xl bg-slate-800/40 border border-slate-700/50 hover:border-sky-500/30 transition-all space-y-3"
+                      className="p-3 rounded-xl bg-slate-900/60 border border-white/5 hover:border-purple-500/30 transition-all space-y-2.5"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20">
+                        <span className="mkt-badge mkt-badge-purple !text-[10px]">
                           {req.requestingDept}
                         </span>
                         <span
-                          className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
+                          className={`mkt-badge ${
                             req.priority === 'High'
-                              ? 'bg-red-500/20 text-red-300'
-                              : 'bg-slate-700 text-slate-300'
+                              ? 'mkt-badge-red'
+                              : 'mkt-badge-neutral'
                           }`}
                         >
                           {req.priority}
@@ -117,25 +117,25 @@ export default function CreativeRequestsPage() {
 
                       <div>
                         <h4 className="text-xs font-semibold text-white">{req.title}</h4>
-                        <div className="text-[11px] text-slate-400 mt-1">
+                        <div className="text-[11px] text-slate-400 mt-0.5">
                           Dimensions: <span className="text-slate-300 font-mono">{req.dimensions}</span>
                         </div>
                       </div>
 
-                      <p className="text-[11px] text-slate-400 bg-slate-900/50 p-2 rounded-lg border border-slate-800 line-clamp-3">
+                      <p className="text-[11px] text-slate-400 bg-slate-900/50 p-2 rounded-lg border border-white/5 line-clamp-3">
                         {req.brief}
                       </p>
 
                       <div className="text-[11px] text-slate-400 flex items-center justify-between">
                         <span>Due: <strong className="text-slate-300">{req.dueDate}</strong></span>
-                        <span>Designer: <strong className="text-sky-300">{req.assignedDesigner}</strong></span>
+                        <span>Designer: <strong className="text-purple-300">{req.assignedDesigner}</strong></span>
                       </div>
 
-                      <div className="pt-2 border-t border-slate-700/40 flex items-center justify-between gap-2">
+                      <div className="pt-2 border-t border-white/5 flex items-center justify-between gap-2">
                         <select
                           value={req.status}
                           onChange={(e) => handleStatusChange(req, e.target.value)}
-                          className="px-2 py-1 bg-slate-900 border border-slate-700 rounded text-[11px] text-slate-300 focus:outline-none"
+                          className="mkt-select !py-1 !px-2 text-[11px] !w-auto"
                         >
                           {STATUS_COLUMNS.map((st) => (
                             <option key={st} value={st}>
@@ -147,14 +147,14 @@ export default function CreativeRequestsPage() {
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => openCreativeModal(req)}
-                            className="btn-action-secondary p-1 rounded-lg text-slate-300"
+                            className="btn-mkt-action btn-mkt-edit"
                             title="Edit Request"
                           >
                             <Edit2 size={12} />
                           </button>
                           <button
                             onClick={() => handleDelete(req.id, req.title)}
-                            className="p-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400"
+                            className="btn-mkt-action btn-mkt-delete"
                             title="Delete Request"
                           >
                             <Trash2 size={12} />

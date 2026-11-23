@@ -61,46 +61,42 @@ export default function AdsManagementPage() {
       </div>
 
       {/* Aggregate Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="mkt-card p-4">
-          <div className="text-xs text-slate-400 mb-1">Total Ad Spend</div>
-          <div className="text-xl font-bold text-white">৳{totalSpend.toLocaleString()}</div>
-          <div className="text-[11px] text-slate-400 mt-1">Budget: ৳{totalBudget.toLocaleString()}</div>
+      <div className="mkt-kpi-grid">
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Total Ad Spend</span>
+          <span className="mkt-stat-val text-white">৳{totalSpend.toLocaleString()}</span>
+          <span className="mkt-stat-sub">Budget: ৳{totalBudget.toLocaleString()}</span>
         </div>
 
-        <div className="mkt-card p-4">
-          <div className="text-xs text-slate-400 mb-1">Total Ad Leads</div>
-          <div className="text-xl font-bold text-emerald-400">{totalLeads} Leads</div>
-          <div className="text-[11px] text-slate-400 mt-1">Direct inquiries</div>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Total Ad Leads</span>
+          <span className="mkt-stat-val text-emerald-400">{totalLeads} Leads</span>
+          <span className="mkt-stat-sub">Direct B2B inquiries</span>
         </div>
 
-        <div className="mkt-card p-4">
-          <div className="text-xs text-slate-400 mb-1">Total Ad Clicks</div>
-          <div className="text-xl font-bold text-sky-400">{totalClicks.toLocaleString()}</div>
-          <div className="text-[11px] text-slate-400 mt-1">High-intent visitors</div>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Total Ad Clicks</span>
+          <span className="mkt-stat-val text-sky-400">{totalClicks.toLocaleString()}</span>
+          <span className="mkt-stat-sub">High-intent visitors</span>
         </div>
 
-        <div className="mkt-card p-4">
-          <div className="text-xs text-slate-400 mb-1">Avg Cost Per Lead</div>
-          <div className="text-xl font-bold text-blue-400">
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Avg Cost Per Lead</span>
+          <span className="mkt-stat-val text-purple-400">
             ৳{totalLeads > 0 ? Math.round(totalSpend / totalLeads) : 0}
-          </div>
-          <div className="text-[11px] text-slate-400 mt-1">Calculated ROI</div>
+          </span>
+          <span className="mkt-stat-sub">Calculated Ad ROI</span>
         </div>
       </div>
 
       {/* Filter Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1.5">
           {PLATFORMS.map((plat) => (
             <button
               key={plat}
               onClick={() => setPlatformFilter(plat)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                platformFilter === plat
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'
-              }`}
+              className={`mkt-pill-filter ${platformFilter === plat ? 'active-purple' : ''}`}
             >
               {plat}
             </button>
@@ -108,11 +104,11 @@ export default function AdsManagementPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">Status:</span>
+          <span className="text-xs font-semibold text-slate-400">Status:</span>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-sky-500"
+            className="mkt-select !w-auto text-xs !py-1.5 !px-3"
           >
             {STATUSES.map((st) => (
               <option key={st} value={st}>
@@ -126,7 +122,7 @@ export default function AdsManagementPage() {
       {/* Ads List */}
       <div className="space-y-4">
         {filteredAds.length === 0 ? (
-          <div className="p-8 text-center rounded-2xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs">
+          <div className="mkt-card p-8 text-center text-slate-400 text-xs">
             No advertisements match your current filter.
           </div>
         ) : (
@@ -142,19 +138,19 @@ export default function AdsManagementPage() {
                     <div className="flex items-center gap-2">
                       <h2 className="text-base font-bold text-white">{ad.name}</h2>
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                        className={`mkt-badge ${
                           ad.status === 'Active'
-                            ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
-                            : 'bg-slate-800 text-slate-400'
+                            ? 'mkt-badge-green'
+                            : 'mkt-badge-neutral'
                         }`}
                       >
                         {ad.status}
                       </span>
                     </div>
                     <div className="text-xs text-slate-400 mt-1 flex flex-wrap items-center gap-2">
-                      <span className="text-sky-300 font-semibold">{ad.platform}</span>
+                      <span className="mkt-badge mkt-badge-purple">{ad.platform}</span>
                       <span>•</span>
-                      <span>Format: {ad.adFormat}</span>
+                      <span>Format: <strong className="text-slate-300">{ad.adFormat}</strong></span>
                       <span>•</span>
                       <span className="flex items-center gap-1">
                         <Calendar size={12} className="text-slate-500" />
@@ -166,14 +162,14 @@ export default function AdsManagementPage() {
                   <div className="flex items-center gap-2 self-end md:self-auto">
                     <button
                       onClick={() => openAdModal(ad)}
-                      className="btn-action-secondary px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1"
+                      className="btn-mkt-secondary text-xs !py-1.5 !px-3 !h-auto !min-h-0 flex items-center gap-1.5"
                     >
-                      <Edit2 size={13} />
+                      <Edit2 size={13} className="text-purple-400" />
                       <span>Edit</span>
                     </button>
                     <button
                       onClick={() => handleDelete(ad.id, ad.name)}
-                      className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 transition-colors"
+                      className="btn-mkt-action btn-mkt-delete"
                       title="Delete Advertisement"
                     >
                       <Trash2 size={14} />
@@ -181,15 +177,15 @@ export default function AdsManagementPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-800/40 border border-slate-700/50">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-900/50 border border-white/5">
                   <div>
                     <div className="text-[11px] text-slate-400 mb-1">Spend / Budget</div>
                     <div className="text-xs font-semibold text-slate-200">
                       ৳{ad.spend?.toLocaleString()} / ৳{ad.budget?.toLocaleString()}
                     </div>
-                    <div className="w-full h-1.5 rounded-full bg-slate-700 overflow-hidden mt-1.5">
+                    <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden mt-1.5">
                       <div
-                        className="h-full bg-sky-500 rounded-full"
+                        className="h-full bg-gradient-to-r from-purple-500 to-sky-400 rounded-full"
                         style={{ width: `${pct}%` }}
                       />
                     </div>

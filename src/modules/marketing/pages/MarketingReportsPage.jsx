@@ -304,8 +304,8 @@ export default function MarketingReportsPage() {
       </div>
 
       {/* 2. Report Selector Pill Bar */}
-      <div className="panel no-print" style={{ padding: '14px 18px', background: 'rgba(14, 22, 38, 0.75)' }}>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+      <div className="mkt-card no-print !p-3">
+        <div className="flex flex-wrap gap-2">
           {MKT_REPORTS.map((r) => {
             const Icon = r.icon;
             const active = activeReport === r.id;
@@ -314,20 +314,9 @@ export default function MarketingReportsPage() {
                 key={r.id}
                 type="button"
                 onClick={() => setActiveReport(r.id)}
-                className={`btn ${active ? 'btn-primary-highlight' : 'btn-secondary'}`}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 7,
-                  padding: '8px 14px',
-                  borderRadius: 8,
-                  fontSize: 12.5,
-                  fontWeight: active ? 700 : 500,
-                  cursor: 'pointer',
-                  border: active ? '1px solid rgba(168, 85, 247, 0.45)' : '1px solid rgba(255, 255, 255, 0.08)',
-                }}
+                className={`mkt-pill-filter ${active ? 'active-purple' : ''}`}
               >
-                <Icon size={14} />
+                <Icon size={14} className={active ? 'text-purple-300' : 'text-slate-400'} />
                 <span>{r.label}</span>
               </button>
             );
@@ -336,45 +325,45 @@ export default function MarketingReportsPage() {
       </div>
 
       {/* 3. Filter Controls Toolbar */}
-      <div className="panel no-print" style={{ padding: '16px 20px', background: 'rgba(14, 22, 38, 0.75)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 12 }}>
+      <div className="mkt-card no-print space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-3">
           <div>
-            <b style={{ color: '#c084fc', fontSize: 14 }}>{activeDef.label}</b>
-            <span className="muted" style={{ fontSize: 12, marginLeft: 8 }}>
+            <h4 className="text-sm font-bold text-purple-300 m-0">{activeDef.label}</h4>
+            <p className="text-xs text-slate-400 m-0 mt-0.5">
               {activeDef.desc}
-            </span>
+            </p>
           </div>
 
           {/* Quick Date Presets */}
-          <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', marginRight: 4, textTransform: 'uppercase' }}>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[11px] font-bold text-slate-400 mr-1 uppercase">
               Presets:
             </span>
-            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('today')}>Today</button>
-            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('7days')}>7 Days</button>
-            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('30days')}>30 Days</button>
-            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('thisMonth')}>This Month</button>
-            <button className="secondary" style={{ fontSize: 11, padding: '4px 9px' }} onClick={() => setPreset('all')}>All Time</button>
+            <button className="btn-filter" onClick={() => setPreset('today')}>Today</button>
+            <button className="btn-filter" onClick={() => setPreset('7days')}>7 Days</button>
+            <button className="btn-filter" onClick={() => setPreset('30days')}>30 Days</button>
+            <button className="btn-filter" onClick={() => setPreset('thisMonth')}>This Month</button>
+            <button className="btn-filter" onClick={() => setPreset('all')}>All Time</button>
           </div>
         </div>
 
-        <div className="report-toolbar" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, alignItems: 'end' }}>
-          <div className="field">
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>Start Date</label>
-            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ padding: '6px 10px', fontSize: 12 }} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 items-end">
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-slate-300">Start Date</label>
+            <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="mkt-input text-xs" />
           </div>
 
-          <div className="field">
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>End Date</label>
-            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ padding: '6px 10px', fontSize: 12 }} />
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-slate-300">End Date</label>
+            <input type="date" value={to} onChange={(e) => setTo(e.target.value)} className="mkt-input text-xs" />
           </div>
 
-          <div className="field">
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>Filter Platform</label>
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-slate-300">Filter Platform</label>
             <select
               value={platformFilter}
               onChange={(e) => setPlatformFilter(e.target.value)}
-              style={{ padding: '6px 10px', fontSize: 12 }}
+              className="mkt-select text-xs"
             >
               <option value="">All Social &amp; Ad Platforms</option>
               <option value="Facebook">Facebook Page</option>
@@ -384,81 +373,81 @@ export default function MarketingReportsPage() {
             </select>
           </div>
 
-          <div className="field">
-            <label style={{ fontSize: 11, fontWeight: 600, color: '#cbd5e1' }}>Search Keyword</label>
-            <div style={{ position: 'relative' }}>
+          <div className="space-y-1">
+            <label className="text-[11px] font-semibold text-slate-300">Search Keyword</label>
+            <div className="relative">
               <input
                 type="text"
                 placeholder="Search campaign, product, caption..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ padding: '6px 10px 6px 30px', fontSize: 12, width: '100%' }}
+                className="mkt-input pl-8 text-xs"
               />
-              <Search size={13} style={{ position: 'absolute', left: 10, top: 10, color: '#94a3b8' }} />
+              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
             </div>
           </div>
+        </div>
 
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => setPreviewMode(!previewMode)}
-              style={{ padding: '7px 12px', fontSize: 12.5 }}
-              title="Toggle A4 Print Preview"
-            >
-              <Eye size={13} />
-              <span>{previewMode ? 'Live Table' : 'Print Preview'}</span>
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={handleExportCsv}
-              style={{ padding: '7px 12px', fontSize: 12.5 }}
-              title="Export formatted Excel CSV"
-            >
-              <FileSpreadsheet size={13} />
-              <span>Excel</span>
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={handleExportPdf}
-              style={{ padding: '7px 12px', fontSize: 12.5 }}
-              title="Export PDF Document"
-            >
-              <Download size={13} />
-              <span>PDF</span>
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary-highlight"
-              onClick={handleTriggerPrint}
-              style={{ padding: '7px 14px', fontSize: 12.5 }}
-            >
-              <Printer size={13} />
-              <span>Print</span>
-            </button>
-          </div>
+        <div className="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-white/5">
+          <button
+            type="button"
+            className="btn-mkt-secondary text-xs !py-1.5 !px-3 !h-auto !min-h-0"
+            onClick={() => setPreviewMode(!previewMode)}
+            title="Toggle A4 Print Preview"
+          >
+            <Eye size={13} />
+            <span>{previewMode ? 'Live Table' : 'Print Preview'}</span>
+          </button>
+          <button
+            type="button"
+            className="btn-mkt-secondary text-xs !py-1.5 !px-3 !h-auto !min-h-0"
+            onClick={handleExportCsv}
+            title="Export formatted Excel CSV"
+          >
+            <FileSpreadsheet size={13} className="text-emerald-400" />
+            <span>Excel</span>
+          </button>
+          <button
+            type="button"
+            className="btn-mkt-secondary text-xs !py-1.5 !px-3 !h-auto !min-h-0"
+            onClick={handleExportPdf}
+            title="Export PDF Document"
+          >
+            <Download size={13} className="text-purple-400" />
+            <span>PDF</span>
+          </button>
+          <button
+            type="button"
+            className="btn-mkt-primary text-xs !py-1.5 !px-4 !h-auto !min-h-0"
+            onClick={handleTriggerPrint}
+          >
+            <Printer size={13} />
+            <span>Print Report</span>
+          </button>
         </div>
       </div>
 
       {/* 4. Executive KPI Summary Cards */}
-      <div className="grid" style={{ marginBottom: 14 }}>
-        <div className="stat">
-          <b>৳{totalBudget.toLocaleString()}</b>
-          <span>Total Allocated Budget</span>
+      <div className="mkt-kpi-grid mb-4">
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Total Allocated Budget</span>
+          <span className="mkt-stat-val text-white">৳{totalBudget.toLocaleString()}</span>
+          <span className="mkt-stat-sub">Across All Marketing Channels</span>
         </div>
-        <div className="stat">
-          <b style={{ color: '#c084fc' }}>৳{totalSpend.toLocaleString()}</b>
-          <span>Total Actual Spend</span>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Total Actual Spend</span>
+          <span className="mkt-stat-val text-purple-400">৳{totalSpend.toLocaleString()}</span>
+          <span className="mkt-stat-sub">Audited Commercial Spend</span>
         </div>
-        <div className="stat">
-          <b style={{ color: '#34d399' }}>{totalLeads} Leads</b>
-          <span>Total Leads Generated</span>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Total Leads Generated</span>
+          <span className="mkt-stat-val text-emerald-400">{totalLeads} Leads</span>
+          <span className="mkt-stat-sub">B2B Industrial Inquiries</span>
         </div>
-        <div className="stat">
-          <b style={{ color: '#38bdf8' }}>৳{avgCPL}</b>
-          <span>Average Cost Per Lead (CPL)</span>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Average Cost Per Lead (CPL)</span>
+          <span className="mkt-stat-val text-sky-400">৳{avgCPL}</span>
+          <span className="mkt-stat-sub">Cost Efficiency Index</span>
         </div>
       </div>
 

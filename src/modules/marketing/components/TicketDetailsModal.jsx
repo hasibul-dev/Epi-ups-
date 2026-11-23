@@ -55,14 +55,26 @@ export default function TicketDetailsModal() {
           {/* Top Status & Priority Badge Bar */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span className={`pill-status pill-${ticket.status.toLowerCase().replace(/\s+/g, '')}`}>
+              <span className={`mkt-badge ${
+                ticket.status === 'Resolved' || ticket.status === 'Closed'
+                  ? 'mkt-badge-green'
+                  : ticket.status === 'In Progress'
+                  ? 'mkt-badge-amber'
+                  : 'mkt-badge-blue'
+              }`}>
                 {ticket.status}
               </span>
-              <span className={`pill-status pill-${ticket.priority.toLowerCase()}`}>
+              <span className={`mkt-badge ${
+                ticket.priority === 'Critical'
+                  ? 'mkt-badge-red'
+                  : ticket.priority === 'High'
+                  ? 'mkt-badge-amber'
+                  : 'mkt-badge-blue'
+              }`}>
                 <AlertTriangle size={12} />
                 {ticket.priority} Priority
               </span>
-              <span className="pill-status pill-normal">
+              <span className="mkt-badge mkt-badge-neutral">
                 <Tag size={12} />
                 {ticket.issueCategory}
               </span>

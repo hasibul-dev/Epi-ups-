@@ -87,20 +87,16 @@ export default function AssetLibraryPage() {
             placeholder="Search assets by title, product tag, format..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-sky-500"
+            className="mkt-input pl-9"
           />
         </div>
 
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1.5">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                selectedCategory === cat
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'
-              }`}
+              className={`mkt-pill-filter ${selectedCategory === cat ? 'active-purple' : ''}`}
             >
               {cat}
             </button>
@@ -111,19 +107,19 @@ export default function AssetLibraryPage() {
       {/* Asset Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredAssets.length === 0 ? (
-          <div className="col-span-full p-8 text-center rounded-2xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs">
+          <div className="col-span-full mkt-card p-8 text-center text-slate-400 text-xs">
             No assets found matching your search.
           </div>
         ) : (
           filteredAssets.map((asset) => (
             <div
               key={asset.id}
-              className="mkt-card flex flex-col justify-between space-y-4"
+              className="mkt-card flex flex-col justify-between space-y-4 hover:border-purple-500/30 transition-all"
             >
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-lg bg-slate-800/80 border border-slate-700/60 flex items-center justify-center">
+                    <div className="w-9 h-9 rounded-lg bg-slate-900/60 border border-white/10 flex items-center justify-center">
                       {getFormatIcon(asset.format)}
                     </div>
                     <div>
@@ -134,7 +130,7 @@ export default function AssetLibraryPage() {
                     </div>
                   </div>
 
-                  <span className="px-2 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-300 border border-sky-500/20">
+                  <span className="mkt-badge mkt-badge-purple">
                     {asset.category}
                   </span>
                 </div>
@@ -151,7 +147,7 @@ export default function AssetLibraryPage() {
                     {asset.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-1.5 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 font-mono"
+                        className="mkt-badge mkt-badge-neutral !text-[10px] font-mono"
                       >
                         #{tag}
                       </span>
@@ -162,20 +158,20 @@ export default function AssetLibraryPage() {
 
               <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
                 <div className="text-[11px] text-slate-400">
-                  By {asset.uploadedBy} • {asset.uploadedAt}
+                  By <strong className="text-purple-300">{asset.uploadedBy}</strong> • {asset.uploadedAt}
                 </div>
 
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => openAssetModal(asset)}
-                    className="btn-action-secondary p-1.5 rounded-lg text-slate-300"
+                    className="btn-mkt-action btn-mkt-edit"
                     title="Edit Asset"
                   >
                     <Edit2 size={13} />
                   </button>
                   <button
                     onClick={() => handleDelete(asset.id, asset.title)}
-                    className="p-1.5 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
+                    className="btn-mkt-action btn-mkt-delete"
                     title="Delete Asset"
                   >
                     <Trash2 size={13} />

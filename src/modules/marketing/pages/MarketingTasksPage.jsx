@@ -61,16 +61,12 @@ export default function MarketingTasksPage() {
 
       {/* Filter Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1.5">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                categoryFilter === cat
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white'
-              }`}
+              className={`mkt-pill-filter ${categoryFilter === cat ? 'active-purple' : ''}`}
             >
               {cat}
             </button>
@@ -78,11 +74,11 @@ export default function MarketingTasksPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">Status:</span>
+          <span className="text-xs font-semibold text-slate-400">Status:</span>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 bg-slate-900/60 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-sky-500"
+            className="mkt-select !w-auto !py-1.5 !px-3 text-xs"
           >
             {STATUSES.map((st) => (
               <option key={st} value={st}>
@@ -96,7 +92,7 @@ export default function MarketingTasksPage() {
       {/* Task List */}
       <div className="space-y-3">
         {filteredTasks.length === 0 ? (
-          <div className="p-8 text-center rounded-2xl bg-slate-900/40 border border-slate-800 text-slate-400 text-xs">
+          <div className="mkt-card p-8 text-center text-slate-400 text-xs">
             No marketing tasks match the current filter.
           </div>
         ) : (
@@ -106,16 +102,14 @@ export default function MarketingTasksPage() {
             return (
               <div
                 key={task.id}
-                className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
-                  isDone
-                    ? 'bg-slate-900/30 border-slate-800/60 opacity-75'
-                    : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
+                className={`mkt-card !p-4 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                  isDone ? 'opacity-70' : 'hover:border-purple-500/30'
                 }`}
               >
                 <div className="flex items-start gap-3">
                   <button
                     onClick={() => toggleTaskStatus(task)}
-                    className="mt-0.5 text-slate-500 hover:text-sky-400 transition-colors"
+                    className="mt-0.5 text-slate-500 hover:text-purple-400 transition-colors"
                   >
                     {isDone ? (
                       <CheckCircle2 size={18} className="text-emerald-400" />
@@ -134,10 +128,10 @@ export default function MarketingTasksPage() {
                         {task.title}
                       </span>
                       <span
-                        className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                        className={`mkt-badge ${
                           task.priority === 'High' || task.priority === 'Urgent'
-                            ? 'bg-red-500/20 text-red-300'
-                            : 'bg-slate-800 text-slate-400'
+                            ? 'mkt-badge-red'
+                            : 'mkt-badge-neutral'
                         }`}
                       >
                         {task.priority}
@@ -149,7 +143,7 @@ export default function MarketingTasksPage() {
                     )}
 
                     <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 pt-0.5">
-                      <span className="text-sky-400 font-medium">{task.category}</span>
+                      <span className="mkt-badge mkt-badge-purple">{task.category}</span>
                       <span>•</span>
                       <span>Assigned: <strong className="text-slate-300">{task.assignedTo}</strong></span>
                       <span>•</span>
@@ -165,7 +159,7 @@ export default function MarketingTasksPage() {
                   <select
                     value={task.status}
                     onChange={(e) => saveTask({ ...task, status: e.target.value })}
-                    className="px-2 py-1 bg-slate-800 border border-slate-700 rounded text-xs text-slate-300 focus:outline-none"
+                    className="mkt-select !w-auto !py-1 !px-2.5 text-xs font-semibold"
                   >
                     <option value="To Do">To Do</option>
                     <option value="In Progress">In Progress</option>
@@ -174,14 +168,14 @@ export default function MarketingTasksPage() {
 
                   <button
                     onClick={() => openTaskModal(task)}
-                    className="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
+                    className="btn-mkt-action btn-mkt-edit"
                     title="Edit Task"
                   >
                     <Edit2 size={13} />
                   </button>
                   <button
                     onClick={() => handleDelete(task.id, task.title)}
-                    className="p-1.5 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400"
+                    className="btn-mkt-action btn-mkt-delete"
                     title="Delete Task"
                   >
                     <Trash2 size={13} />

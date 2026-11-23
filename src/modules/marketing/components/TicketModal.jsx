@@ -285,7 +285,7 @@ export default function TicketModal() {
             <button type="button" className="btn-mkt-secondary" onClick={closeTicketModal}>
               Cancel
             </button>
-            <button type="submit" className="btn-mkt-primary">
+            <button type="submit" className="btn-mkt-it">
               <Save size={14} />
               <span>{item ? 'Save Ticket Changes' : 'Submit Support Ticket'}</span>
             </button>

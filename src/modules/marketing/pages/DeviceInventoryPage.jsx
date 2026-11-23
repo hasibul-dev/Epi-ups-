@@ -68,7 +68,7 @@ export default function DeviceInventoryPage() {
         </div>
         <button
           onClick={() => openDeviceModal()}
-          className="btn-mkt-primary"
+          className="btn-mkt-it"
         >
           <Plus size={15} />
           <span>Register Hardware Asset</span>
@@ -84,7 +84,7 @@ export default function DeviceInventoryPage() {
             placeholder="Search by tag, brand/model, employee, IP..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+            className="mkt-input pl-9 text-xs"
           />
         </div>
 
@@ -92,7 +92,7 @@ export default function DeviceInventoryPage() {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-cyan-500"
+            className="mkt-select text-xs"
           >
             {DEVICE_TYPES.map((t) => (
               <option key={t} value={t}>
@@ -106,7 +106,7 @@ export default function DeviceInventoryPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-cyan-500"
+            className="mkt-select text-xs"
           >
             {STATUSES.map((st) => (
               <option key={st} value={st}>
@@ -118,26 +118,26 @@ export default function DeviceInventoryPage() {
       </div>
 
       {/* Hardware Table */}
-      <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
+      <div className="mkt-card space-y-4">
         <div className="flex items-center justify-between text-xs text-slate-400">
-          <span>Found {filteredDevices.length} registered hardware assets</span>
+          <span>Found <strong className="text-white">{filteredDevices.length}</strong> registered hardware assets</span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
+        <div className="table-responsive">
+          <table className="mkt-table">
             <thead>
-              <tr className="border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400">
-                <th className="py-2.5 px-3">Asset Tag</th>
-                <th className="py-2.5 px-3">Type & Model</th>
-                <th className="py-2.5 px-3">Specifications</th>
-                <th className="py-2.5 px-3">Assigned User & Dept</th>
-                <th className="py-2.5 px-3">Network IP / MAC</th>
-                <th className="py-2.5 px-3">Warranty Expiry</th>
-                <th className="py-2.5 px-3">Status</th>
-                <th className="py-2.5 px-3 text-right">Actions</th>
+              <tr>
+                <th>Asset Tag</th>
+                <th>Type & Model</th>
+                <th>Specifications</th>
+                <th>Assigned User & Dept</th>
+                <th>Network IP / MAC</th>
+                <th>Warranty Expiry</th>
+                <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody>
               {filteredDevices.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="py-8 text-center text-slate-500 italic">
@@ -149,17 +149,17 @@ export default function DeviceInventoryPage() {
                   const isWarrantyExpired = dev.warrantyExpiry && dev.warrantyExpiry < today();
 
                   return (
-                    <tr key={dev.id} className="hover:bg-slate-800/40 transition-colors">
-                      <td className="py-3 px-3 font-mono font-bold text-cyan-400 whitespace-nowrap">
+                    <tr key={dev.id}>
+                      <td className="font-mono font-bold text-cyan-400 whitespace-nowrap">
                         {dev.deviceTag}
                       </td>
 
-                      <td className="py-3 px-3">
+                      <td>
                         <div className="font-semibold text-white">{dev.brandModel}</div>
                         <div className="text-[11px] text-slate-400">{dev.deviceType}</div>
                       </td>
 
-                      <td className="py-3 px-3 max-w-[200px]">
+                      <td className="max-w-[200px]">
                         <div className="text-slate-300 truncate" title={dev.specs}>
                           {dev.specs || '—'}
                         </div>
@@ -168,17 +168,17 @@ export default function DeviceInventoryPage() {
                         </div>
                       </td>
 
-                      <td className="py-3 px-3">
+                      <td>
                         <div className="font-medium text-slate-200">{dev.assignedTo || 'Unassigned'}</div>
                         <div className="text-[11px] text-slate-400">{dev.department}</div>
                       </td>
 
-                      <td className="py-3 px-3 font-mono text-[11px]">
+                      <td className="font-mono text-[11px]">
                         <div className="text-slate-300">{dev.ipAddress || 'DHCP'}</div>
                         <div className="text-slate-500 text-[10px]">{dev.macAddress || '—'}</div>
                       </td>
 
-                      <td className="py-3 px-3">
+                      <td>
                         <div
                           className={`font-mono text-xs ${
                             isWarrantyExpired ? 'text-red-400 font-semibold' : 'text-slate-300'
@@ -187,36 +187,36 @@ export default function DeviceInventoryPage() {
                           {dev.warrantyExpiry || 'N/A'}
                         </div>
                         {isWarrantyExpired && (
-                          <span className="text-[10px] text-red-400 font-medium">Expired</span>
+                          <span className="mkt-badge mkt-badge-red !text-[9.5px]">Expired</span>
                         )}
                       </td>
 
-                      <td className="py-3 px-3">
+                      <td>
                         <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                          className={`mkt-badge ${
                             dev.status === 'Operational'
-                              ? 'bg-emerald-500/20 text-emerald-300'
+                              ? 'mkt-badge-green'
                               : dev.status === 'Under Repair'
-                              ? 'bg-amber-500/20 text-amber-300'
-                              : 'bg-slate-700 text-slate-300'
+                              ? 'mkt-badge-amber'
+                              : 'mkt-badge-neutral'
                           }`}
                         >
                           {dev.status}
                         </span>
                       </td>
 
-                      <td className="py-3 px-3 text-right">
+                      <td style={{ textAlign: 'right' }}>
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => openDeviceModal(dev)}
-                            className="btn-action-secondary p-1 rounded-lg text-slate-300"
+                            className="btn-mkt-action btn-mkt-edit"
                             title="Edit Device"
                           >
                             <Edit2 size={13} />
                           </button>
                           <button
                             onClick={() => handleDelete(dev.id, dev.deviceTag)}
-                            className="p-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
+                            className="btn-mkt-action btn-mkt-delete"
                             title="Delete Device"
                           >
                             <Trash2 size={13} />

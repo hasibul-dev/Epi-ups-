@@ -51,31 +51,23 @@ export default function SocialMediaPage() {
       </div>
 
       {/* Channel Switcher Tabs */}
-      <div className="flex items-center gap-3 border-b border-slate-800 pb-2">
+      <div className="flex items-center gap-2.5 pb-2">
         <button
           onClick={() => setActiveChannel('Facebook')}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
-            activeChannel === 'Facebook'
-              ? 'bg-blue-600/20 text-blue-400 border border-blue-500/40'
-              : 'text-slate-400 hover:text-white'
-          }`}
+          className={`mkt-pill-filter ${activeChannel === 'Facebook' ? 'active-blue' : ''}`}
         >
           <span>Facebook Page: EPI UPS Bangladesh Ltd.</span>
-          <span className="px-1.5 py-0.5 rounded-full bg-blue-500/20 text-[10px]">
+          <span className="mkt-badge mkt-badge-blue !text-[10px] !py-0.5 !px-1.5">
             {fbPosts.length}
           </span>
         </button>
 
         <button
           onClick={() => setActiveChannel('LinkedIn')}
-          className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all ${
-            activeChannel === 'LinkedIn'
-              ? 'bg-sky-600/20 text-sky-400 border border-sky-500/40'
-              : 'text-slate-400 hover:text-white'
-          }`}
+          className={`mkt-pill-filter ${activeChannel === 'LinkedIn' ? 'active-purple' : ''}`}
         >
           <span>LinkedIn Corporate: Energy Pac & Industrial UPS</span>
-          <span className="px-1.5 py-0.5 rounded-full bg-sky-500/20 text-[10px]">
+          <span className="mkt-badge mkt-badge-purple !text-[10px] !py-0.5 !px-1.5">
             {liPosts.length}
           </span>
         </button>
@@ -83,49 +75,49 @@ export default function SocialMediaPage() {
 
       {/* Channel Summary Metrics */}
       {activeChannel === 'Facebook' ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-xs text-slate-400 mb-1">Page Followers</div>
-            <div className="text-xl font-bold text-white">28,450+</div>
-            <div className="text-[11px] text-emerald-400 mt-1">+340 this month</div>
+        <div className="mkt-kpi-grid">
+          <div className="mkt-stat-card">
+            <div className="mkt-stat-label">Page Followers</div>
+            <div className="mkt-stat-val text-white">28,450+</div>
+            <div className="mkt-stat-sub text-emerald-400">+340 this month</div>
           </div>
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-xs text-slate-400 mb-1">Monthly Post Reach</div>
-            <div className="text-xl font-bold text-white">62,800</div>
-            <div className="text-[11px] text-blue-400 mt-1">High factory engineer CTR</div>
+          <div className="mkt-stat-card">
+            <div className="mkt-stat-label">Monthly Post Reach</div>
+            <div className="mkt-stat-val text-white">62,800</div>
+            <div className="mkt-stat-sub text-sky-400">High factory engineer CTR</div>
           </div>
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-xs text-slate-400 mb-1">Inquiry Response Rate</div>
-            <div className="text-xl font-bold text-white">96%</div>
-            <div className="text-[11px] text-slate-400 mt-1">Avg 15 min reply time</div>
+          <div className="mkt-stat-card">
+            <div className="mkt-stat-label">Inquiry Response Rate</div>
+            <div className="mkt-stat-val text-white">96%</div>
+            <div className="mkt-stat-sub text-slate-400">Avg 15 min reply time</div>
           </div>
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-xs text-slate-400 mb-1">Review Rating</div>
-            <div className="text-xl font-bold text-amber-400">4.9 / 5.0</div>
-            <div className="text-[11px] text-slate-400 mt-1">112 verified reviews</div>
+          <div className="mkt-stat-card">
+            <div className="mkt-stat-label">Review Rating</div>
+            <div className="mkt-stat-val text-amber-400">4.9 / 5.0</div>
+            <div className="mkt-stat-sub text-slate-400">112 verified reviews</div>
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-xs text-slate-400 mb-1">B2B Company Followers</div>
-            <div className="text-xl font-bold text-white">6,240</div>
-            <div className="text-[11px] text-sky-400 mt-1">Chief Engineers & Procurement</div>
+        <div className="mkt-kpi-grid">
+          <div className="mkt-stat-card">
+            <div className="mkt-stat-label">B2B Company Followers</div>
+            <div className="mkt-stat-val text-white">6,240</div>
+            <div className="mkt-stat-sub text-purple-400">Chief Engineers & Procurement</div>
           </div>
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-xs text-slate-400 mb-1">Organic Engagement Rate</div>
-            <div className="text-xl font-bold text-white">5.8%</div>
-            <div className="text-[11px] text-emerald-400 mt-1">Industry avg is 2.4%</div>
+          <div className="mkt-stat-card">
+            <div className="mkt-stat-label">Organic Engagement Rate</div>
+            <div className="mkt-stat-val text-white">5.8%</div>
+            <div className="mkt-stat-sub text-emerald-400">Industry avg is 2.4%</div>
           </div>
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-xs text-slate-400 mb-1">Decision Maker Connections</div>
-            <div className="text-xl font-bold text-white">1,890</div>
-            <div className="text-[11px] text-slate-400 mt-1">Textile, Pharma & IT Execs</div>
+          <div className="mkt-stat-card">
+            <div className="mkt-stat-label">Decision Maker Connections</div>
+            <div className="mkt-stat-val text-white">1,890</div>
+            <div className="mkt-stat-sub text-slate-400">Textile, Pharma & IT Execs</div>
           </div>
-          <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <div className="text-xs text-slate-400 mb-1">B2B Tender Inquiries</div>
-            <div className="text-xl font-bold text-sky-400">24</div>
-            <div className="text-[11px] text-slate-400 mt-1">Forwarded to Sales CRM</div>
+          <div className="mkt-stat-card">
+            <div className="mkt-stat-label">B2B Tender Inquiries</div>
+            <div className="mkt-stat-val text-sky-400">24</div>
+            <div className="mkt-stat-sub text-slate-400">Forwarded to Sales CRM</div>
           </div>
         </div>
       )}
@@ -140,7 +132,7 @@ export default function SocialMediaPage() {
             </h2>
             <button
               onClick={() => openPostModal()}
-              className="text-xs text-sky-400 hover:text-sky-300 font-semibold"
+              className="btn-glass-action btn-glass-purple"
             >
               + Create Post
             </button>
@@ -151,7 +143,7 @@ export default function SocialMediaPage() {
               <div
                 key={post.id}
                 onClick={() => openPostModal(post)}
-                className="mkt-card cursor-pointer space-y-3"
+                className="mkt-card cursor-pointer space-y-3 hover:border-purple-500/30 transition-all"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -159,26 +151,26 @@ export default function SocialMediaPage() {
                     <div className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2">
                       <span>Schedule: {post.scheduledDate} {post.scheduledTime}</span>
                       <span>•</span>
-                      <span>By: {post.assignedEmployee}</span>
+                      <span>By: <strong className="text-purple-300">{post.assignedEmployee}</strong></span>
                     </div>
                   </div>
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-semibold whitespace-nowrap ${
+                    className={`mkt-badge ${
                       post.status === 'Published'
-                        ? 'bg-emerald-500/20 text-emerald-300'
-                        : 'bg-sky-500/20 text-sky-300'
+                        ? 'mkt-badge-green'
+                        : 'mkt-badge-blue'
                     }`}
                   >
                     {post.status}
                   </span>
                 </div>
 
-                <div className="p-3 rounded-lg bg-slate-800/40 text-xs text-slate-300 whitespace-pre-line line-clamp-3">
+                <div className="p-3 rounded-lg bg-slate-900/50 border border-white/5 text-xs text-slate-300 whitespace-pre-line line-clamp-3">
                   {post.content}
                 </div>
 
                 {post.hashtags && (
-                  <div className="text-[11px] text-sky-400 font-mono">
+                  <div className="text-[11px] text-purple-300 font-mono">
                     {post.hashtags}
                   </div>
                 )}
@@ -186,7 +178,7 @@ export default function SocialMediaPage() {
                 {post.status === 'Published' && (
                   <div className="flex items-center gap-4 text-xs text-slate-400 pt-2 border-t border-slate-800">
                     <span>Reach: <strong className="text-white">{post.reach?.toLocaleString()}</strong></span>
-                    <span>Engagement: <strong className="text-sky-300">{post.engagement}</strong></span>
+                    <span>Engagement: <strong className="text-purple-300">{post.engagement}</strong></span>
                     <span>Direct Inquiries: <strong className="text-emerald-400">{post.inquiries}</strong></span>
                   </div>
                 )}
@@ -208,17 +200,17 @@ export default function SocialMediaPage() {
                 className="mkt-card space-y-2.5"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-xs font-semibold text-sky-300">{cap.title}</span>
+                  <span className="text-xs font-semibold text-purple-300">{cap.title}</span>
                   <button
                     onClick={() => copyToClipboard(cap.text, cap.id)}
-                    className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                    className="btn-mkt-action"
                     title="Copy text to clipboard"
                   >
                     {copiedId === cap.id ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
                   </button>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed font-sans bg-slate-800/40 p-2.5 rounded-lg border border-slate-700/50">
+                <p className="text-xs text-slate-300 leading-relaxed font-sans bg-slate-900/50 p-2.5 rounded-lg border border-white/5">
                   {cap.text}
                 </p>
 
@@ -226,7 +218,7 @@ export default function SocialMediaPage() {
                   {cap.tags.map((t) => (
                     <span
                       key={t}
-                      className="px-1.5 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400"
+                      className="mkt-badge mkt-badge-purple !text-[10px]"
                     >
                       #{t}
                     </span>

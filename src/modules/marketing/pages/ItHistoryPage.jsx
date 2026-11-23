@@ -115,21 +115,13 @@ export default function ItHistoryPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTab('tickets')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTab === 'tickets'
-                  ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40'
-                  : 'bg-white/5 text-slate-400 hover:text-white border border-white/5'
-              }`}
+              className={`mkt-pill-filter ${activeTab === 'tickets' ? 'active-blue' : ''}`}
             >
               Resolved Helpdesk Tickets ({historyTickets.length})
             </button>
             <button
               onClick={() => setActiveTab('maintenance')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                activeTab === 'maintenance'
-                  ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40'
-                  : 'bg-white/5 text-slate-400 hover:text-white border border-white/5'
-              }`}
+              className={`mkt-pill-filter ${activeTab === 'maintenance' ? 'active-blue' : ''}`}
             >
               Network &amp; Server Maintenance ({networkMaintenance?.length || 0})
             </button>
@@ -231,7 +223,7 @@ export default function ItHistoryPage() {
                         <div className="text-[11px] text-slate-400">{t.department}</div>
                       </td>
                       <td>
-                        <span className="mkt-badge mkt-badge-info text-[10px]">{t.category}</span>
+                        <span className="mkt-badge mkt-badge-blue text-[10px]">{t.category}</span>
                       </td>
                       <td>
                         <span className="text-xs text-slate-300 flex items-center gap-1">
@@ -245,7 +237,7 @@ export default function ItHistoryPage() {
                         </div>
                       </td>
                       <td>
-                        <span className="mkt-badge mkt-badge-success text-[10.5px]">
+                        <span className="mkt-badge mkt-badge-green text-[10.5px]">
                           <CheckCircle2 size={11} />
                           {t.status}
                         </span>
@@ -254,14 +246,14 @@ export default function ItHistoryPage() {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => openTicketDetails(t)}
-                            className="p-1 rounded hover:bg-white/10 text-slate-300 hover:text-white"
+                            className="btn-mkt-action btn-mkt-edit"
                             title="View Full Details"
                           >
                             <Eye size={13} />
                           </button>
                           <button
                             onClick={() => handleReopen(t)}
-                            className="p-1 rounded hover:bg-amber-500/20 text-slate-400 hover:text-amber-400"
+                            className="btn-mkt-action text-amber-400 hover:text-amber-300"
                             title="Reopen Ticket"
                           >
                             <RotateCcw size={13} />

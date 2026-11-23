@@ -107,7 +107,7 @@ export default function SoftwareAccountsPage() {
         </div>
         <button
           onClick={openAdd}
-          className="btn-mkt-primary"
+          className="btn-mkt-it"
         >
           <Plus size={15} />
           <span>Add License Pool</span>
@@ -115,29 +115,29 @@ export default function SoftwareAccountsPage() {
       </div>
 
       {/* Aggregate Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="mkt-card p-4">
-          <div className="text-xs text-slate-400 mb-1">Managed Software Pools</div>
-          <div className="text-xl font-bold text-white">{softwareAccounts.length}</div>
-          <div className="text-[11px] text-sky-400 mt-1">Enterprise subscriptions</div>
+      <div className="mkt-kpi-grid">
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Managed Software Pools</span>
+          <span className="mkt-stat-val text-white">{softwareAccounts.length}</span>
+          <span className="mkt-stat-sub">Enterprise subscriptions</span>
         </div>
 
-        <div className="mkt-card p-4">
-          <div className="text-xs text-slate-400 mb-1">Total Licensed Seats</div>
-          <div className="text-xl font-bold text-cyan-400">{totalSeats} Seats</div>
-          <div className="text-[11px] text-slate-400 mt-1">{assignedSeats} Assigned to Users</div>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Total Licensed Seats</span>
+          <span className="mkt-stat-val text-cyan-400">{totalSeats} Seats</span>
+          <span className="mkt-stat-sub">{assignedSeats} Assigned to Users</span>
         </div>
 
-        <div className="mkt-card p-4">
-          <div className="text-xs text-slate-400 mb-1">Available Free Seats</div>
-          <div className="text-xl font-bold text-emerald-400">{Math.max(0, totalSeats - assignedSeats)} Seats</div>
-          <div className="text-[11px] text-emerald-400 mt-1">Ready for new hires</div>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Available Free Seats</span>
+          <span className="mkt-stat-val text-emerald-400">{Math.max(0, totalSeats - assignedSeats)} Seats</span>
+          <span className="mkt-stat-sub">Ready for new hires</span>
         </div>
 
-        <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-          <div className="text-xs text-slate-400 mb-1">Annual Subscription Cost</div>
-          <div className="text-xl font-bold text-amber-400">৳{totalAnnualCost.toLocaleString()}</div>
-          <div className="text-[11px] text-slate-400 mt-1">Total IT software budget</div>
+        <div className="mkt-stat-card">
+          <span className="mkt-stat-label">Annual Subscription Cost</span>
+          <span className="mkt-stat-val text-amber-400">৳{totalAnnualCost.toLocaleString()}</span>
+          <span className="mkt-stat-sub">Total IT software budget</span>
         </div>
       </div>
 
@@ -152,12 +152,12 @@ export default function SoftwareAccountsPage() {
           return (
             <div
               key={item.id}
-              className="mkt-card space-y-4"
+              className="mkt-card space-y-4 hover:border-cyan-500/30 transition-all"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Key size={14} className="text-sky-400" />
+                    <Key size={14} className="text-cyan-400" />
                     {item.name}
                   </h3>
                   <div className="text-xs text-slate-400 mt-0.5">
@@ -168,13 +168,15 @@ export default function SoftwareAccountsPage() {
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={() => openEdit(item)}
-                    className="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                    className="btn-mkt-action btn-mkt-edit"
+                    title="Edit Pool"
                   >
                     <Edit2 size={13} />
                   </button>
                   <button
                     onClick={() => handleDelete(item.id, item.name)}
-                    className="p-1.5 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
+                    className="btn-mkt-action btn-mkt-delete"
+                    title="Delete Pool"
                   >
                     <Trash2 size={13} />
                   </button>
@@ -182,16 +184,16 @@ export default function SoftwareAccountsPage() {
               </div>
 
               {/* Seat Meter */}
-              <div className="p-3 rounded-xl bg-slate-800/40 border border-slate-700/50 space-y-2">
+              <div className="p-3 rounded-xl bg-slate-900/50 border border-white/5 space-y-2">
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-400">Seats Utilization</span>
                   <span className="font-semibold text-white">
                     {item.assignedCount} / {item.totalLicenses} Seats ({utilizationPct}%)
                   </span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-slate-700 overflow-hidden">
+                <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-blue-600 to-sky-400 rounded-full"
+                    className="h-full bg-gradient-to-r from-cyan-500 to-sky-400 rounded-full"
                     style={{ width: `${utilizationPct}%` }}
                   />
                 </div>
@@ -214,7 +216,7 @@ export default function SoftwareAccountsPage() {
               </div>
 
               {item.notes && (
-                <div className="text-xs text-slate-400 bg-slate-900/50 p-2.5 rounded-lg border border-slate-800">
+                <div className="text-xs text-slate-400 bg-slate-900/50 p-2.5 rounded-lg border border-white/5">
                   {item.notes}
                 </div>
               )}
@@ -225,140 +227,142 @@ export default function SoftwareAccountsPage() {
 
       {/* Add / Edit Software Modal */}
       {modalOpen && (
-        <div className="marketing-modal-backdrop" onClick={() => setModalOpen(false)}>
-          <div className="marketing-modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="marketing-modal-header">
+        <div className="mkt-modal-backdrop" onClick={() => setModalOpen(false)}>
+          <div className="mkt-modal-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="mkt-modal-header">
               <h3 className="text-base font-semibold text-white">
                 {editingItem ? 'Edit Software License Pool' : 'Register New Software License'}
               </h3>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-white"
+                className="mkt-modal-close"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="marketing-modal-body space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
-                  Software Package / Domain Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="e.g. Microsoft 365 Business Standard / epiups.com.bd"
-                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    Vendor / Reseller
+            <form onSubmit={handleSubmit}>
+              <div className="mkt-modal-body">
+                <div className="mkt-form-group">
+                  <label className="mkt-form-label">
+                    Software Package / Domain Name *
                   </label>
                   <input
                     type="text"
-                    value={form.vendor}
-                    onChange={(e) => setForm({ ...form, vendor: e.target.value })}
-                    placeholder="e.g. Flora Limited / Microsoft"
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    placeholder="e.g. Microsoft 365 Business Standard / epiups.com.bd"
+                    className="mkt-form-input"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    License Type
+                <div className="mkt-form-row">
+                  <div className="mkt-form-group">
+                    <label className="mkt-form-label">
+                      Vendor / Reseller
+                    </label>
+                    <input
+                      type="text"
+                      value={form.vendor}
+                      onChange={(e) => setForm({ ...form, vendor: e.target.value })}
+                      placeholder="e.g. Flora Limited / Microsoft"
+                      className="mkt-form-input"
+                    />
+                  </div>
+
+                  <div className="mkt-form-group">
+                    <label className="mkt-form-label">
+                      License Type
+                    </label>
+                    <input
+                      type="text"
+                      value={form.licenseType}
+                      onChange={(e) => setForm({ ...form, licenseType: e.target.value })}
+                      placeholder="e.g. Annual Cloud Subscription"
+                      className="mkt-form-input"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="mkt-form-group">
+                    <label className="mkt-form-label">
+                      Total Seats
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={form.totalLicenses}
+                      onChange={(e) => setForm({ ...form, totalLicenses: e.target.value })}
+                      className="mkt-form-input font-mono"
+                    />
+                  </div>
+
+                  <div className="mkt-form-group">
+                    <label className="mkt-form-label">
+                      Assigned Seats
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={form.assignedCount}
+                      onChange={(e) => setForm({ ...form, assignedCount: e.target.value })}
+                      className="mkt-form-input font-mono"
+                    />
+                  </div>
+
+                  <div className="mkt-form-group">
+                    <label className="mkt-form-label">
+                      Annual Cost (৳ BDT)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={form.annualCost}
+                      onChange={(e) => setForm({ ...form, annualCost: e.target.value })}
+                      className="mkt-form-input font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="mkt-form-group">
+                  <label className="mkt-form-label">
+                    Expiry / Renewal Date
                   </label>
                   <input
-                    type="text"
-                    value={form.licenseType}
-                    onChange={(e) => setForm({ ...form, licenseType: e.target.value })}
-                    placeholder="e.g. Annual Cloud Subscription"
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
+                    type="date"
+                    value={form.expiryDate}
+                    onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
+                    className="mkt-form-input"
+                  />
+                </div>
+
+                <div className="mkt-form-group">
+                  <label className="mkt-form-label">
+                    License Keys, Portal URLs or Assignment Notes
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={form.notes}
+                    onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                    placeholder="e.g. Master admin account: admin@epiups.com.bd; renewal notice 30 days prior"
+                    className="mkt-form-textarea"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    Total Seats / Licenses
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={form.totalLicenses}
-                    onChange={(e) => setForm({ ...form, totalLicenses: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    Assigned Seats
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={form.assignedCount}
-                    onChange={(e) => setForm({ ...form, assignedCount: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    Annual Cost (৳ BDT)
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    value={form.annualCost}
-                    onChange={(e) => setForm({ ...form, annualCost: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500 font-mono"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
-                  Expiry / Renewal Date
-                </label>
-                <input
-                  type="date"
-                  value={form.expiryDate}
-                  onChange={(e) => setForm({ ...form, expiryDate: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
-                  License Keys, Portal URLs or Assignment Notes
-                </label>
-                <textarea
-                  rows={2}
-                  value={form.notes}
-                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                  placeholder="e.g. Master admin account: admin@epiups.com.bd; renewal notice 30 days prior"
-                  className="w-full px-3 py-2 bg-slate-900/60 border border-slate-700/60 rounded-lg text-slate-100 text-xs focus:outline-none focus:border-sky-500"
-                />
-              </div>
-
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="mkt-modal-footer">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-lg border border-slate-700 text-xs text-slate-300 hover:bg-slate-800"
+                  className="btn-mkt-secondary"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="btn-mkt-primary"
+                  className="btn-mkt-it"
                 >
                   Save Software License
                 </button>

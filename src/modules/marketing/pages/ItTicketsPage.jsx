@@ -86,7 +86,7 @@ export default function ItTicketsPage() {
         </div>
         <button
           onClick={() => openTicketModal()}
-          className="btn-mkt-primary"
+          className="btn-mkt-it"
         >
           <Plus size={15} />
           <span>New IT Ticket</span>
@@ -102,7 +102,7 @@ export default function ItTicketsPage() {
             placeholder="Search tickets by ID, user, subject..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+            className="mkt-input pl-9 text-xs"
           />
         </div>
 
@@ -110,7 +110,7 @@ export default function ItTicketsPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+            className="mkt-select text-xs"
           >
             {STATUSES.map((st) => (
               <option key={st} value={st}>
@@ -124,7 +124,7 @@ export default function ItTicketsPage() {
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+            className="mkt-select text-xs"
           >
             {PRIORITIES.map((pr) => (
               <option key={pr} value={pr}>
@@ -138,7 +138,7 @@ export default function ItTicketsPage() {
           <select
             value={deptFilter}
             onChange={(e) => setDeptFilter(e.target.value)}
-            className="w-full px-3 py-2 bg-slate-900/60 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-500"
+            className="mkt-select text-xs"
           >
             {DEPARTMENTS.map((dp) => (
               <option key={dp} value={dp}>
@@ -150,26 +150,26 @@ export default function ItTicketsPage() {
       </div>
 
       {/* Tickets Table */}
-      <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
+      <div className="mkt-card space-y-4">
         <div className="flex items-center justify-between text-xs text-slate-400">
-          <span>Found {filteredTickets.length} matching support tickets</span>
+          <span>Found <strong className="text-white">{filteredTickets.length}</strong> matching support tickets</span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
+        <div className="table-responsive">
+          <table className="mkt-table">
             <thead>
-              <tr className="border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400">
-                <th className="py-2.5 px-3">Ticket ID</th>
-                <th className="py-2.5 px-3">Subject & Description</th>
-                <th className="py-2.5 px-3">Requestor & Dept</th>
-                <th className="py-2.5 px-3">Category</th>
-                <th className="py-2.5 px-3">Priority</th>
-                <th className="py-2.5 px-3">Technician</th>
-                <th className="py-2.5 px-3">Status</th>
-                <th className="py-2.5 px-3 text-right">Actions</th>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Subject & Description</th>
+                <th>Requestor & Dept</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Technician</th>
+                <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody>
               {filteredTickets.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="py-8 text-center text-slate-500 italic">
@@ -178,80 +178,80 @@ export default function ItTicketsPage() {
                 </tr>
               ) : (
                 filteredTickets.map((tick) => (
-                  <tr key={tick.id} className="hover:bg-slate-800/40 transition-colors">
-                    <td className="py-3 px-3">
+                  <tr key={tick.id}>
+                    <td>
                       <span className="font-mono font-bold text-amber-400">{tick.id}</span>
                       <div className="text-[10px] text-slate-500">{tick.createdDate}</div>
                     </td>
 
-                    <td className="py-3 px-3 max-w-[280px]">
+                    <td className="max-w-[280px]">
                       <div className="font-semibold text-white truncate">{tick.title}</div>
                       <div className="text-[11px] text-slate-400 truncate">{tick.description}</div>
                     </td>
 
-                    <td className="py-3 px-3">
+                    <td>
                       <div className="font-medium text-slate-200">{tick.requestingEmployee}</div>
                       <div className="text-[11px] text-slate-400">{tick.department}</div>
                     </td>
 
-                    <td className="py-3 px-3 text-slate-300">{tick.issueCategory}</td>
+                    <td className="text-slate-300">{tick.issueCategory}</td>
 
-                    <td className="py-3 px-3">
+                    <td>
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                        className={`mkt-badge ${
                           tick.priority === 'Critical'
-                            ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                            ? 'mkt-badge-red'
                             : tick.priority === 'High'
-                            ? 'bg-orange-500/20 text-orange-300 border border-orange-500/30'
-                            : 'bg-blue-500/20 text-blue-300'
+                            ? 'mkt-badge-amber'
+                            : 'mkt-badge-blue'
                         }`}
                       >
                         {tick.priority}
                       </span>
                     </td>
 
-                    <td className="py-3 px-3 text-slate-200 font-medium">
+                    <td className="text-slate-200 font-medium">
                       {tick.assignedTechnician || <span className="text-slate-500 italic">Unassigned</span>}
                     </td>
 
-                    <td className="py-3 px-3">
+                    <td>
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                        className={`mkt-badge ${
                           tick.status === 'Resolved'
-                            ? 'bg-emerald-500/20 text-emerald-300'
+                            ? 'mkt-badge-green'
                             : tick.status === 'In Progress'
-                            ? 'bg-amber-500/20 text-amber-300'
-                            : 'bg-blue-500/20 text-blue-300'
+                            ? 'mkt-badge-amber'
+                            : 'mkt-badge-blue'
                         }`}
                       >
                         {tick.status}
                       </span>
                     </td>
 
-                    <td className="py-3 px-3 text-right">
+                    <td style={{ textAlign: 'right' }}>
                       <div className="flex items-center justify-end gap-1.5">
                         <button
                           onClick={() => openTicketDetails(tick)}
-                          className="btn-action-secondary px-2.5 py-1 rounded-lg text-xs flex items-center gap-1"
+                          className="btn-mkt-secondary !py-1 !px-2.5 !h-auto !min-h-0 text-xs flex items-center gap-1"
                           title="View Details & Print Service Slip"
                         >
-                          <FileText size={12} />
+                          <FileText size={12} className="text-sky-400" />
                           <span>Slip</span>
                         </button>
 
                         {tick.status !== 'Resolved' && (
                           <button
                             onClick={() => handleQuickResolve(tick)}
-                            className="p-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-colors"
+                            className="btn-mkt-action btn-mkt-success !p-1.5"
                             title="Quick Resolve Ticket"
                           >
-                            <CheckCircle2 size={14} />
+                            <CheckCircle2 size={13} />
                           </button>
                         )}
 
                         <button
                           onClick={() => openTicketModal(tick)}
-                          className="btn-action-secondary p-1 rounded-lg text-slate-300"
+                          className="btn-mkt-action btn-mkt-edit"
                           title="Edit Ticket"
                         >
                           <Edit2 size={13} />
@@ -259,7 +259,7 @@ export default function ItTicketsPage() {
 
                         <button
                           onClick={() => handleDelete(tick.id, tick.title)}
-                          className="p-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
+                          className="btn-mkt-action btn-mkt-delete"
                           title="Delete Ticket"
                         >
                           <Trash2 size={13} />
