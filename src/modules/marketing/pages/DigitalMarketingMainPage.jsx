@@ -29,11 +29,10 @@ import {
   TrendingUp,
   Download,
   CalendarCheck,
-  PanelLeftClose,
-  PanelLeftOpen,
   Sparkles,
   ShieldCheck,
   Zap,
+  CheckSquare,
 } from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
 import { centralStore } from '../../admin/services/centralStorage.js';
@@ -75,10 +74,7 @@ export default function DigitalMarketingMainPage() {
   const { marketingTasks = [] } = data;
   const currentToday = today();
 
-  // Sidebar collapse toggle state
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
-  // Sync tab with URL: 'overview' | 'all_works' | 'today' | 'reports'
+  // Sync active view with URL: 'overview' | 'all_works' | 'today' | 'reports'
   const getTabFromPath = (pathname) => {
     if (pathname.includes('/all-works')) return 'all_works';
     if (pathname.includes('/today')) return 'today';
@@ -100,7 +96,7 @@ export default function DigitalMarketingMainPage() {
     else if (tabKey === 'reports') navigate('/marketing/history');
   };
 
-  // Filter states for "All Works"
+  // Filter states for "All Works" and "Overview"
   const [searchQuery, setSearchQuery] = useState('');
   const [employeeFilter, setEmployeeFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -337,1023 +333,1127 @@ export default function DigitalMarketingMainPage() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       {/* ============================================================= */}
       {/* 1. PROFESSIONAL TOP HEADER                                    */}
+      {/* (Non-wrapping, vertically centered, consistent 34px buttons)   */}
       {/* ============================================================= */}
       <header className="mkt-topbar">
         {/* Left: Branding & Department Title */}
-        <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white shadow-[0_0_18px_rgba(168,85,247,0.35)] border border-white/20 flex-shrink-0">
-            <Megaphone size={20} />
+        <div className="mkt-topbar-left">
+          <div className="mkt-brand-icon">
+            <Megaphone size={19} className="text-white" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-purple-400 bg-purple-500/15 px-2 py-0.5 rounded border border-purple-500/30">
-                EPI UPS BANGLADESH LIMITED
-              </span>
-            </div>
-            <h1 className="text-base font-extrabold text-white tracking-tight mt-0.5">
+          <div className="mkt-brand-titles">
+            <h1 className="mkt-brand-main-title">
               Digital Marketing Work Management
             </h1>
+            <p className="mkt-brand-sub-title">
+              EPI UPS Bangladesh Limited
+            </p>
           </div>
         </div>
 
-        {/* Right: Actions, Notifications & Profile */}
-        <div className="flex items-center gap-2.5 flex-wrap">
+        {/* Right: Actions, Notifications & Profile in ONE vertically centered row */}
+        <div className="mkt-topbar-right">
           {/* Notification Bell */}
           <button
+            type="button"
             onClick={() => setIsNotifDrawerOpen(true)}
-            className="relative px-3 py-2 rounded-xl bg-slate-900/80 border border-purple-500/30 hover:border-purple-500/60 text-slate-300 hover:text-white transition-all flex items-center gap-2 text-xs font-semibold shadow-[0_0_12px_rgba(168,85,247,0.15)]"
+            className="mkt-notif-btn"
             title="Work Assignment Notifications"
           >
             <Bell size={15} className="text-purple-400" />
-            <span>Alerts</span>
+            <span className="hidden sm:inline">Alerts</span>
             {unreadNotificationsCount > 0 ? (
-              <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-[10px] font-bold text-white animate-pulse">
+              <span className="mkt-notif-badge-unread">
                 {unreadNotificationsCount}
               </span>
             ) : (
-              <span className="text-[10px] text-slate-500 font-normal">({notifications.length})</span>
+              <span className="mkt-notif-badge-count">
+                ({notifications.length})
+              </span>
             )}
           </button>
 
-          {/* Print Report Button */}
+          {/* Print Report Button (Cyan / Blue Accent) */}
           <button
+            type="button"
             onClick={() => openTaskPrintModal(null, 'summary')}
-            className="btn-mkt-cyan text-xs"
+            className="btn-mkt-cyan mkt-header-action-btn"
             title="Print Official Work Performance Report"
           >
             <Printer size={14} />
             <span>Print Report</span>
           </button>
 
-          {/* Add Work Button (Purple Gradient) */}
+          {/* Prominent Add Work Button (Purple Gradient) */}
           <button
+            type="button"
             onClick={() => openTaskModal()}
-            className="btn-mkt-add-work text-xs"
+            className="btn-mkt-add-work mkt-header-action-btn"
+            title="Create and Assign New Work Deliverable"
           >
-            <Plus size={15} />
+            <Plus size={16} />
             <span>+ Add Work</span>
           </button>
 
-          {/* User Profile Pill */}
-          <div className="flex items-center gap-2 pl-3 border-l border-white/10 text-xs">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 to-sky-500 flex items-center justify-center font-bold text-white text-xs border border-white/20">
+          {/* User Profile Pill (Vertically Centered, Never Wraps) */}
+          <div className="mkt-user-profile-pill">
+            <div className="mkt-user-avatar">
               {(user?.name || 'A').charAt(0).toUpperCase()}
             </div>
-            <div className="hidden sm:block text-left">
-              <div className="text-xs font-bold text-slate-200 leading-tight">
-                {user?.name || 'Super Admin'}
-              </div>
-              <div className="text-[10px] text-purple-300 font-medium">
-                {user?.role || 'Administrator'}
-              </div>
+            <div className="mkt-user-text hidden sm:flex">
+              <span className="mkt-user-name" title={user?.name || 'Administrator'}>
+                {user?.name || 'Administrator'}
+              </span>
+              <span className="mkt-user-role">
+                {user?.role === 'superadmin' ? 'Super Admin' : (user?.role || 'Marketing')}
+              </span>
             </div>
           </div>
         </div>
       </header>
 
       {/* ============================================================= */}
-      {/* 2. DEDICATED LAYOUT: LEFT SIDEBAR + MAIN CONTENT               */}
+      {/* 2. MAIN CONTENT AREA (Strict Order & Full Width)               */}
+      {/* 1. Compact Heading -> 2. KPI Cards -> 3. Filters -> 4. Table   */}
       {/* ============================================================= */}
-      <div className="mkt-module-container">
-        {/* LEFT SIDEBAR */}
-        <aside className={`mkt-dash-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
-          <div className="mkt-sidebar-header">
-            {!sidebarCollapsed && (
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
-                NAVIGATION
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-1 rounded text-slate-400 hover:text-white transition-colors ml-auto"
-              title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-            >
-              {sidebarCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
-            </button>
-          </div>
-
-          <nav className="mkt-sidebar-nav-list">
-            {/* 1. Overview */}
-            <button
-              type="button"
-              onClick={() => handleTabChange('overview')}
-              className={`mkt-sidebar-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-              title="Overview"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <LayoutDashboard size={16} className="mkt-nav-icon flex-shrink-0" />
-                {!sidebarCollapsed && <span className="truncate">Overview</span>}
-              </div>
-            </button>
-
-            {/* 2. All Works */}
-            <button
-              type="button"
-              onClick={() => handleTabChange('all_works')}
-              className={`mkt-sidebar-nav-item ${activeTab === 'all_works' ? 'active' : ''}`}
-              title="All Works"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <Layers size={16} className="mkt-nav-icon flex-shrink-0" />
-                {!sidebarCollapsed && <span className="truncate">All Works</span>}
-              </div>
-              {!sidebarCollapsed && (
-                <span className="px-1.5 py-0.2 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold">
-                  {marketingTasks.length}
-                </span>
-              )}
-            </button>
-
-            {/* 3. Today's Work */}
-            <button
-              type="button"
-              onClick={() => handleTabChange('today')}
-              className={`mkt-sidebar-nav-item ${activeTab === 'today' ? 'active' : ''}`}
-              title="Today's Work"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <CalendarCheck size={16} className="mkt-nav-icon flex-shrink-0" />
-                {!sidebarCollapsed && <span className="truncate">Today's Work</span>}
-              </div>
-              {!sidebarCollapsed && metrics.todayWorksCount > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full bg-sky-500/20 text-sky-300 text-[10px] font-bold">
-                  {metrics.todayWorksCount}
-                </span>
-              )}
-            </button>
-
-            {/* 4. Work History & Reports */}
-            <button
-              type="button"
-              onClick={() => handleTabChange('reports')}
-              className={`mkt-sidebar-nav-item ${activeTab === 'reports' ? 'active' : ''}`}
-              title="Work History & Reports"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <History size={16} className="mkt-nav-icon flex-shrink-0" />
-                {!sidebarCollapsed && <span className="truncate">Work History & Reports</span>}
-              </div>
-              {!sidebarCollapsed && metrics.completed > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">
-                  {metrics.completed}
-                </span>
-              )}
-            </button>
-          </nav>
-        </aside>
-
-        {/* MAIN DASHBOARD CONTENT AREA */}
-        <main className="mkt-dash-main">
-          {/* ========================================================= */}
-          {/* 3. WELCOME DASHBOARD HEADER HERO BANNER                   */}
-          {/* ========================================================= */}
-          <div className="mkt-hero-banner !py-4 !px-5">
-            <div className="mkt-hero-info">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="mkt-hero-badge">DIGITAL MARKETING</span>
-                <span className="text-[11px] text-purple-300 font-semibold px-2 py-0.5 rounded bg-purple-500/15 border border-purple-500/30">
-                  Operations & Task Lifecycle
-                </span>
-              </div>
-              <h2>Digital Marketing Operations</h2>
-              <p>
-                Allocate deliverables, track employee task updates in real-time, maintain work history, and generate printable reports
+      <div className="space-y-4 w-full">
+        {/* ----------------------------------------------------------- */}
+        {/* Step 1: Compact Dashboard Heading (Zero duplicate buttons)  */}
+        {/* ----------------------------------------------------------- */}
+        <div className="mkt-compact-heading">
+          <div className="flex items-center gap-2.5">
+            <div className="w-2 h-5 rounded-full bg-gradient-to-b from-purple-500 to-sky-500 flex-shrink-0" />
+            <div>
+              <h2 className="text-sm font-bold text-white tracking-tight">
+                {activeTab === 'overview' && 'Work Operations Overview'}
+                {activeTab === 'all_works' && 'All Digital Marketing Works'}
+                {activeTab === 'today' && "Today's Work & Daily Queue"}
+                {activeTab === 'reports' && 'Work History & Archived Records'}
+              </h2>
+              <p className="text-[11px] text-slate-400">
+                {activeTab === 'overview' && 'Real-time overview of active deliverables, workload allocation, and team milestones'}
+                {activeTab === 'all_works' && 'Directory of all marketing assignments with multi-column filtering and inline updates'}
+                {activeTab === 'today' && `Work items scheduled, in-progress, or due on today (${currentToday})`}
+                {activeTab === 'reports' && 'Permanent audit trail of delivered deliverables with employee completion notes'}
               </p>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2.5">
-              <button
-                onClick={() => openTaskModal()}
-                className="btn-mkt-add-work text-xs"
-              >
-                <Plus size={15} />
-                <span>+ Add Work</span>
-              </button>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-400 bg-slate-900/60 px-2.5 py-1 rounded-lg border border-white/5 font-mono">
+              {activeTab === 'overview' && `${metrics.totalAssigned} Total Works`}
+              {activeTab === 'all_works' && `${filteredAllWorks.length} of ${marketingTasks.length} Records`}
+              {activeTab === 'today' && `${filteredTodayWorks.length} Tasks Scheduled Today`}
+              {activeTab === 'reports' && `${filteredHistory.length} Delivered Records`}
+            </span>
+          </div>
+        </div>
+
+        {/* ----------------------------------------------------------- */}
+        {/* Step 2: Dashboard Summary KPI Cards (Consistent Dimensions) */}
+        {/* ----------------------------------------------------------- */}
+        <div className="mkt-today-kpi-grid">
+          {/* Total Assigned Works (Blue Accent) */}
+          <div
+            onClick={() => handleTabChange('all_works')}
+            className="mkt-today-kpi-card cursor-pointer border-sky-500/20 hover:border-sky-500/50"
+          >
+            <div className="p-2.5 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400 flex-shrink-0">
+              <Layers size={18} />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">
+                Total Assigned Works
+              </span>
+              <div className="text-2xl font-extrabold text-white leading-tight font-mono">
+                {metrics.totalAssigned}
+              </div>
+              <span className="text-[10px] text-sky-400/80 block truncate">Active & completed</span>
             </div>
           </div>
 
-          {/* ========================================================= */}
-          {/* 4. BEAUTIFUL DASHBOARD SUMMARY CARDS                      */}
-          {/* ========================================================= */}
-          <div className="mkt-today-kpi-grid">
-            {/* Total Assigned Works (Blue Accent) */}
-            <div
-              onClick={() => handleTabChange('all_works')}
-              className="mkt-today-kpi-card cursor-pointer border-sky-500/20 hover:border-sky-500/50"
-            >
-              <div className="p-2.5 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-400">
-                <Layers size={18} />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Total Assigned Works
-                </span>
-                <div className="text-2xl font-extrabold text-white leading-tight font-mono">
-                  {metrics.totalAssigned}
-                </div>
-                <span className="text-[10px] text-sky-400/80">Active & completed</span>
-              </div>
+          {/* Today's Works (Purple Accent) */}
+          <div
+            onClick={() => handleTabChange('today')}
+            className="mkt-today-kpi-card cursor-pointer border-purple-500/20 hover:border-purple-500/50"
+          >
+            <div className="p-2.5 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400 flex-shrink-0">
+              <CalendarCheck size={18} />
             </div>
-
-            {/* Today's Works (Purple Accent) */}
-            <div
-              onClick={() => handleTabChange('today')}
-              className="mkt-today-kpi-card cursor-pointer border-purple-500/20 hover:border-purple-500/50"
-            >
-              <div className="p-2.5 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-400">
-                <CalendarCheck size={18} />
+            <div className="min-w-0">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">
+                Today's Works
+              </span>
+              <div className="text-2xl font-extrabold text-white leading-tight font-mono">
+                {metrics.todayWorksCount}
               </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Today's Works
-                </span>
-                <div className="text-2xl font-extrabold text-white leading-tight font-mono">
-                  {metrics.todayWorksCount}
-                </div>
-                <span className="text-[10px] text-purple-400/80">Active on {currentToday}</span>
-              </div>
+              <span className="text-[10px] text-purple-400/80 block truncate">Active on {currentToday}</span>
             </div>
+          </div>
 
-            {/* In Progress (Amber/Cyan Accent) */}
-            <div
-              onClick={() => {
-                setStatusFilter('In Progress');
-                handleTabChange('all_works');
-              }}
-              className="mkt-today-kpi-card cursor-pointer border-amber-500/20 hover:border-amber-500/50"
-            >
-              <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400">
-                <Clock size={18} />
-              </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  In Progress
-                </span>
-                <div className="text-2xl font-extrabold text-amber-300 leading-tight font-mono">
-                  {metrics.inProgress}
-                </div>
-                <span className="text-[10px] text-amber-400/80">Executing currently</span>
-              </div>
+          {/* In Progress (Amber/Cyan Accent) */}
+          <div
+            onClick={() => {
+              setStatusFilter('In Progress');
+              handleTabChange('all_works');
+            }}
+            className="mkt-today-kpi-card cursor-pointer border-amber-500/20 hover:border-amber-500/50"
+          >
+            <div className="p-2.5 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex-shrink-0">
+              <Clock size={18} />
             </div>
-
-            {/* Completed (Emerald Green Accent) */}
-            <div
-              onClick={() => handleTabChange('reports')}
-              className="mkt-today-kpi-card cursor-pointer border-emerald-500/20 hover:border-emerald-500/50"
-            >
-              <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
-                <CheckCircle2 size={18} />
+            <div className="min-w-0">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">
+                In Progress
+              </span>
+              <div className="text-2xl font-extrabold text-amber-300 leading-tight font-mono">
+                {metrics.inProgress}
               </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Completed
-                </span>
-                <div className="text-2xl font-extrabold text-emerald-300 leading-tight font-mono">
-                  {metrics.completed}
-                </div>
-                <span className="text-[10px] text-emerald-400/80">Delivered & verified</span>
-              </div>
+              <span className="text-[10px] text-amber-400/80 block truncate">Executing currently</span>
             </div>
+          </div>
 
-            {/* Pending / Overdue (Red/Amber Alert Accent) */}
+          {/* Completed (Emerald Green Accent) */}
+          <div
+            onClick={() => handleTabChange('reports')}
+            className="mkt-today-kpi-card cursor-pointer border-emerald-500/20 hover:border-emerald-500/50"
+          >
+            <div className="p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex-shrink-0">
+              <CheckCircle2 size={18} />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">
+                Completed
+              </span>
+              <div className="text-2xl font-extrabold text-emerald-300 leading-tight font-mono">
+                {metrics.completed}
+              </div>
+              <span className="text-[10px] text-emerald-400/80 block truncate">Delivered & verified</span>
+            </div>
+          </div>
+
+          {/* Pending / Overdue (Alert Accent) */}
+          <div
+            onClick={() => {
+              setStatusFilter('Assigned');
+              handleTabChange('all_works');
+            }}
+            className={`mkt-today-kpi-card cursor-pointer ${
+              metrics.overdue > 0 ? 'is-overdue-alert' : 'border-rose-500/20 hover:border-rose-500/50'
+            }`}
+          >
             <div
-              onClick={() => {
-                setStatusFilter('Assigned');
-                handleTabChange('all_works');
-              }}
-              className={`mkt-today-kpi-card cursor-pointer ${
-                metrics.overdue > 0 ? 'is-overdue-alert' : 'border-rose-500/20 hover:border-rose-500/50'
+              className={`p-2.5 rounded-xl border flex-shrink-0 ${
+                metrics.overdue > 0
+                  ? 'bg-rose-500/20 border-rose-500/40 text-rose-400 animate-pulse'
+                  : 'bg-slate-800 border-white/10 text-slate-400'
               }`}
             >
+              <AlertTriangle size={18} />
+            </div>
+            <div className="min-w-0">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block truncate">
+                Pending / Overdue
+              </span>
               <div
-                className={`p-2.5 rounded-xl border ${
-                  metrics.overdue > 0
-                    ? 'bg-rose-500/20 border-rose-500/40 text-rose-400 animate-pulse'
-                    : 'bg-slate-800 border-white/10 text-slate-400'
+                className={`text-2xl font-extrabold leading-tight font-mono ${
+                  metrics.overdue > 0 ? 'text-rose-400' : 'text-white'
                 }`}
               >
-                <AlertTriangle size={18} />
+                {metrics.overdue > 0 ? `${metrics.overdue} Overdue` : `${metrics.totalAssigned - metrics.completed} Pending`}
               </div>
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Pending / Overdue
-                </span>
-                <div
-                  className={`text-2xl font-extrabold leading-tight font-mono ${
-                    metrics.overdue > 0 ? 'text-rose-400' : 'text-white'
-                  }`}
-                >
-                  {metrics.overdue > 0 ? `${metrics.overdue} Overdue` : `${metrics.totalAssigned - metrics.completed} Pending`}
-                </div>
-                <span
-                  className={`text-[10px] font-medium ${
-                    metrics.overdue > 0 ? 'text-rose-300' : 'text-slate-500'
-                  }`}
-                >
-                  {metrics.overdue > 0 ? 'Needs escalation' : 'On schedule'}
-                </span>
-              </div>
+              <span
+                className={`text-[10px] font-medium block truncate ${
+                  metrics.overdue > 0 ? 'text-rose-300' : 'text-slate-500'
+                }`}
+              >
+                {metrics.overdue > 0 ? 'Needs escalation' : 'On schedule'}
+              </span>
             </div>
           </div>
+        </div>
 
-          {/* ========================================================= */}
-          {/* VIEW 1: OVERVIEW DASHBOARD VIEW                           */}
-          {/* ========================================================= */}
-          {activeTab === 'overview' && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-                {/* Column 1 & 2: Priority Deliverables */}
-                <div className="lg:col-span-2 mkt-card space-y-3">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
-                    <div className="flex items-center gap-2">
-                      <CalendarCheck size={16} className="text-purple-400" />
-                      <h3 className="text-sm font-bold text-white">Active & Upcoming Deliverables</h3>
-                    </div>
+        {/* ----------------------------------------------------------- */}
+        {/* Step 3 & 4: View-Specific Search/Filters + Work Table       */}
+        {/* ----------------------------------------------------------- */}
+
+        {/* VIEW 1: OVERVIEW DASHBOARD VIEW */}
+        {activeTab === 'overview' && (
+          <div className="space-y-4 w-full">
+            {/* Search and Filters Toolbar */}
+            <div className="mkt-card !p-3.5 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5">
+                <div className="relative md:col-span-2">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search active work title, description, employee..."
+                    className="mkt-input !pl-9 !py-1.5 text-xs"
+                  />
+                  {searchQuery && (
                     <button
-                      onClick={() => handleTabChange('all_works')}
-                      className="text-xs text-purple-400 hover:text-purple-300 flex items-center gap-1 font-semibold"
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
                     >
-                      <span>View All Works ({marketingTasks.length})</span>
-                      <ChevronRight size={13} />
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    {metrics.todayWorks.length === 0 ? (
-                      <div className="p-6 text-center text-slate-400 text-xs">
-                        No active tasks scheduled for today. Click "+ Add Work" to assign new tasks.
-                      </div>
-                    ) : (
-                      metrics.todayWorks.slice(0, 5).map((t) => (
-                        <div
-                          key={t.id}
-                          className="p-3 rounded-xl bg-slate-900/60 border border-white/5 hover:border-purple-500/30 transition-all flex items-center justify-between gap-3"
-                        >
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="mkt-badge mkt-badge-purple text-[10px]">
-                                {t.category}
-                              </span>
-                              {getPriorityBadge(t.priority)}
-                            </div>
-                            <h4 className="text-xs font-bold text-white truncate">{t.title}</h4>
-                            <div className="flex items-center gap-3 text-[11px] text-slate-400 mt-1">
-                              <span>Assigned: <strong className="text-slate-300">{t.assignedTo}</strong></span>
-                              <span>•</span>
-                              <span>Due: <strong className="text-slate-300">{t.dueDate} {t.dueTime || ''}</strong></span>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            {getStatusBadge(t.status)}
-                            <button
-                              onClick={() => openTaskUpdateModal(t)}
-                              className="btn-mkt-cyan text-xs !py-1 !px-2.5"
-                            >
-                              Update
-                            </button>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-
-                {/* Column 3: Employee Workload Breakdown */}
-                <div className="mkt-card space-y-3">
-                  <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
-                    <div className="flex items-center gap-2">
-                      <User size={16} className="text-sky-400" />
-                      <h3 className="text-sm font-bold text-white">Team Workload Allocation</h3>
-                    </div>
-                    <span className="text-[11px] text-slate-400">{employeeOptions.length} Members</span>
-                  </div>
-
-                  <div className="space-y-2.5 divide-y divide-white/5">
-                    {employeeOptions.slice(0, 6).map((emp) => {
-                      const empTasks = marketingTasks.filter((t) => t.assignedTo === emp);
-                      const empCompleted = empTasks.filter((t) => t.status === 'Completed').length;
-                      const empPending = empTasks.length - empCompleted;
-                      return (
-                        <div
-                          key={emp}
-                          onClick={() => {
-                            setEmployeeFilter(emp);
-                            handleTabChange('all_works');
-                          }}
-                          className="pt-2 flex items-center justify-between text-xs cursor-pointer hover:bg-slate-800/40 p-1.5 rounded-lg transition-colors"
-                        >
-                          <div className="min-w-0">
-                            <div className="font-semibold text-slate-200 truncate">{emp}</div>
-                            <div className="text-[10px] text-slate-400">
-                              {empCompleted} finished • {empPending} pending
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <span className="px-2 py-0.5 rounded-md bg-purple-500/15 border border-purple-500/30 text-purple-300 font-bold text-[11px]">
-                              {empTasks.length} Works
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================= */}
-          {/* VIEW 2: ALL WORKS TABLE VIEW                              */}
-          {/* ========================================================= */}
-          {activeTab === 'all_works' && (
-            <div className="space-y-4">
-              {/* Filters Toolbar */}
-              <div className="mkt-card !p-3.5 space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5">
-                  <div className="relative md:col-span-2">
-                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search work title, description, employee..."
-                      className="mkt-input !pl-9 !py-1.5 text-xs"
-                    />
-                    {searchQuery && (
-                      <button
-                        onClick={() => setSearchQuery('')}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
-                      >
-                        ✕
-                      </button>
-                    )}
-                  </div>
-
-                  <div>
-                    <select
-                      value={employeeFilter}
-                      onChange={(e) => setEmployeeFilter(e.target.value)}
-                      className="mkt-select !py-1.5 text-xs"
-                    >
-                      <option value="All">All Employees</option>
-                      {employeeOptions.map((e) => (
-                        <option key={e} value={e}>
-                          {e}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <select
-                      value={categoryFilter}
-                      onChange={(e) => setCategoryFilter(e.target.value)}
-                      className="mkt-select !py-1.5 text-xs"
-                    >
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <select
-                      value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
-                      className="mkt-select !py-1.5 text-xs"
-                    >
-                      {STATUSES.map((st) => (
-                        <option key={st} value={st}>
-                          {st === 'All' ? 'All Statuses' : st}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/5 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-semibold text-slate-400">Priority:</span>
-                    <div className="flex items-center gap-1">
-                      {PRIORITIES.map((p) => (
-                        <button
-                          key={p}
-                          onClick={() => setPriorityFilter(p)}
-                          className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                            priorityFilter === p
-                              ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
-                              : 'text-slate-400 hover:text-white'
-                          }`}
-                        >
-                          {p}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {dateFilter && (
-                      <button
-                        onClick={() => setDateFilter('')}
-                        className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[11px] font-bold"
-                      >
-                        Clear Date ({dateFilter}) ✕
-                      </button>
-                    )}
-                    {(searchQuery || employeeFilter !== 'All' || categoryFilter !== 'All' || priorityFilter !== 'All' || statusFilter !== 'All') && (
-                      <button
-                        onClick={() => {
-                          setSearchQuery('');
-                          setEmployeeFilter('All');
-                          setCategoryFilter('All');
-                          setPriorityFilter('All');
-                          setStatusFilter('All');
-                          setDateFilter('');
-                        }}
-                        className="text-purple-400 hover:text-purple-300 underline font-semibold text-[11px]"
-                      >
-                        Reset Filters
-                      </button>
-                    )}
-                    <span className="text-[11px] text-slate-400">
-                      Showing <strong className="text-white">{filteredAllWorks.length}</strong> of {marketingTasks.length} works
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 5. Clean Professional Work Table */}
-              <div className="mkt-table-container">
-                <table className="mkt-work-table">
-                  <thead>
-                    <tr>
-                      <th className="min-w-[260px]">Work Title</th>
-                      <th className="w-40">Assigned Employee</th>
-                      <th className="w-24">Priority</th>
-                      <th className="w-36">Deadline</th>
-                      <th className="w-32">Status</th>
-                      <th className="w-36 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredAllWorks.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="text-center py-12 text-slate-400 text-xs">
-                          <div className="flex flex-col items-center justify-center gap-2">
-                            <CheckSquare size={32} className="text-slate-600" />
-                            <span>No assigned work matches the selected filters</span>
-                          </div>
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredAllWorks.map((task) => {
-                        const isDone = task.status === 'Completed';
-                        const isOverdue = task.dueDate && task.dueDate < currentToday && !isDone;
-
-                        return (
-                          <tr
-                            key={task.id}
-                            className={`${isDone ? 'is-completed' : ''} ${isOverdue ? 'is-overdue' : ''}`}
-                          >
-                            {/* 1. Work Title */}
-                            <td>
-                              <div className="space-y-0.5">
-                                <div className="font-semibold text-xs text-white leading-snug">
-                                  {task.title}
-                                </div>
-                                {task.desc && (
-                                  <p className="text-[11px] text-slate-400 line-clamp-1">{task.desc}</p>
-                                )}
-                                <div className="flex items-center gap-2 text-[10px] text-slate-500">
-                                  <span className="mkt-badge mkt-badge-purple text-[9.5px]">
-                                    {task.category}
-                                  </span>
-                                  {task.attachment && (
-                                    <span className="text-sky-400 flex items-center gap-0.5">
-                                      <Paperclip size={10} />
-                                      <span>{task.attachment}</span>
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            </td>
-
-                            {/* 2. Assigned Employee */}
-                            <td>
-                              <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-[10px] font-bold text-purple-300 flex-shrink-0">
-                                  {(task.assignedTo || 'E').charAt(0).toUpperCase()}
-                                </div>
-                                <span className="text-xs font-semibold text-slate-200 truncate">
-                                  {task.assignedTo}
-                                </span>
-                              </div>
-                            </td>
-
-                            {/* 3. Priority */}
-                            <td>{getPriorityBadge(task.priority)}</td>
-
-                            {/* 4. Deadline */}
-                            <td>
-                              <div className="space-y-0.5">
-                                <div className="text-xs text-slate-200 font-semibold flex items-center gap-1">
-                                  <Calendar size={11} className="text-slate-400" />
-                                  <span>{task.dueDate}</span>
-                                  {task.dueTime && (
-                                    <span className="text-[10.5px] text-slate-400 font-normal">
-                                      {task.dueTime}
-                                    </span>
-                                  )}
-                                </div>
-                                {isOverdue && (
-                                  <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-rose-500/20 border border-rose-500/40 text-[10px] font-bold text-rose-300">
-                                    Overdue
-                                  </span>
-                                )}
-                              </div>
-                            </td>
-
-                            {/* 5. Status */}
-                            <td>
-                              <div className="space-y-1">
-                                {getStatusBadge(task.status)}
-                                {typeof task.progress === 'number' && (
-                                  <div className="w-20 bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                                    <div
-                                      className={`h-full ${isDone ? 'bg-emerald-400' : 'bg-purple-500'}`}
-                                      style={{ width: `${task.progress}%` }}
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            </td>
-
-                            {/* 6. Actions */}
-                            <td>
-                              <div className="flex items-center justify-end gap-1.5">
-                                {/* Update Button */}
-                                <button
-                                  onClick={() => openTaskUpdateModal(task)}
-                                  className="btn-mkt-cyan text-xs !py-1 !px-2.5"
-                                  title="Update Progress / Submit Completion"
-                                >
-                                  Update
-                                </button>
-
-                                {/* Slip Print Button */}
-                                <button
-                                  onClick={() => openTaskPrintModal(task, 'single')}
-                                  className="btn-mkt-glass text-xs !p-1.5"
-                                  title="Print Work Order Slip"
-                                >
-                                  <Printer size={13} />
-                                </button>
-
-                                {/* Edit Button */}
-                                <button
-                                  onClick={() => openTaskModal(task)}
-                                  className="btn-mkt-glass text-xs !p-1.5 text-sky-400 hover:text-white"
-                                  title="Edit Assignment"
-                                >
-                                  <Edit2 size={13} />
-                                </button>
-
-                                {/* Delete Button */}
-                                <button
-                                  onClick={() => handleDelete(task.id, task.title)}
-                                  className="btn-mkt-delete-red text-xs !p-1.5"
-                                  title="Delete Task"
-                                >
-                                  <Trash2 size={13} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================= */}
-          {/* VIEW 3: DEDICATED TODAY'S WORK VIEW                       */}
-          {/* ========================================================= */}
-          {activeTab === 'today' && (
-            <div className="space-y-4">
-              <div className="mkt-card !p-3.5 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <CalendarCheck size={18} className="text-purple-400" />
-                  <div>
-                    <h3 className="text-sm font-bold text-white">Today's Active Deliverables</h3>
-                    <p className="text-[11px] text-slate-400">
-                      Work items scheduled, in-progress, or due on {currentToday}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  {[
-                    { id: 'All', label: 'All Today' },
-                    { id: 'My', label: 'My Tasks' },
-                    { id: 'InProgress', label: 'In Progress' },
-                    { id: 'Completed', label: 'Completed' },
-                    { id: 'Overdue', label: 'Overdue Alert' },
-                  ].map((filter) => (
-                    <button
-                      key={filter.id}
-                      onClick={() => setTodayQuickFilter(filter.id)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
-                        todayQuickFilter === filter.id
-                          ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
-                          : 'text-slate-400 hover:text-white bg-slate-900/60'
-                      }`}
-                    >
-                      {filter.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Today's Table */}
-              <div className="mkt-table-container">
-                <table className="mkt-work-table">
-                  <thead>
-                    <tr>
-                      <th className="min-w-[260px]">Work Title</th>
-                      <th className="w-40">Assigned Employee</th>
-                      <th className="w-24">Priority</th>
-                      <th className="w-36">Deadline</th>
-                      <th className="w-32">Status</th>
-                      <th className="w-36 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTodayWorks.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="text-center py-12 text-slate-400 text-xs">
-                          No tasks found for today matching the filter.
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredTodayWorks.map((task) => {
-                        const isDone = task.status === 'Completed';
-                        const isOverdue = task.dueDate && task.dueDate < currentToday && !isDone;
-
-                        return (
-                          <tr key={task.id} className={`${isDone ? 'is-completed' : ''} ${isOverdue ? 'is-overdue' : ''}`}>
-                            <td>
-                              <div className="space-y-0.5">
-                                <div className="font-semibold text-xs text-white">{task.title}</div>
-                                {task.desc && <p className="text-[11px] text-slate-400 line-clamp-1">{task.desc}</p>}
-                              </div>
-                            </td>
-                            <td>
-                              <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-[10px] font-bold text-purple-300 flex-shrink-0">
-                                  {(task.assignedTo || 'E').charAt(0).toUpperCase()}
-                                </div>
-                                <span className="text-xs font-semibold text-slate-200 truncate">{task.assignedTo}</span>
-                              </div>
-                            </td>
-                            <td>{getPriorityBadge(task.priority)}</td>
-                            <td>
-                              <div className="text-xs text-slate-200 font-semibold flex items-center gap-1">
-                                <Calendar size={11} className="text-slate-400" />
-                                <span>{task.dueDate} {task.dueTime || ''}</span>
-                              </div>
-                            </td>
-                            <td>{getStatusBadge(task.status)}</td>
-                            <td>
-                              <div className="flex items-center justify-end gap-1.5">
-                                <button
-                                  onClick={() => openTaskUpdateModal(task)}
-                                  className="btn-mkt-cyan text-xs !py-1 !px-2.5"
-                                >
-                                  Update
-                                </button>
-                                <button
-                                  onClick={() => openTaskPrintModal(task, 'single')}
-                                  className="btn-mkt-glass text-xs !p-1.5"
-                                  title="Print Slip"
-                                >
-                                  <Printer size={13} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================= */}
-          {/* VIEW 4: WORK HISTORY & PRINTABLE REPORTS                  */}
-          {/* ========================================================= */}
-          {activeTab === 'reports' && (
-            <div className="space-y-4">
-              <div className="mkt-card !p-4 space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
-                  <div>
-                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                      <History size={16} className="text-emerald-400" />
-                      <span>Work Completion History & Official Printable Records</span>
-                    </h3>
-                    <p className="text-xs text-slate-400">
-                      Permanent audit records of delivered deliverables with employee completion notes
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => openTaskPrintModal(null, 'summary')}
-                      className="btn-mkt-primary-blue text-xs"
-                    >
-                      <Printer size={13} />
-                      <span>Print Full Report</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                      Employee Filter:
-                    </label>
-                    <select
-                      value={reportEmployee}
-                      onChange={(e) => setReportEmployee(e.target.value)}
-                      className="mkt-select !py-1.5 text-xs"
-                    >
-                      <option value="All">All Employees</option>
-                      {employeeOptions.map((e) => (
-                        <option key={e} value={e}>
-                          {e}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                      Category Filter:
-                    </label>
-                    <select
-                      value={reportCategory}
-                      onChange={(e) => setReportCategory(e.target.value)}
-                      className="mkt-select !py-1.5 text-xs"
-                    >
-                      {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                      Start Date:
-                    </label>
-                    <input
-                      type="date"
-                      value={reportStartDate}
-                      onChange={(e) => setReportStartDate(e.target.value)}
-                      className="mkt-input !py-1 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                      End Date:
-                    </label>
-                    <input
-                      type="date"
-                      value={reportEndDate}
-                      onChange={(e) => setReportEndDate(e.target.value)}
-                      className="mkt-input !py-1 text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-semibold text-slate-400 mb-1">
-                      Search Notes:
-                    </label>
-                    <input
-                      type="text"
-                      value={reportSearch}
-                      onChange={(e) => setReportSearch(e.target.value)}
-                      placeholder="Keyword search..."
-                      className="mkt-input !py-1 text-xs"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-xs pt-1 text-slate-400">
-                  <span>
-                    Found <strong className="text-emerald-400">{filteredHistory.length}</strong> completed work records
-                  </span>
-                  {(reportEmployee !== 'All' || reportCategory !== 'All' || reportStartDate || reportEndDate || reportSearch) && (
-                    <button
-                      onClick={() => {
-                        setReportEmployee('All');
-                        setReportCategory('All');
-                        setReportStartDate('');
-                        setReportEndDate('');
-                        setReportSearch('');
-                      }}
-                      className="text-purple-400 hover:text-purple-300 underline font-semibold"
-                    >
-                      Reset History Filters
+                      ✕
                     </button>
                   )}
                 </div>
+
+                <div>
+                  <select
+                    value={employeeFilter}
+                    onChange={(e) => setEmployeeFilter(e.target.value)}
+                    className="mkt-select !py-1.5 text-xs"
+                  >
+                    <option value="All">All Employees</option>
+                    {employeeOptions.map((e) => (
+                      <option key={e} value={e}>
+                        {e}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="mkt-select !py-1.5 text-xs"
+                  >
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="mkt-select !py-1.5 text-xs"
+                  >
+                    {STATUSES.map((st) => (
+                      <option key={st} value={st}>
+                        {st === 'All' ? 'All Statuses' : st}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
-              {/* History Table */}
-              <div className="mkt-table-container">
-                <table className="mkt-work-table">
-                  <thead>
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/5 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-slate-400">Priority:</span>
+                  <div className="flex items-center gap-1">
+                    {PRIORITIES.map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setPriorityFilter(p)}
+                        className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                          priorityFilter === p
+                            ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {(searchQuery || employeeFilter !== 'All' || categoryFilter !== 'All' || priorityFilter !== 'All' || statusFilter !== 'All') && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery('');
+                        setEmployeeFilter('All');
+                        setCategoryFilter('All');
+                        setPriorityFilter('All');
+                        setStatusFilter('All');
+                        setDateFilter('');
+                      }}
+                      className="text-purple-400 hover:text-purple-300 underline font-semibold text-[11px]"
+                    >
+                      Reset Filters
+                    </button>
+                  )}
+                  <span className="text-[11px] text-slate-400">
+                    Showing <strong className="text-white">{filteredAllWorks.length}</strong> of {marketingTasks.length} works
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 4: Full-Width Work Table */}
+            <div className="mkt-table-container">
+              <table className="mkt-work-table">
+                <thead>
+                  <tr>
+                    <th className="min-w-[260px]">Work Title</th>
+                    <th className="w-40">Assigned Employee</th>
+                    <th className="w-24">Priority</th>
+                    <th className="w-36">Deadline</th>
+                    <th className="w-32">Status</th>
+                    <th className="w-36 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredAllWorks.length === 0 ? (
                     <tr>
-                      <th className="min-w-[240px]">Work Title</th>
-                      <th className="w-36">Employee</th>
-                      <th className="w-24">Assignment Date</th>
-                      <th className="w-32">Completion Date</th>
-                      <th className="w-28">Category</th>
-                      <th className="w-20">Final Status</th>
-                      <th className="min-w-[200px]">Completion Notes</th>
-                      <th className="w-24 text-right">Actions</th>
+                      <td colSpan={6} className="text-center py-12 text-slate-400 text-xs">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <CheckSquare size={32} className="text-slate-600" />
+                          <span>No assigned work matches the selected filters</span>
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {filteredHistory.length === 0 ? (
-                      <tr>
-                        <td colSpan={8} className="text-center py-12 text-slate-400 text-xs">
-                          No completed works found in this filter range.
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredHistory.map((task) => (
-                        <tr key={task.id} className="hover:bg-emerald-950/10">
-                          <td className="font-semibold text-xs text-white">{task.title}</td>
-                          <td className="text-xs font-medium text-slate-200">{task.assignedTo}</td>
-                          <td className="text-xs text-slate-400">{task.startDate}</td>
-                          <td className="text-xs font-semibold text-emerald-300">
-                            {task.completedDate || task.dueDate || '—'} {task.completedTime || ''}
-                          </td>
-                          <td>
-                            <span className="mkt-badge mkt-badge-purple text-[10px]">{task.category}</span>
-                          </td>
-                          <td>
-                            <span className="mkt-badge mkt-badge-green font-bold">✓ Completed</span>
-                          </td>
+                  ) : (
+                    filteredAllWorks.map((task) => {
+                      const isDone = task.status === 'Completed';
+                      const isOverdue = task.dueDate && task.dueDate < currentToday && !isDone;
+
+                      return (
+                        <tr
+                          key={task.id}
+                          className={`${isDone ? 'is-completed' : ''} ${isOverdue ? 'is-overdue' : ''}`}
+                        >
+                          {/* 1. Work Title */}
                           <td>
                             <div className="space-y-0.5">
-                              <p className="text-xs text-slate-300 italic line-clamp-2">
-                                {task.completionNotes || 'Delivered on schedule.'}
-                              </p>
-                              {task.completionAttachment && (
-                                <span className="text-[11px] text-sky-400 flex items-center gap-1">
-                                  <Paperclip size={10} />
-                                  <span className="truncate max-w-[180px]">{task.completionAttachment}</span>
+                              <div className="font-semibold text-xs text-white leading-snug">
+                                {task.title}
+                              </div>
+                              {task.desc && (
+                                <p className="text-[11px] text-slate-400 line-clamp-1">{task.desc}</p>
+                              )}
+                              <div className="flex items-center gap-2 text-[10px] text-slate-500">
+                                <span className="mkt-badge mkt-badge-purple text-[9.5px]">
+                                  {task.category}
+                                </span>
+                                {task.attachment && (
+                                  <span className="text-sky-400 flex items-center gap-0.5">
+                                    <Paperclip size={10} />
+                                    <span>{task.attachment}</span>
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* 2. Assigned Employee */}
+                          <td>
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-[10px] font-bold text-purple-300 flex-shrink-0">
+                                {(task.assignedTo || 'E').charAt(0).toUpperCase()}
+                              </div>
+                              <span className="text-xs font-semibold text-slate-200 truncate">
+                                {task.assignedTo}
+                              </span>
+                            </div>
+                          </td>
+
+                          {/* 3. Priority */}
+                          <td>{getPriorityBadge(task.priority)}</td>
+
+                          {/* 4. Deadline */}
+                          <td>
+                            <div className="space-y-0.5">
+                              <div className="text-xs text-slate-200 font-semibold flex items-center gap-1">
+                                <Calendar size={11} className="text-slate-400" />
+                                <span>{task.dueDate}</span>
+                                {task.dueTime && (
+                                  <span className="text-[10.5px] text-slate-400 font-normal">
+                                    {task.dueTime}
+                                  </span>
+                                )}
+                              </div>
+                              {isOverdue && (
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-rose-500/20 border border-rose-500/40 text-[10px] font-bold text-rose-300">
+                                  Overdue
                                 </span>
                               )}
                             </div>
                           </td>
+
+                          {/* 5. Status */}
                           <td>
-                            <div className="flex items-center justify-end gap-1">
+                            <div className="space-y-1">
+                              {getStatusBadge(task.status)}
+                              {typeof task.progress === 'number' && (
+                                <div className="w-20 bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                  <div
+                                    className={`h-full ${isDone ? 'bg-emerald-400' : 'bg-purple-500'}`}
+                                    style={{ width: `${task.progress}%` }}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* 6. Actions */}
+                          <td>
+                            <div className="flex items-center justify-end gap-1.5">
+                              {/* Update Button (Blue) */}
+                              <button
+                                onClick={() => openTaskUpdateModal(task)}
+                                className="btn-mkt-primary-blue text-xs !py-1 !px-2.5"
+                                title="Update Progress / Submit Completion"
+                              >
+                                Update
+                              </button>
+
+                              {/* Slip Print Button */}
                               <button
                                 onClick={() => openTaskPrintModal(task, 'single')}
-                                className="btn-mkt-cyan text-xs !py-1 !px-2 flex items-center gap-1"
-                                title="Print Work Slip Certificate"
+                                className="btn-mkt-cyan text-xs !p-1.5"
+                                title="Print Work Order Slip"
                               >
-                                <Printer size={12} />
-                                <span>Slip</span>
+                                <Printer size={13} />
+                              </button>
+
+                              {/* Edit Button (Dark glass with blue border) */}
+                              <button
+                                onClick={() => openTaskModal(task)}
+                                className="btn-mkt-glass text-xs !p-1.5 text-sky-400 hover:text-white"
+                                title="Edit Assignment"
+                              >
+                                <Edit2 size={13} />
+                              </button>
+
+                              {/* Delete Button (Dark glass with red border) */}
+                              <button
+                                onClick={() => handleDelete(task.id, task.title)}
+                                className="btn-mkt-delete-red text-xs !p-1.5"
+                                title="Delete Task"
+                              >
+                                <Trash2 size={13} />
                               </button>
                             </div>
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Team Workload Summary Strip underneath Overview Table */}
+            <div className="mkt-card !p-4 space-y-3">
+              <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <User size={16} className="text-purple-400" />
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                    Team Workload Allocation
+                  </h3>
+                </div>
+                <span className="text-[11px] text-slate-400">{employeeOptions.length} Active Members</span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+                {employeeOptions.map((emp) => {
+                  const empTasks = marketingTasks.filter((t) => t.assignedTo === emp);
+                  const empCompleted = empTasks.filter((t) => t.status === 'Completed').length;
+                  const empPending = empTasks.length - empCompleted;
+                  return (
+                    <div
+                      key={emp}
+                      onClick={() => {
+                        setEmployeeFilter(emp);
+                        handleTabChange('all_works');
+                      }}
+                      className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5 hover:border-purple-500/40 cursor-pointer transition-all space-y-1"
+                    >
+                      <div className="font-semibold text-slate-200 text-xs truncate">{emp}</div>
+                      <div className="text-[10px] text-slate-400 flex items-center justify-between">
+                        <span>{empPending} pending</span>
+                        <span className="text-emerald-400 font-bold">{empCompleted} done</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          )}
-        </main>
+          </div>
+        )}
+
+        {/* VIEW 2: ALL WORKS TABLE VIEW */}
+        {activeTab === 'all_works' && (
+          <div className="space-y-4 w-full">
+            {/* Search and Filters Toolbar */}
+            <div className="mkt-card !p-3.5 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5">
+                <div className="relative md:col-span-2">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search work title, description, employee..."
+                    className="mkt-input !pl-9 !py-1.5 text-xs"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                <div>
+                  <select
+                    value={employeeFilter}
+                    onChange={(e) => setEmployeeFilter(e.target.value)}
+                    className="mkt-select !py-1.5 text-xs"
+                  >
+                    <option value="All">All Employees</option>
+                    {employeeOptions.map((e) => (
+                      <option key={e} value={e}>
+                        {e}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="mkt-select !py-1.5 text-xs"
+                  >
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="mkt-select !py-1.5 text-xs"
+                  >
+                    {STATUSES.map((st) => (
+                      <option key={st} value={st}>
+                        {st === 'All' ? 'All Statuses' : st}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/5 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-semibold text-slate-400">Priority:</span>
+                  <div className="flex items-center gap-1">
+                    {PRIORITIES.map((p) => (
+                      <button
+                        key={p}
+                        onClick={() => setPriorityFilter(p)}
+                        className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                          priorityFilter === p
+                            ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
+                            : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {dateFilter && (
+                    <button
+                      onClick={() => setDateFilter('')}
+                      className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[11px] font-bold"
+                    >
+                      Clear Date ({dateFilter}) ✕
+                    </button>
+                  )}
+                  {(searchQuery || employeeFilter !== 'All' || categoryFilter !== 'All' || priorityFilter !== 'All' || statusFilter !== 'All') && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery('');
+                        setEmployeeFilter('All');
+                        setCategoryFilter('All');
+                        setPriorityFilter('All');
+                        setStatusFilter('All');
+                        setDateFilter('');
+                      }}
+                      className="text-purple-400 hover:text-purple-300 underline font-semibold text-[11px]"
+                    >
+                      Reset Filters
+                    </button>
+                  )}
+                  <span className="text-[11px] text-slate-400">
+                    Showing <strong className="text-white">{filteredAllWorks.length}</strong> of {marketingTasks.length} works
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 4: Full-Width Work Table */}
+            <div className="mkt-table-container">
+              <table className="mkt-work-table">
+                <thead>
+                  <tr>
+                    <th className="min-w-[260px]">Work Title</th>
+                    <th className="w-40">Assigned Employee</th>
+                    <th className="w-24">Priority</th>
+                    <th className="w-36">Deadline</th>
+                    <th className="w-32">Status</th>
+                    <th className="w-36 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredAllWorks.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="text-center py-12 text-slate-400 text-xs">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <CheckSquare size={32} className="text-slate-600" />
+                          <span>No assigned work matches the selected filters</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredAllWorks.map((task) => {
+                      const isDone = task.status === 'Completed';
+                      const isOverdue = task.dueDate && task.dueDate < currentToday && !isDone;
+
+                      return (
+                        <tr
+                          key={task.id}
+                          className={`${isDone ? 'is-completed' : ''} ${isOverdue ? 'is-overdue' : ''}`}
+                        >
+                          {/* 1. Work Title */}
+                          <td>
+                            <div className="space-y-0.5">
+                              <div className="font-semibold text-xs text-white leading-snug">
+                                {task.title}
+                              </div>
+                              {task.desc && (
+                                <p className="text-[11px] text-slate-400 line-clamp-1">{task.desc}</p>
+                              )}
+                              <div className="flex items-center gap-2 text-[10px] text-slate-500">
+                                <span className="mkt-badge mkt-badge-purple text-[9.5px]">
+                                  {task.category}
+                                </span>
+                                {task.attachment && (
+                                  <span className="text-sky-400 flex items-center gap-0.5">
+                                    <Paperclip size={10} />
+                                    <span>{task.attachment}</span>
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+
+                          {/* 2. Assigned Employee */}
+                          <td>
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-[10px] font-bold text-purple-300 flex-shrink-0">
+                                {(task.assignedTo || 'E').charAt(0).toUpperCase()}
+                              </div>
+                              <span className="text-xs font-semibold text-slate-200 truncate">
+                                {task.assignedTo}
+                              </span>
+                            </div>
+                          </td>
+
+                          {/* 3. Priority */}
+                          <td>{getPriorityBadge(task.priority)}</td>
+
+                          {/* 4. Deadline */}
+                          <td>
+                            <div className="space-y-0.5">
+                              <div className="text-xs text-slate-200 font-semibold flex items-center gap-1">
+                                <Calendar size={11} className="text-slate-400" />
+                                <span>{task.dueDate}</span>
+                                {task.dueTime && (
+                                  <span className="text-[10.5px] text-slate-400 font-normal">
+                                    {task.dueTime}
+                                  </span>
+                                )}
+                              </div>
+                              {isOverdue && (
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-rose-500/20 border border-rose-500/40 text-[10px] font-bold text-rose-300">
+                                  Overdue
+                                </span>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* 5. Status */}
+                          <td>
+                            <div className="space-y-1">
+                              {getStatusBadge(task.status)}
+                              {typeof task.progress === 'number' && (
+                                <div className="w-20 bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                                  <div
+                                    className={`h-full ${isDone ? 'bg-emerald-400' : 'bg-purple-500'}`}
+                                    style={{ width: `${task.progress}%` }}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* 6. Actions */}
+                          <td>
+                            <div className="flex items-center justify-end gap-1.5">
+                              {/* Update Button (Blue) */}
+                              <button
+                                onClick={() => openTaskUpdateModal(task)}
+                                className="btn-mkt-primary-blue text-xs !py-1 !px-2.5"
+                                title="Update Progress / Submit Completion"
+                              >
+                                Update
+                              </button>
+
+                              {/* Slip Print Button */}
+                              <button
+                                onClick={() => openTaskPrintModal(task, 'single')}
+                                className="btn-mkt-cyan text-xs !p-1.5"
+                                title="Print Work Order Slip"
+                              >
+                                <Printer size={13} />
+                              </button>
+
+                              {/* Edit Button (Dark glass with blue border) */}
+                              <button
+                                onClick={() => openTaskModal(task)}
+                                className="btn-mkt-glass text-xs !p-1.5 text-sky-400 hover:text-white"
+                                title="Edit Assignment"
+                              >
+                                <Edit2 size={13} />
+                              </button>
+
+                              {/* Delete Button (Dark glass with red border) */}
+                              <button
+                                onClick={() => handleDelete(task.id, task.title)}
+                                className="btn-mkt-delete-red text-xs !p-1.5"
+                                title="Delete Task"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* VIEW 3: DEDICATED TODAY'S WORK VIEW */}
+        {activeTab === 'today' && (
+          <div className="space-y-4 w-full">
+            {/* Quick Filter Bar */}
+            <div className="mkt-card !p-3.5 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <CalendarCheck size={18} className="text-purple-400" />
+                <div>
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                    Today's Deliverable Queue
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Tasks scheduled, in-progress, or due on {currentToday}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                {[
+                  { id: 'All', label: 'All Today' },
+                  { id: 'My', label: 'My Tasks' },
+                  { id: 'InProgress', label: 'In Progress' },
+                  { id: 'Completed', label: 'Completed' },
+                  { id: 'Overdue', label: 'Overdue Alert' },
+                ].map((filter) => (
+                  <button
+                    key={filter.id}
+                    onClick={() => setTodayQuickFilter(filter.id)}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                      todayQuickFilter === filter.id
+                        ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
+                        : 'text-slate-400 hover:text-white bg-slate-900/60'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Step 4: Today's Work Table */}
+            <div className="mkt-table-container">
+              <table className="mkt-work-table">
+                <thead>
+                  <tr>
+                    <th className="min-w-[260px]">Work Title</th>
+                    <th className="w-40">Assigned Employee</th>
+                    <th className="w-24">Priority</th>
+                    <th className="w-36">Deadline</th>
+                    <th className="w-32">Status</th>
+                    <th className="w-36 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredTodayWorks.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="text-center py-12 text-slate-400 text-xs">
+                        No tasks found for today matching the filter.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredTodayWorks.map((task) => {
+                      const isDone = task.status === 'Completed';
+                      const isOverdue = task.dueDate && task.dueDate < currentToday && !isDone;
+
+                      return (
+                        <tr key={task.id} className={`${isDone ? 'is-completed' : ''} ${isOverdue ? 'is-overdue' : ''}`}>
+                          <td>
+                            <div className="space-y-0.5">
+                              <div className="font-semibold text-xs text-white">{task.title}</div>
+                              {task.desc && <p className="text-[11px] text-slate-400 line-clamp-1">{task.desc}</p>}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-[10px] font-bold text-purple-300 flex-shrink-0">
+                                {(task.assignedTo || 'E').charAt(0).toUpperCase()}
+                              </div>
+                              <span className="text-xs font-semibold text-slate-200 truncate">{task.assignedTo}</span>
+                            </div>
+                          </td>
+                          <td>{getPriorityBadge(task.priority)}</td>
+                          <td>
+                            <div className="text-xs text-slate-200 font-semibold flex items-center gap-1">
+                              <Calendar size={11} className="text-slate-400" />
+                              <span>{task.dueDate} {task.dueTime || ''}</span>
+                            </div>
+                          </td>
+                          <td>{getStatusBadge(task.status)}</td>
+                          <td>
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                onClick={() => openTaskUpdateModal(task)}
+                                className="btn-mkt-primary-blue text-xs !py-1 !px-2.5"
+                              >
+                                Update
+                              </button>
+                              <button
+                                onClick={() => openTaskPrintModal(task, 'single')}
+                                className="btn-mkt-cyan text-xs !p-1.5"
+                                title="Print Slip"
+                              >
+                                <Printer size={13} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* VIEW 4: WORK HISTORY & PRINTABLE REPORTS */}
+        {activeTab === 'reports' && (
+          <div className="space-y-4 w-full">
+            {/* Search and Filters Toolbar */}
+            <div className="mkt-card !p-4 space-y-3">
+              <div className="border-b border-white/10 pb-2.5">
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                  <History size={15} className="text-emerald-400" />
+                  <span>Work Completion History & Permanent Archive Filters</span>
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2.5">
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                    Employee Filter:
+                  </label>
+                  <select
+                    value={reportEmployee}
+                    onChange={(e) => setReportEmployee(e.target.value)}
+                    className="mkt-select !py-1.5 text-xs"
+                  >
+                    <option value="All">All Employees</option>
+                    {employeeOptions.map((e) => (
+                      <option key={e} value={e}>
+                        {e}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                    Category Filter:
+                  </label>
+                  <select
+                    value={reportCategory}
+                    onChange={(e) => setReportCategory(e.target.value)}
+                    className="mkt-select !py-1.5 text-xs"
+                  >
+                    {CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                    Start Date:
+                  </label>
+                  <input
+                    type="date"
+                    value={reportStartDate}
+                    onChange={(e) => setReportStartDate(e.target.value)}
+                    className="mkt-input !py-1 text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                    End Date:
+                  </label>
+                  <input
+                    type="date"
+                    value={reportEndDate}
+                    onChange={(e) => setReportEndDate(e.target.value)}
+                    className="mkt-input !py-1 text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+                    Search Notes:
+                  </label>
+                  <input
+                    type="text"
+                    value={reportSearch}
+                    onChange={(e) => setReportSearch(e.target.value)}
+                    placeholder="Keyword search..."
+                    className="mkt-input !py-1 text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-xs pt-1 text-slate-400">
+                <span>
+                  Found <strong className="text-emerald-400">{filteredHistory.length}</strong> completed work records
+                </span>
+                {(reportEmployee !== 'All' || reportCategory !== 'All' || reportStartDate || reportEndDate || reportSearch) && (
+                  <button
+                    onClick={() => {
+                      setReportEmployee('All');
+                      setReportCategory('All');
+                      setReportStartDate('');
+                      setReportEndDate('');
+                      setReportSearch('');
+                    }}
+                    className="text-purple-400 hover:text-purple-300 underline font-semibold"
+                  >
+                    Reset History Filters
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Step 4: History Table */}
+            <div className="mkt-table-container">
+              <table className="mkt-work-table">
+                <thead>
+                  <tr>
+                    <th className="min-w-[240px]">Work Title</th>
+                    <th className="w-36">Employee</th>
+                    <th className="w-24">Assignment Date</th>
+                    <th className="w-32">Completion Date</th>
+                    <th className="w-28">Category</th>
+                    <th className="w-20">Final Status</th>
+                    <th className="min-w-[200px]">Completion Notes</th>
+                    <th className="w-24 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredHistory.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="text-center py-12 text-slate-400 text-xs">
+                        No completed works found in this filter range.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredHistory.map((task) => (
+                      <tr key={task.id} className="hover:bg-emerald-950/10">
+                        <td className="font-semibold text-xs text-white">{task.title}</td>
+                        <td className="text-xs font-medium text-slate-200">{task.assignedTo}</td>
+                        <td className="text-xs text-slate-400">{task.startDate}</td>
+                        <td className="text-xs font-semibold text-emerald-300">
+                          {task.completedDate || task.dueDate || '—'} {task.completedTime || ''}
+                        </td>
+                        <td>
+                          <span className="mkt-badge mkt-badge-purple text-[10px]">{task.category}</span>
+                        </td>
+                        <td>
+                          <span className="mkt-badge mkt-badge-green font-bold">✓ Completed</span>
+                        </td>
+                        <td>
+                          <div className="space-y-0.5">
+                            <p className="text-xs text-slate-300 italic line-clamp-2">
+                              {task.completionNotes || 'Delivered on schedule.'}
+                            </p>
+                            {task.completionAttachment && (
+                              <span className="text-[11px] text-sky-400 flex items-center gap-1">
+                                <Paperclip size={10} />
+                                <span className="truncate max-w-[180px]">{task.completionAttachment}</span>
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="flex items-center justify-end gap-1">
+                            <button
+                              onClick={() => openTaskPrintModal(task, 'single')}
+                              className="btn-mkt-cyan text-xs !py-1 !px-2 flex items-center gap-1"
+                              title="Print Work Slip Certificate"
+                            >
+                              <Printer size={12} />
+                              <span>Slip</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ============================================================= */}
