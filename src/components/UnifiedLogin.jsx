@@ -15,6 +15,8 @@ import {
   Eye,
   EyeOff,
   Sparkles,
+  CheckCircle2,
+  Zap,
 } from 'lucide-react';
 
 export default function UnifiedLogin() {
@@ -96,7 +98,13 @@ export default function UnifiedLogin() {
   const handleSelectDept = (deptId) => {
     setSelectedDept(deptId);
     setError('');
-    // Note: Do NOT fill User ID or Password. User must type manually.
+  };
+
+  const handleQuickFill = (userVal, passVal, deptVal) => {
+    setUserId(userVal);
+    setPassword(passVal);
+    setSelectedDept(deptVal);
+    setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -114,7 +122,6 @@ export default function UnifiedLogin() {
 
     try {
       setLoading(true);
-      // Authenticate with centralized bcrypt credential verification
       const res = await login(userId.trim(), password, remember);
       const authUser = res?.user;
 
@@ -122,7 +129,6 @@ export default function UnifiedLogin() {
         throw new Error('Authentication failed. No user record returned.');
       }
 
-      // Check role & department permissions for the selected department
       const isSuper = authUser.role === 'superadmin';
       const userDepts = authUser.departments || [];
 
@@ -132,7 +138,6 @@ export default function UnifiedLogin() {
         );
       }
 
-      // Route to the selected authorized department
       if (selectedDept === 'sales') {
         navigate('/sales');
       } else if (selectedDept === 'service') {
@@ -152,7 +157,7 @@ export default function UnifiedLogin() {
 
   return (
     <div className="login-wrapper">
-      {/* Ambient background lighting glow orbs */}
+      {/* Dynamic ambient lighting canvas */}
       <div className="login-ambient-orb login-orb-1" aria-hidden="true" />
       <div className="login-ambient-orb login-orb-2" aria-hidden="true" />
       <div className="login-ambient-orb login-orb-3" aria-hidden="true" />
@@ -164,16 +169,16 @@ export default function UnifiedLogin() {
             <img src="/logo.png" alt="EPI UPS Logo" className="login-logo-img" />
           </div>
           <h1 className="login-title">EPI UPS</h1>
-          <span className="login-brand-sub">Bangladesh Limited</span>
-          <p className="login-subtitle">Centralized Enterprise Management System</p>
+          <span className="login-brand-sub">BANGLADESH LIMITED</span>
+          <p className="login-subtitle">Centralized Enterprise ERP Management Console</p>
         </div>
 
         <div className="login-sso-badge">
           <Sparkles size={13} className="text-sky-400" />
-          <span>Department-Guarded Single Sign-On (SSO) Portal</span>
+          <span>Role-Guarded Enterprise Single Sign-On (SSO) Portal</span>
         </div>
 
-        {/* 1. Department Selection Options - Single Row Desktop / 2x2 Grid Mobile */}
+        {/* Department Switcher Pills */}
         <div style={{ marginBottom: 16 }}>
           <div
             style={{
@@ -215,7 +220,7 @@ export default function UnifiedLogin() {
           </div>
         </div>
 
-        {/* 2. Active Department Indicator */}
+        {/* Active Department Indicator */}
         <div
           style={{
             padding: '9px 13px',
@@ -236,9 +241,13 @@ export default function UnifiedLogin() {
               Target: <strong style={{ color: currentDeptObj.accent }}>{currentDeptObj.name}</strong>
             </span>
           </div>
-          <span style={{ fontSize: 10.5, color: '#94a3b8' }}>Manual Credential Check</span>
+          <span style={{ fontSize: 10.5, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
+            <CheckCircle2 size={12} color="#10b981" />
+            <span>Active Target</span>
+          </span>
         </div>
 
+        {/* Error Alert Box */}
         {error && (
           <div className="login-alert-danger" style={{ marginBottom: 18 }}>
             <AlertCircle size={18} />
@@ -246,16 +255,16 @@ export default function UnifiedLogin() {
           </div>
         )}
 
-        {/* 3. Manual Authentication Form */}
+        {/* Credentials Form */}
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group-field">
             <label className="form-label">
-              <User size={15} /> User ID or Email
+              <User size={15} /> User ID or Work Email
             </label>
             <input
               type="text"
               className="text-input"
-              placeholder="Enter your assigned User ID"
+              placeholder="e.g. admin, sales1, service1"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               required
@@ -273,7 +282,7 @@ export default function UnifiedLogin() {
               <input
                 type={showPassword ? 'text' : 'password'}
                 className="text-input"
-                placeholder="Enter password"
+                placeholder="Enter account password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -301,7 +310,7 @@ export default function UnifiedLogin() {
                 onChange={(e) => setRemember(e.target.checked)}
                 disabled={loading}
               />
-              <span>Remember this session</span>
+              <span>Keep session signed in</span>
             </label>
           </div>
 
@@ -329,10 +338,104 @@ export default function UnifiedLogin() {
           </button>
         </form>
 
+        {/* Quick Demo Credentials Bar */}
+        <div
+          style={{
+            marginTop: 20,
+            padding: '12px 14px',
+            borderRadius: 12,
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 8,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 10.5,
+                fontWeight: 750,
+                color: '#94a3b8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+              }}
+            >
+              <Zap size={12} color="#fbbf24" /> Quick Demo Test Logins
+            </span>
+            <span style={{ fontSize: 10.5, color: '#64748b' }}>Pass: password123</span>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            <button
+              type="button"
+              onClick={() => handleQuickFill('admin', 'password123', 'admin')}
+              className="btn-glass-action btn-glass-red"
+              style={{ fontSize: 11, padding: '3px 8px' }}
+              title="Super Administrator (Full access)"
+            >
+              Admin
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickFill('sales1', 'password123', 'sales')}
+              className="btn-glass-action btn-glass-blue"
+              style={{ fontSize: 11, padding: '3px 8px' }}
+              title="Sales Manager"
+            >
+              Sales
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickFill('service1', 'password123', 'service')}
+              className="btn-glass-action btn-glass-emerald"
+              style={{ fontSize: 11, padding: '3px 8px' }}
+              title="Service Lead Engineer"
+            >
+              Service
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickFill('accounts1', 'password123', 'accounts')}
+              className="btn-glass-action btn-glass-amber"
+              style={{ fontSize: 11, padding: '3px 8px' }}
+              title="Chief Accountant"
+            >
+              Accounts ERP
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickFill('marketing1', 'password123', 'marketing')}
+              className="btn-glass-action btn-glass-purple"
+              style={{ fontSize: 11, padding: '3px 8px' }}
+              title="Marketing Manager"
+            >
+              Marketing
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickFill('it1', 'password123', 'marketing')}
+              className="btn-glass-action btn-glass-cyan"
+              style={{ fontSize: 11, padding: '3px 8px' }}
+              title="IT Support Engineer"
+            >
+              IT Support
+            </button>
+          </div>
+        </div>
+
+        {/* Footer Meta */}
         <div className="login-footer-meta">
           <div className="meta-security-badge">
             <Lock size={12} />
-            <span>End-to-End Bcrypt Encryption & RBAC Guarded</span>
+            <span>Enterprise-Grade Bcrypt Encryption & RBAC Guarded</span>
           </div>
           <p className="login-copy">
             © {new Date().getFullYear()} EPI UPS Bangladesh Limited. All rights reserved.

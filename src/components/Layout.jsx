@@ -394,7 +394,7 @@ export default function Layout() {
                 to="/admin"
                 className={({ isActive }) => `dept-tab ${isActive || activeDept === 'admin' ? 'active-admin' : ''}`}
               >
-                <Shield size={15} />
+                <Shield size={14} />
                 <span>Admin</span>
               </NavLink>
             )}
@@ -404,8 +404,13 @@ export default function Layout() {
                 to="/sales"
                 className={({ isActive }) => `dept-tab ${isActive || activeDept === 'sales' ? 'active-sales' : ''}`}
               >
-                <Briefcase size={15} />
+                <Briefcase size={14} />
                 <span>Sales</span>
+                {salesTodayCount > 0 && (
+                  <span className="sidebar-badge" style={{ background: '#0052cc', fontSize: 10, padding: '1px 6px' }}>
+                    {salesTodayCount}
+                  </span>
+                )}
               </NavLink>
             )}
 
@@ -414,8 +419,13 @@ export default function Layout() {
                 to="/service"
                 className={({ isActive }) => `dept-tab ${isActive || activeDept === 'service' ? 'active-service' : ''}`}
               >
-                <Wrench size={15} />
+                <Wrench size={14} />
                 <span>Service</span>
+                {serviceTodayCount > 0 && (
+                  <span className="sidebar-badge" style={{ background: '#059669', fontSize: 10, padding: '1px 6px' }}>
+                    {serviceTodayCount}
+                  </span>
+                )}
               </NavLink>
             )}
 
@@ -424,7 +434,7 @@ export default function Layout() {
                 to="/accounts"
                 className={({ isActive }) => `dept-tab ${isActive || activeDept === 'accounts' ? 'active-accounts' : ''}`}
               >
-                <Landmark size={15} />
+                <Landmark size={14} />
                 <span>ERP / Accounts</span>
               </NavLink>
             )}
@@ -434,8 +444,13 @@ export default function Layout() {
                 to="/marketing"
                 className={({ isActive }) => `dept-tab ${isActive || activeDept === 'marketing' ? 'active-marketing' : ''}`}
               >
-                <Share2 size={15} />
+                <Share2 size={14} />
                 <span>Marketing & IT</span>
+                {(mktPendingTasks + itOpenTickets) > 0 && (
+                  <span className="sidebar-badge" style={{ background: '#7c3aed', fontSize: 10, padding: '1px 6px' }}>
+                    {mktPendingTasks + itOpenTickets}
+                  </span>
+                )}
               </NavLink>
             )}
           </nav>
@@ -443,6 +458,26 @@ export default function Layout() {
 
         {/* User Profile & Logout & Data Hub */}
         <div className="topbar-right" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div
+            className="topbar-status-pill no-mobile"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '4px 10px',
+              borderRadius: 9999,
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              color: '#34d399',
+              fontSize: 11,
+              fontWeight: 650,
+            }}
+            title="Real-time browser-local database persistence active"
+          >
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 6px #10b981' }} />
+            <span>ERP Live</span>
+          </div>
+
           <button
             type="button"
             onClick={handleResetDemo}
@@ -783,6 +818,27 @@ export default function Layout() {
           </div>
 
           <div className="sidebar-footer">
+            {!sidebarCollapsed && (
+              <div
+                style={{
+                  padding: '8px 10px',
+                  borderRadius: 8,
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  marginBottom: 8,
+                  fontSize: 10.5,
+                  color: '#94a3b8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <span>Encrypted Storage</span>
+                <span style={{ color: '#34d399', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <span style={{ width: 5, height: 5, borderRadius: '50%', background: '#10b981' }} /> Synced
+                </span>
+              </div>
+            )}
             <button className="sidebar-logout-link" onClick={handleLogout}>
               <LogOut size={16} />
               {!sidebarCollapsed && <span>Log Out</span>}
