@@ -373,7 +373,11 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
   const print = () => {
     if (!total) return alert('No clients to print.');
     const pages = [];
-    for (let i = 0; i < total; i += CLIENTS_PER_PAGE) pages.push(filteredClients.slice(i, i + CLIENTS_PER_PAGE));
+    if (total === 0) {
+      pages.push([]);
+    } else {
+      for (let i = 0; i < total; i += CLIENTS_PER_PAGE) pages.push(filteredClients.slice(i, i + CLIENTS_PER_PAGE));
+    }
     onPrint(
       <>
         {pages.map((part, p) => (
@@ -386,17 +390,32 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
             <table className="client-print-table">
               <thead><tr>{EXPORT_HEADERS.map((h) => <th key={h}>{h}</th>)}</tr></thead>
               <tbody>
-                {part.map((c, j) => (
-                  <tr key={c.id}>
-                    <td>{p * CLIENTS_PER_PAGE + j + 1}</td><td>{c.name}</td><td>{c.desig}</td><td>{c.company}</td>
-                    <td>{c.phone}</td><td>{c.email || ''}</td><td>{c.address || ''}</td>
-                    <td>{c.notes || '—'}</td>
-                    <td>{c.previousStatus || '—'}</td><td>{c.category}</td><td>{fmt(c.nextDate)}</td>
+                {part.length > 0 ? (
+                  part.map((c, j) => (
+                    <tr key={c.id}>
+                      <td style={{ fontWeight: 700 }}>{p * CLIENTS_PER_PAGE + j + 1}</td>
+                      <td style={{ fontWeight: 700 }}>{c.name}</td>
+                      <td>{c.desig}</td>
+                      <td>{c.company}</td>
+                      <td style={{ fontWeight: 600 }}>{c.phone}</td>
+                      <td>{c.email || '—'}</td>
+                      <td>{c.address || '—'}</td>
+                      <td>{c.notes || '—'}</td>
+                      <td>{c.previousStatus || '—'}</td>
+                      <td>{c.category}</td>
+                      <td style={{ fontWeight: 600 }}>{fmt(c.nextDate)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={EXPORT_HEADERS.length} className="print-empty-state">
+                      No client records found matching search criteria.
+                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
-            <div className="client-print-footer">Page {p + 1} of {pages.length}</div>
+            <div className="client-print-footer">Page {p + 1} of {Math.max(1, pages.length)}</div>
           </div>
         ))}
       </>

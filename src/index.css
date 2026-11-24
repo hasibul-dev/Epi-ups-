@@ -2829,7 +2829,7 @@ table tr:hover td, .t tr:hover td {
   .sales-print-container,
   .print-page-container {
     background: #ffffff !important;
-    color: #0f172a !important;
+    color: #111111 !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
@@ -2838,11 +2838,37 @@ table tr:hover td, .t tr:hover td {
     max-width: 100% !important;
   }
 
+  /* Universal high-contrast print typography */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000000 !important;
+    font-weight: 800 !important;
+  }
+
+  p, span, div, li, label {
+    color: #111111 !important;
+  }
+
+  .muted,
+  .text-muted,
+  .text-slate-400,
+  .text-slate-500,
+  .text-slate-600,
+  .sub-label,
+  .stat-label,
+  .text-meta,
+  .log-entry-meta,
+  .timestamp-text,
+  small {
+    color: #333333 !important;
+    font-weight: 500 !important;
+  }
+
   table {
     width: 100% !important;
     border-collapse: collapse !important;
     font-size: 9.5pt !important;
-    color: #0f172a !important;
+    color: #111111 !important;
+    border: 1px solid #999999 !important;
     page-break-inside: auto !important;
   }
 
@@ -2857,19 +2883,59 @@ table tr:hover td, .t tr:hover td {
 
   th {
     background: #f1f5f9 !important;
-    color: #0f172a !important;
-    border: 1px solid #94a3b8 !important;
+    color: #111827 !important;
+    border: 1px solid #999999 !important;
+    border-bottom: 2px solid #111827 !important;
     padding: 6px 8px !important;
     font-size: 8.5pt !important;
-    font-weight: 700 !important;
+    font-weight: 800 !important;
     text-transform: uppercase !important;
   }
 
   td {
-    border: 1px solid #cbd5e1 !important;
+    border: 1px solid #999999 !important;
     padding: 6px 8px !important;
-    color: #1e293b !important;
+    color: #111111 !important;
     font-size: 9pt !important;
+    background: #ffffff !important;
+  }
+
+  /* Key metric cells, counts, bold values */
+  .print-count-cell,
+  b,
+  strong {
+    color: #000000 !important;
+    font-weight: 800 !important;
+  }
+
+  /* Status badges */
+  .print-status-badge,
+  .badge,
+  .status-badge {
+    color: #111111 !important;
+    background-color: #f1f5f9 !important;
+    border: 1px solid #999999 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Empty state messages */
+  .print-empty-state,
+  .empty,
+  td[colspan] {
+    color: #111111 !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    background: #f9fafb !important;
+    border: 1px solid #999999 !important;
+  }
+
+  /* Signature lines */
+  .sig-line,
+  .signature-line,
+  .sig div {
+    border-top: 1.5px solid #111111 !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
   }
 
   /* Bengali & English text rendering optimization */

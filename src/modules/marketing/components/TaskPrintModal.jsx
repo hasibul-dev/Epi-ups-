@@ -55,21 +55,21 @@ export default function TaskPrintModal() {
           <div className="border-b-2 border-slate-900 pb-4 mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight uppercase">
+                <h1 className="text-xl sm:text-2xl font-black text-black tracking-tight uppercase">
                   EPI UPS BANGLADESH LIMITED
                 </h1>
-                <p className="text-xs text-slate-600 font-medium">
+                <p className="text-xs text-slate-800 font-semibold">
                   House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230, Bangladesh
                 </p>
-                <p className="text-xs text-slate-600 font-medium">
+                <p className="text-xs text-slate-800 font-semibold">
                   Hotline: +88 01778-249416 | Email: info@epiups.com.bd | Web: www.epiups.com.bd
                 </p>
               </div>
-              <div className="text-right sm:text-right border-l-2 sm:border-l-0 sm:border-slate-300 pl-3 sm:pl-0">
-                <span className="inline-block px-2.5 py-1 text-[11px] font-bold text-white bg-slate-900 rounded">
+              <div className="text-right sm:text-right border-l-2 sm:border-l-0 sm:border-slate-400 pl-3 sm:pl-0">
+                <span className="inline-block px-2.5 py-1 text-[11px] font-extrabold text-white bg-slate-950 rounded">
                   DIGITAL MARKETING
                 </span>
-                <div className="text-xs text-slate-500 font-semibold mt-1">
+                <div className="text-xs text-slate-800 font-bold mt-1">
                   Report Date: {currentToday}
                 </div>
               </div>
@@ -236,28 +236,36 @@ export default function TaskPrintModal() {
                   </tr>
                 </thead>
                 <tbody>
-                  {tasksToPrint.map((t, idx) => (
-                    <tr key={t.id || idx} className="border-b border-slate-300 hover:bg-slate-50">
-                      <td className="p-2 border-r border-slate-300 text-center font-bold text-slate-500">
-                        {idx + 1}
-                      </td>
-                      <td className="p-2 border-r border-slate-300 font-semibold text-slate-950">
-                        {t.title}
-                      </td>
-                      <td className="p-2 border-r border-slate-300">{t.category}</td>
-                      <td className="p-2 border-r border-slate-300 font-medium">{t.assignedTo}</td>
-                      <td className="p-2 border-r border-slate-300 text-slate-600">{t.startDate}</td>
-                      <td className="p-2 border-r border-slate-300 font-semibold text-emerald-800">
-                        {t.completedDate || t.dueDate || '—'}
-                      </td>
-                      <td className="p-2 border-r border-slate-300 font-bold">
-                        {t.status}
-                      </td>
-                      <td className="p-2 text-slate-700 italic line-clamp-2">
-                        {t.completionNotes || t.desc || '—'}
+                  {tasksToPrint.length > 0 ? (
+                    tasksToPrint.map((t, idx) => (
+                      <tr key={t.id || idx} className="border-b border-slate-400 hover:bg-slate-50">
+                        <td className="p-2 border-r border-slate-400 text-center font-bold text-slate-900">
+                          {idx + 1}
+                        </td>
+                        <td className="p-2 border-r border-slate-400 font-bold text-black">
+                          {t.title}
+                        </td>
+                        <td className="p-2 border-r border-slate-400 font-medium text-slate-900">{t.category}</td>
+                        <td className="p-2 border-r border-slate-400 font-semibold text-slate-950">{t.assignedTo}</td>
+                        <td className="p-2 border-r border-slate-400 text-slate-800 font-medium">{t.startDate}</td>
+                        <td className="p-2 border-r border-slate-400 font-bold text-black">
+                          {t.completedDate || t.dueDate || '—'}
+                        </td>
+                        <td className="p-2 border-r border-slate-400 font-extrabold text-black">
+                          {t.status}
+                        </td>
+                        <td className="p-2 text-slate-900 font-medium line-clamp-2">
+                          {t.completionNotes || t.desc || '—'}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={8} className="p-4 text-center font-bold text-black bg-slate-50 border border-slate-400">
+                        No marketing work records found for the selected criteria.
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>

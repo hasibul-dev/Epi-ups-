@@ -63,16 +63,53 @@ export default function WorkSummary({ db, onPrint }) {
         </div>
         <div className="print-line"></div>
         <table className="print-table">
-          <thead><tr><th>Particular</th><th>Count</th></tr></thead>
-          <tbody>{metrics.map((x) => <tr key={x[0]}><td>{x[0]}</td><td>{x[1]}</td></tr>)}</tbody>
-        </table>
-        <div style={{ height: 24 }}></div>
-        <table className="print-table">
-          <thead><tr><th>Date</th><th>Time</th><th>Client</th><th>Company</th><th>Category</th><th>Follow-up</th><th>Remarks / Notes</th><th>Status</th></tr></thead>
+          <thead><tr><th style={{ width: '70%' }}>Particular</th><th style={{ width: '30%', textAlign: 'right' }}>Count</th></tr></thead>
           <tbody>
-            {rows.length ? rows.map((r, i) => (
-              <tr key={i}><td>{fmt(r.date)}</td><td>{r.time ? formatTime12h(r.time) : '—'}</td><td>{r.client}</td><td>{r.company}</td><td>{r.category}</td><td>{r.method}</td><td>{r.notes || '—'}</td><td>{r.status}</td></tr>
-            )) : <tr><td colSpan="8">No records.</td></tr>}
+            {metrics.map((x) => (
+              <tr key={x[0]}>
+                <td style={{ fontWeight: 600 }}>{x[0]}</td>
+                <td className="print-count-cell" style={{ textAlign: 'right', fontWeight: 800, color: '#000000' }}>{x[1]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ height: 20 }}></div>
+        <table className="print-table">
+          <thead>
+            <tr>
+              <th style={{ width: 85 }}>Date</th>
+              <th style={{ width: 75 }}>Time</th>
+              <th>Client</th>
+              <th>Company</th>
+              <th style={{ width: 90 }}>Category</th>
+              <th style={{ width: 95 }}>Follow-up</th>
+              <th>Remarks / Notes</th>
+              <th style={{ width: 85 }}>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.length ? (
+              rows.map((r, i) => (
+                <tr key={i}>
+                  <td style={{ fontWeight: 600 }}>{fmt(r.date)}</td>
+                  <td>{r.time ? formatTime12h(r.time) : '—'}</td>
+                  <td style={{ fontWeight: 700 }}>{r.client}</td>
+                  <td>{r.company}</td>
+                  <td>{r.category}</td>
+                  <td>{r.method}</td>
+                  <td>{r.notes || '—'}</td>
+                  <td>
+                    <span className="print-status-badge">{r.status}</span>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8" className="print-empty-state">
+                  No activity records found for this period ({fmt(f)} to {fmt(t)}).
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
         <PrintSignatures />

@@ -33,21 +33,21 @@ export default function TicketDetailsModal() {
   <style>
     @page { size: A4 portrait; margin: 15mm 12mm; }
     * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif; color: #0f172a; background: #fff; margin: 0; padding: 0; font-size: 11px; line-height: 1.4; }
-    .header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; }
-    .brand h2 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; }
-    .brand p { margin: 3px 0 0; font-size: 10px; color: #475569; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif; color: #111111; background: #fff; margin: 0; padding: 0; font-size: 11px; line-height: 1.4; }
+    .header { border-bottom: 2px solid #111827; padding-bottom: 10px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .brand h2 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; color: #000000; }
+    .brand p { margin: 3px 0 0; font-size: 10px; color: #333333; font-weight: 500; }
     .ticket-meta { text-align: right; }
-    .ticket-badge { font-size: 15px; font-weight: 800; color: #000; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 10.5px; }
-    td { border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top; }
-    td.lbl { font-weight: 700; background: #f8fafc; color: #334155; width: 22%; }
-    .box { border: 1px solid #cbd5e1; padding: 10px; margin-bottom: 14px; border-radius: 4px; }
-    .box-title { font-weight: 700; font-size: 11px; margin-bottom: 4px; color: #0f172a; }
-    .box-content { font-size: 11px; color: #334155; min-height: 40px; white-space: pre-wrap; }
+    .ticket-badge { font-size: 15px; font-weight: 800; color: #000000; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 10.5px; border: 1px solid #999999; }
+    td { border: 1px solid #999999; padding: 6px 8px; vertical-align: top; color: #111111; }
+    td.lbl { font-weight: 700; background: #f1f5f9; color: #111827; width: 22%; border: 1px solid #999999; }
+    .box { border: 1.5px solid #999999; padding: 10px; margin-bottom: 14px; border-radius: 4px; background: #f9fafb; }
+    .box-title { font-weight: 800; font-size: 11px; margin-bottom: 4px; color: #000000; }
+    .box-content { font-size: 11px; color: #111111; min-height: 40px; white-space: pre-wrap; }
     .signatures { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 10px; }
-    .sig-col { width: 28%; text-align: center; border-top: 1px solid #000; padding-top: 6px; font-size: 10px; font-weight: 600; color: #334155; }
-    .footer { margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 6px; font-size: 8.5px; color: #94a3b8; display: flex; justify-content: space-between; }
+    .sig-col { width: 28%; text-align: center; border-top: 1.5px solid #111111; padding-top: 6px; font-size: 10px; font-weight: 700; color: #000000; }
+    .footer { margin-top: 24px; border-top: 1px solid #999999; padding-top: 6px; font-size: 9px; color: #333333; font-weight: 600; display: flex; justify-content: space-between; }
   </style>
 </head>
 <body>

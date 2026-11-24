@@ -105,13 +105,13 @@ export function printTable({ title, subtitle, columns, rows, company }) {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif;
       margin: 0;
       padding: 0;
-      color: #0f172a;
+      color: #111111;
       background: #ffffff;
       font-size: 11px;
       line-height: 1.4;
     }
     .header {
-      border-bottom: 2px solid #1e3a8a;
+      border-bottom: 2px solid #111827;
       padding-bottom: 10px;
       margin-bottom: 14px;
       display: flex;
@@ -122,22 +122,23 @@ export function printTable({ title, subtitle, columns, rows, company }) {
       margin: 0;
       font-size: 18px;
       font-weight: 800;
-      color: #1e3a8a;
+      color: #000000;
       text-transform: uppercase;
       letter-spacing: -0.01em;
     }
     .brand p {
       margin: 2px 0 0;
       font-size: 10px;
-      color: #475569;
+      color: #333333;
+      font-weight: 500;
     }
     .dept-badge {
       display: inline-block;
       padding: 2px 7px;
-      background: #1e3a8a;
+      background: #111827;
       color: #ffffff;
       font-size: 9px;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
       border-radius: 3px;
       margin-top: 3px;
@@ -145,21 +146,23 @@ export function printTable({ title, subtitle, columns, rows, company }) {
     .meta-box {
       text-align: right;
       font-size: 9.5px;
-      color: #334155;
+      color: #333333;
+      font-weight: 500;
     }
     .report-title {
       font-size: 14px;
       font-weight: 800;
-      color: #0f172a;
+      color: #000000;
       margin: 0 0 3px;
       text-transform: uppercase;
     }
     .report-sub {
       font-size: 10.5px;
-      color: #475569;
+      color: #333333;
       margin: 0 0 12px;
       padding-bottom: 6px;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid #999999;
+      font-weight: 500;
     }
     table {
       width: 100%;
@@ -167,6 +170,7 @@ export function printTable({ title, subtitle, columns, rows, company }) {
       font-size: 9.5px;
       margin-bottom: 16px;
       page-break-inside: auto;
+      border: 1px solid #999999;
     }
     thead {
       display: table-header-group;
@@ -176,27 +180,35 @@ export function printTable({ title, subtitle, columns, rows, company }) {
       break-inside: avoid;
     }
     th, td {
-      border: 1px solid #cbd5e1;
-      padding: 5px 7px;
+      border: 1px solid #999999;
+      padding: 6px 7px;
       text-align: left;
     }
     th {
-      background: #1e3a8a;
-      color: #ffffff;
-      font-weight: 700;
+      background: #f1f5f9;
+      color: #111827;
+      font-weight: 800;
       text-transform: uppercase;
       font-size: 8.5px;
+      border: 1px solid #999999;
+      border-bottom: 2px solid #111827;
+    }
+    td {
+      color: #111111;
+      background: #ffffff;
     }
     td.r, th.r {
       text-align: right;
     }
     tr.b td {
-      font-weight: 700;
-      background: #f1f5f9;
-      border-top: 2px solid #94a3b8;
+      font-weight: 800;
+      color: #000000;
+      background: #f3f4f6;
+      border-top: 2px solid #111827;
+      border-bottom: 2px solid #111827;
     }
-    tbody tr:nth-child(even):not(.b) {
-      background: #f8fafc;
+    tbody tr:nth-child(even):not(.b) td {
+      background: #f9fafb;
     }
     .signatures {
       display: flex;
@@ -208,18 +220,19 @@ export function printTable({ title, subtitle, columns, rows, company }) {
     .sig-col {
       width: 28%;
       text-align: center;
-      border-top: 1px solid #334155;
+      border-top: 1.5px solid #111111;
       padding-top: 6px;
       font-size: 9.5px;
-      color: #334155;
-      font-weight: 600;
+      color: #000000;
+      font-weight: 700;
     }
     .footer {
       margin-top: 24px;
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid #999999;
       padding-top: 6px;
-      font-size: 8.5px;
-      color: #94a3b8;
+      font-size: 9px;
+      color: #333333;
+      font-weight: 600;
       display: flex;
       justify-content: space-between;
     }
@@ -261,7 +274,7 @@ export function printTable({ title, subtitle, columns, rows, company }) {
                     .join('')}</tr>`
               )
               .join('')
-          : `<tr><td colspan="${columns.length}" style="text-align: center; padding: 18px; color: #94a3b8;">No accounting records found.</td></tr>`
+          : `<tr><td colspan="${columns.length}" class="print-empty-state" style="text-align: center; padding: 18px; color: #111111; font-weight: 700; background: #f9fafb; border: 1px solid #999999;">No accounting records found.</td></tr>`
       }
     </tbody>
   </table>

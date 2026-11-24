@@ -345,7 +345,7 @@ export function printFormattedReport({
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif;
-      color: #0f172a;
+      color: #111111;
       background: #ffffff;
       margin: 0;
       padding: 0;
@@ -353,7 +353,7 @@ export function printFormattedReport({
       line-height: 1.4;
     }
     .header {
-      border-bottom: 2px solid #0f172a;
+      border-bottom: 2px solid #111827;
       padding-bottom: 8px;
       margin-bottom: 12px;
       display: flex;
@@ -365,69 +365,75 @@ export function printFormattedReport({
       font-size: 18px;
       font-weight: 800;
       letter-spacing: -0.01em;
-      color: #000;
+      color: #000000;
       text-transform: uppercase;
     }
     .brand p {
       margin: 2px 0 0;
       font-size: 10px;
-      color: #475569;
+      color: #333333;
+      font-weight: 500;
     }
     .dept-badge {
       display: inline-block;
       padding: 2px 8px;
       border-radius: 3px;
       font-size: 9px;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
-      background: #0f172a;
+      background: #111827;
       color: #ffffff;
       margin-top: 4px;
     }
     .meta-box {
       text-align: right;
       font-size: 9.5px;
-      color: #334155;
+      color: #333333;
+      font-weight: 500;
     }
     .meta-box strong {
-      color: #0f172a;
+      color: #000000;
+      font-weight: 700;
     }
     .report-title-bar {
       margin: 10px 0 12px;
       padding-bottom: 6px;
-      border-bottom: 1px solid #cbd5e1;
+      border-bottom: 1px solid #999999;
     }
     .report-title-bar h2 {
       margin: 0 0 2px;
       font-size: 14px;
       font-weight: 800;
-      color: #0f172a;
+      color: #000000;
       text-transform: uppercase;
     }
     .report-title-bar p {
       margin: 0;
-      font-size: 10px;
-      color: #64748b;
+      font-size: 10.5px;
+      color: #333333;
+      font-weight: 500;
     }
     .summary-strip {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      padding: 6px 10px;
+      padding: 8px 12px;
       background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      border: 1.5px solid #999999;
       border-radius: 4px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .summary-item {
-      font-size: 10px;
+      font-size: 10.5px;
     }
     .summary-item strong {
-      color: #0f172a;
+      color: #333333;
+      font-weight: 700;
     }
     .summary-item span {
-      color: #0052cc;
-      font-weight: 700;
+      color: #000000;
+      font-weight: 800;
+      font-size: 11px;
     }
     table {
       width: 100%;
@@ -435,6 +441,7 @@ export function printFormattedReport({
       font-size: 9px;
       margin-bottom: 16px;
       page-break-inside: auto;
+      border: 1px solid #999999;
     }
     thead {
       display: table-header-group;
@@ -444,23 +451,30 @@ export function printFormattedReport({
       break-inside: avoid;
     }
     th, td {
-      border: 1px solid #cbd5e1;
-      padding: 5px 6px;
+      border: 1px solid #999999;
+      padding: 6px 7px;
       text-align: left;
       vertical-align: top;
     }
     th {
       background: #f1f5f9;
-      color: #0f172a;
-      font-weight: 700;
+      color: #111827;
+      font-weight: 800;
       text-transform: uppercase;
-      font-size: 8px;
+      font-size: 8.5px;
+      border: 1px solid #999999;
+      border-bottom: 2px solid #111827;
     }
-    tbody tr:nth-child(even) {
-      background: #f8fafc;
+    td {
+      color: #111111;
+      background: #ffffff;
+    }
+    tbody tr:nth-child(even) td {
+      background: #f9fafb;
     }
     td.numeric, th.numeric {
       text-align: right;
+      font-weight: 700;
     }
     .signatures {
       display: flex;
@@ -472,17 +486,22 @@ export function printFormattedReport({
     .sig-col {
       width: 28%;
       text-align: center;
-      border-top: 1px solid #334155;
+      border-top: 1.5px solid #111111;
       padding-top: 6px;
       font-size: 9.5px;
-      color: #334155;
-      font-weight: 600;
+      color: #000000;
+      font-weight: 700;
     }
     .footer {
       margin-top: 20px;
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid #999999;
       padding-top: 6px;
-      font-size: 8.5px;
+      font-size: 9px;
+      color: #333333;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+    }
       color: #94a3b8;
       display: flex;
       justify-content: space-between;
@@ -540,7 +559,7 @@ export function printFormattedReport({
                     .join('')}</tr>`
               )
               .join('')
-          : `<tr><td colspan="${headers.length}" style="text-align: center; padding: 18px; color: #94a3b8;">No records found for the selected criteria.</td></tr>`
+          : `<tr><td colspan="${headers.length}" class="print-empty-state" style="text-align: center; padding: 18px; color: #111111; font-weight: 700; background: #f9fafb; border: 1px solid #999999;">No records found for the selected criteria.</td></tr>`
       }
     </tbody>
   </table>

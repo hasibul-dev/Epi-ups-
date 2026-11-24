@@ -88,7 +88,7 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
           }
           body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif;
-            color: #0f172a;
+            color: #111111;
             background: #ffffff;
             margin: 0;
             padding: 0;
@@ -97,14 +97,14 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
           }
           .header {
             text-align: center;
-            border-bottom: 2px solid #0052cc;
+            border-bottom: 2px solid #111827;
             padding-bottom: 10px;
             margin-bottom: 16px;
           }
           .header h1 {
             margin: 0;
             font-size: 19px;
-            color: #0052cc;
+            color: #000000;
             text-transform: uppercase;
             letter-spacing: -0.01em;
             font-weight: 800;
@@ -112,24 +112,25 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
           .header p {
             margin: 3px 0 0;
             font-size: 10px;
-            color: #475569;
+            color: #333333;
+            font-weight: 500;
           }
           .ticket-badge {
             display: inline-block;
             background: #f1f5f9;
-            border: 1px solid #cbd5e1;
+            border: 1.5px solid #111827;
             padding: 3px 12px;
             border-radius: 4px;
             font-size: 10.5px;
-            font-weight: 700;
+            font-weight: 800;
             margin-top: 6px;
-            color: #0f172a;
+            color: #111827;
             text-transform: uppercase;
             letter-spacing: 0.05em;
           }
           .section {
             margin-bottom: 14px;
-            border: 1px solid #cbd5e1;
+            border: 1.5px solid #999999;
             border-radius: 4px;
             padding: 10px 12px;
             background: #ffffff;
@@ -139,9 +140,9 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            color: #0052cc;
+            color: #111827;
             margin-bottom: 8px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1.5px solid #999999;
             padding-bottom: 4px;
             letter-spacing: 0.02em;
           }
@@ -152,23 +153,23 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
           }
           .field {
             font-size: 10.5px;
-            color: #1e293b;
+            color: #111111;
           }
           .field strong {
-            color: #475569;
+            color: #333333;
             display: inline-block;
             min-width: 120px;
-            font-weight: 600;
+            font-weight: 700;
           }
           .scope-box {
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
+            background: #f9fafb;
+            border: 1px solid #999999;
             padding: 8px 10px;
             border-radius: 4px;
             font-size: 11px;
             margin-top: 4px;
             white-space: pre-wrap;
-            color: #1e293b;
+            color: #111111;
           }
           .signatures {
             display: grid;
@@ -179,19 +180,20 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
             page-break-inside: avoid;
           }
           .sig-box {
-            border-top: 1px solid #000;
+            border-top: 1.5px solid #111111;
             text-align: center;
             font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
             padding-top: 6px;
-            color: #334155;
+            color: #000000;
           }
           .footer {
             margin-top: 24px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #999999;
             padding-top: 6px;
-            font-size: 8.5px;
-            color: #94a3b8;
+            font-size: 9px;
+            color: #333333;
+            font-weight: 600;
             display: flex;
             justify-content: space-between;
           }

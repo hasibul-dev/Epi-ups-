@@ -804,25 +804,25 @@ export default function Reports({ db, store, onPrint, initialReport = 'daily' })
             subtitle={activeDef.desc}
           />
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16, border: '1px solid #999999' }}>
             <thead>
-              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                <th style={{ padding: '8px 6px', textAlign: 'left', fontSize: 11, color: '#334155' }}>SL</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Date &amp; Time</th>
+              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #111827' }}>
+                <th style={{ padding: '8px 6px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>SL</th>
+                <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Date &amp; Time</th>
                 {activeReport === 'client' ? (
                   <>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Client / Company</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Contact Info</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Category</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Equipment / Serial</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Next Follow-up</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Client / Company</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Contact Info</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Category</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Equipment / Serial</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Next Follow-up</th>
                   </>
                 ) : (
                   <>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Activity Description</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Client Organization</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Status</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Notes &amp; Remarks</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Activity Description</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Client Organization</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Status</th>
+                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Notes &amp; Remarks</th>
                   </>
                 )}
               </tr>
@@ -830,55 +830,56 @@ export default function Reports({ db, store, onPrint, initialReport = 'daily' })
             <tbody>
               {rows.length > 0 ? (
                 rows.map((r, i) => (
-                  <tr key={r.key || i} style={{ borderBottom: '1px solid #e2e8f0', fontSize: 10.5 }}>
-                    <td style={{ padding: '6px 6px', color: '#64748b' }}>{i + 1}</td>
-                    <td style={{ padding: '6px 8px', whiteSpace: 'nowrap' }}>
-                      {fmt(r.date)} {r.time ? <span style={{ color: '#64748b' }}>· {r.time}</span> : null}
+                  <tr key={r.key || i} style={{ borderBottom: '1px solid #999999', fontSize: 10.5 }}>
+                    <td style={{ padding: '6px 6px', color: '#111111', fontWeight: 700, border: '1px solid #999999' }}>{i + 1}</td>
+                    <td style={{ padding: '6px 8px', whiteSpace: 'nowrap', color: '#111111', fontWeight: 600, border: '1px solid #999999' }}>
+                      {fmt(r.date)} {r.time ? <span style={{ color: '#333333' }}>· {r.time}</span> : null}
                     </td>
                     {activeReport === 'client' ? (
                       <>
-                        <td style={{ padding: '6px 8px' }}>
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999', color: '#111111' }}>
                           <b>{r.clientName}</b>
-                          {r.company && <div style={{ color: '#475569', fontSize: 10 }}>{r.company}</div>}
+                          {r.company && <div style={{ color: '#333333', fontSize: 10 }}>{r.company}</div>}
                         </td>
-                        <td style={{ padding: '6px 8px', color: '#334155' }}>{r.phone || '-'}</td>
-                        <td style={{ padding: '6px 8px' }}>
-                          <span style={{ fontWeight: 600, color: '#0052cc' }}>{r.category}</span>
+                        <td style={{ padding: '6px 8px', color: '#111111', border: '1px solid #999999' }}>{r.phone || '-'}</td>
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999' }}>
+                          <span style={{ fontWeight: 700, color: '#0052cc' }}>{r.category}</span>
                         </td>
-                        <td style={{ padding: '6px 8px' }}>
-                          <div>{r.product}</div>
-                          {r.serial && r.serial !== 'N/A' && <div style={{ fontSize: 9.5, color: '#64748b' }}>S/N: {r.serial}</div>}
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999', color: '#111111' }}>
+                          <div style={{ fontWeight: 600 }}>{r.product}</div>
+                          {r.serial && r.serial !== 'N/A' && <div style={{ fontSize: 9.5, color: '#333333' }}>S/N: {r.serial}</div>}
                         </td>
-                        <td style={{ padding: '6px 8px', fontWeight: 600, color: r.nextDate ? '#059669' : '#94a3b8' }}>
+                        <td style={{ padding: '6px 8px', fontWeight: 700, color: r.nextDate ? '#111827' : '#555555', border: '1px solid #999999' }}>
                           {r.nextDate ? fmt(r.nextDate) : 'None'}
                         </td>
                       </>
                     ) : (
                       <>
-                        <td style={{ padding: '6px 8px', color: '#0f172a' }}>{r.activity}</td>
-                        <td style={{ padding: '6px 8px', color: '#475569' }}>{r.company || r.clientName || 'General Client'}</td>
-                        <td style={{ padding: '6px 8px' }}>
+                        <td style={{ padding: '6px 8px', color: '#111111', fontWeight: 600, border: '1px solid #999999' }}>{r.activity}</td>
+                        <td style={{ padding: '6px 8px', color: '#333333', border: '1px solid #999999' }}>{r.company || r.clientName || 'General Client'}</td>
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999' }}>
                           <span
                             style={{
                               padding: '2px 6px',
                               borderRadius: 4,
                               fontSize: 9.5,
                               fontWeight: 700,
-                              background: isCompleted(r.status) ? '#ecfdf5' : '#fef2f2',
-                              color: isCompleted(r.status) ? '#059669' : '#dc2626',
+                              background: '#f3f4f6',
+                              color: '#111111',
+                              border: '1px solid #333333',
                             }}
                           >
                             {r.status}
                           </span>
                         </td>
-                        <td style={{ padding: '6px 8px', color: '#475569' }}>{r.notes || '-'}</td>
+                        <td style={{ padding: '6px 8px', color: '#333333', border: '1px solid #999999' }}>{r.notes || '-'}</td>
                       </>
                     )}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={activeReport === 'client' ? 7 : 6} style={{ padding: 24, textAlign: 'center', color: '#94a3b8' }}>
+                  <td colSpan={activeReport === 'client' ? 7 : 6} style={{ padding: 24, textAlign: 'center', color: '#111111', fontWeight: 700, background: '#f9fafb', border: '1px solid #999999' }}>
                     No records found for the selected period and filters.
                   </td>
                 </tr>
