@@ -3,6 +3,7 @@ import Modal from './Modal.jsx'
 import { StatusBadge, PriorityBadge } from './Badges.jsx'
 import { clientTitle, clientContact, clientProduct, status } from '../services/domain.js'
 import { fmt, TODAY } from '../services/dates.js'
+import { printHtmlDocument } from '../../../services/reportExport.js'
 import {
   Printer,
   Edit2,
@@ -65,150 +66,179 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
   const isDone = work.status === 'done'
 
   const printWorkOrder = () => {
-    const printWindow = window.open('', '_blank')
-    if (!printWindow) {
-      alert('Please allow popups to print work order')
-      return
-    }
+    const esc = (s) => (s === null || s === undefined ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+    const now = new Date()
+    const generatedStr = `${now.toLocaleDateString('en-GB')} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
 
     const html = `
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Work Order - ${work.title}</title>
+        <meta charset="utf-8">
+        <title>Work Order - ${esc(work.title)}</title>
         <style>
+          @page {
+            size: A4 portrait;
+            margin: 12mm 10mm 15mm 10mm;
+          }
+          * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
           body {
-            font-family: Arial, sans-serif;
-            color: #000;
-            padding: 24px;
-            font-size: 13px;
-            line-height: 1.5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif;
+            color: #0f172a;
+            background: #ffffff;
+            margin: 0;
+            padding: 0;
+            font-size: 11px;
+            line-height: 1.4;
           }
           .header {
             text-align: center;
             border-bottom: 2px solid #0052cc;
-            padding-bottom: 12px;
-            margin-bottom: 18px;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
           }
           .header h1 {
             margin: 0;
-            font-size: 20px;
+            font-size: 19px;
             color: #0052cc;
-            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            letter-spacing: -0.01em;
+            font-weight: 800;
           }
           .header p {
             margin: 3px 0 0;
-            font-size: 11px;
-            color: #555;
+            font-size: 10px;
+            color: #475569;
           }
           .ticket-badge {
             display: inline-block;
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
-            padding: 4px 12px;
+            padding: 3px 12px;
             border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            margin-top: 8px;
+            font-size: 10.5px;
+            font-weight: 700;
+            margin-top: 6px;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
           }
           .section {
-            margin-bottom: 16px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 12px 14px;
+            margin-bottom: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 10px 12px;
+            background: #ffffff;
+            page-break-inside: avoid;
           }
           .section-title {
-            font-size: 12px;
-            font-weight: bold;
+            font-size: 11px;
+            font-weight: 800;
             text-transform: uppercase;
             color: #0052cc;
             margin-bottom: 8px;
             border-bottom: 1px solid #e2e8f0;
             padding-bottom: 4px;
+            letter-spacing: 0.02em;
           }
           .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px 16px;
+            gap: 6px 14px;
           }
           .field {
-            font-size: 12px;
+            font-size: 10.5px;
+            color: #1e293b;
           }
           .field strong {
-            color: #334155;
+            color: #475569;
             display: inline-block;
-            min-width: 110px;
+            min-width: 120px;
+            font-weight: 600;
           }
           .scope-box {
             background: #f8fafc;
             border: 1px dashed #cbd5e1;
-            padding: 10px;
+            padding: 8px 10px;
             border-radius: 4px;
-            font-size: 12.5px;
+            font-size: 11px;
             margin-top: 4px;
             white-space: pre-wrap;
+            color: #1e293b;
           }
           .signatures {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 40px;
-            margin-top: 48px;
-            padding-top: 20px;
+            margin-top: 36px;
+            padding-top: 14px;
+            page-break-inside: avoid;
           }
           .sig-box {
             border-top: 1px solid #000;
             text-align: center;
-            font-size: 11.5px;
+            font-size: 10px;
+            font-weight: 600;
             padding-top: 6px;
+            color: #334155;
           }
-          @media print {
-            body { padding: 0; }
-            .no-print { display: none; }
+          .footer {
+            margin-top: 24px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 6px;
+            font-size: 8.5px;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
           }
         </style>
       </head>
       <body>
         <div class="header">
           <h1>EPI UPS (BANGLADESH) LIMITED</h1>
-          <p>Technical Service & Maintenance Center · Hotline: 01711-000000</p>
+          <p>House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230 · Hotline: +88 01778-249416 · Web: www.epiups.com.bd</p>
           <div class="ticket-badge">SERVICE WORK ORDER / JOB SHEET</div>
         </div>
 
         <div class="section">
           <div class="section-title">1. Work Order Information</div>
           <div class="grid">
-            <div class="field"><strong>Work Order ID:</strong> WO-${(work.id || '').slice(-6).toUpperCase()}</div>
+            <div class="field"><strong>Work Order ID:</strong> WO-${esc((work.id || '').slice(-6).toUpperCase())}</div>
             <div class="field"><strong>Status:</strong> ${work.status === 'done' ? 'COMPLETED' : 'PENDING / SCHEDULED'}</div>
-            <div class="field"><strong>Category:</strong> ${work.category}</div>
-            <div class="field"><strong>Priority:</strong> ${work.priority || 'Normal'}</div>
-            <div class="field"><strong>Scheduled Date:</strong> ${fmt(work.date)} at ${work.time || '10:00'}</div>
-            <div class="field"><strong>Technician:</strong> ${work.engineer || 'Unassigned'}</div>
-            ${work.doneAt ? `<div class="field"><strong>Completed Date:</strong> ${fmt(work.doneAt)}</div>` : ''}
+            <div class="field"><strong>Category:</strong> ${esc(work.category)}</div>
+            <div class="field"><strong>Priority:</strong> ${esc(work.priority || 'Normal')}</div>
+            <div class="field"><strong>Scheduled Date:</strong> ${esc(fmt(work.date))} at ${esc(work.time || '10:00')}</div>
+            <div class="field"><strong>Technician:</strong> ${esc(work.engineer || 'Unassigned')}</div>
+            ${work.doneAt ? `<div class="field"><strong>Completed Date:</strong> ${esc(fmt(work.doneAt))}</div>` : ''}
           </div>
         </div>
 
         <div class="section">
           <div class="section-title">2. Client & Equipment Information</div>
           <div class="grid">
-            <div class="field"><strong>Client / Company:</strong> ${client.title}</div>
-            <div class="field"><strong>Contact Person:</strong> ${client.contact || '—'}</div>
-            <div class="field"><strong>Phone:</strong> ${client.phone || '—'}</div>
-            <div class="field"><strong>Address:</strong> ${client.address || '—'}</div>
-            ${client.product ? `<div class="field"><strong>Equipment:</strong> ${client.product}</div>` : ''}
-            ${client.serial ? `<div class="field"><strong>Serial Number:</strong> ${client.serial}</div>` : ''}
+            <div class="field"><strong>Client / Company:</strong> ${esc(client.title)}</div>
+            <div class="field"><strong>Contact Person:</strong> ${esc(client.contact || '—')}</div>
+            <div class="field"><strong>Phone:</strong> ${esc(client.phone || '—')}</div>
+            <div class="field"><strong>Address:</strong> ${esc(client.address || '—')}</div>
+            ${client.product ? `<div class="field"><strong>Equipment:</strong> ${esc(client.product)}</div>` : ''}
+            ${client.serial ? `<div class="field"><strong>Serial Number:</strong> ${esc(client.serial)}</div>` : ''}
           </div>
         </div>
 
         <div class="section">
           <div class="section-title">3. Work Scope & Tasks</div>
-          <div style="font-size: 13px; font-weight: bold; margin-bottom: 4px;">${work.title}</div>
-          <div class="scope-box">${work.desc || 'Routine inspection, servicing and diagnostic testing.'}</div>
+          <div style="font-size: 11.5px; font-weight: 700; margin-bottom: 4px; color: #0f172a;">${esc(work.title)}</div>
+          <div class="scope-box">${esc(work.desc || 'Routine inspection, servicing and diagnostic testing.')}</div>
         </div>
 
         ${work.notes ? `
           <div class="section">
             <div class="section-title">4. Findings, Replaced Parts & Remarks</div>
-            <div class="scope-box">${work.notes}</div>
+            <div class="scope-box">${esc(work.notes)}</div>
           </div>
         ` : ''}
 
@@ -221,16 +251,15 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
           </div>
         </div>
 
-        <script>
-          window.onload = function() {
-            window.print();
-          };
-        </script>
+        <div class="footer">
+          <div>EPI UPS Bangladesh Limited · Technical Service Department · Official Work Sheet</div>
+          <div>Printed ${esc(generatedStr)}</div>
+        </div>
       </body>
       </html>
     `
-    printWindow.document.write(html)
-    printWindow.document.close()
+
+    printHtmlDocument(html, `Work-Order-${work.title}`)
   }
 
   return (

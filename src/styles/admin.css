@@ -3147,20 +3147,6 @@ input#portal-pass:-webkit-autofill:focus {
     color: #000 !important;
     font-family: Arial, Helvetica, sans-serif;
   }
-  body * {
-    visibility: hidden !important;
-  }
-  #printArea, #printArea * {
-    visibility: visible !important;
-  }
-  #printArea {
-    display: block !important;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 0;
-  }
   .print-page {
     display: block !important;
     width: 100%;

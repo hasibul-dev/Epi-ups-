@@ -1651,6 +1651,8 @@ select option {
     min-height: auto;
     padding: 6mm;
     box-shadow: none;
+    background: #fff !important;
+    color: #000 !important;
   }
   .sheet:not(.print-hide) ~ .sheet:not(.print-hide) {
     break-before: page;

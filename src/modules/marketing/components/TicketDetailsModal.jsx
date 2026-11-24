@@ -1,5 +1,6 @@
 import React from 'react';
 import { useMarketing } from '../context/MarketingContext.jsx';
+import { printHtmlDocument } from '../../../services/reportExport.js';
 import {
   X,
   Printer,
@@ -23,7 +24,94 @@ export default function TicketDetailsModal() {
   if (!open || !ticket) return null;
 
   const handlePrintSlip = () => {
-    window.print();
+    const esc = (s) => (s === null || s === undefined ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+    const html = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>IT Service Slip - ${esc(ticket.id)}</title>
+  <style>
+    @page { size: A4 portrait; margin: 15mm 12mm; }
+    * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif; color: #0f172a; background: #fff; margin: 0; padding: 0; font-size: 11px; line-height: 1.4; }
+    .header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .brand h2 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; }
+    .brand p { margin: 3px 0 0; font-size: 10px; color: #475569; }
+    .ticket-meta { text-align: right; }
+    .ticket-badge { font-size: 15px; font-weight: 800; color: #000; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 14px; font-size: 10.5px; }
+    td { border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top; }
+    td.lbl { font-weight: 700; background: #f8fafc; color: #334155; width: 22%; }
+    .box { border: 1px solid #cbd5e1; padding: 10px; margin-bottom: 14px; border-radius: 4px; }
+    .box-title { font-weight: 700; font-size: 11px; margin-bottom: 4px; color: #0f172a; }
+    .box-content { font-size: 11px; color: #334155; min-height: 40px; white-space: pre-wrap; }
+    .signatures { display: flex; justify-content: space-between; margin-top: 48px; padding-top: 10px; }
+    .sig-col { width: 28%; text-align: center; border-top: 1px solid #000; padding-top: 6px; font-size: 10px; font-weight: 600; color: #334155; }
+    .footer { margin-top: 24px; border-top: 1px solid #e2e8f0; padding-top: 6px; font-size: 8.5px; color: #94a3b8; display: flex; justify-content: space-between; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <h2>EPI UPS BANGLADESH LIMITED</h2>
+      <div style="font-size: 11px; font-weight: 700; color: #4338ca; margin-top: 2px;">IT SUPPORT &amp; INFRASTRUCTURE SERVICES</div>
+      <p>Corporate Headquarters: House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230 | Hotline: +88 01778-249416</p>
+    </div>
+    <div class="ticket-meta">
+      <div class="ticket-badge">IT SERVICE SLIP</div>
+      <div style="font-size: 12px; font-weight: 700; color: #1e293b;">${esc(ticket.id)}</div>
+      <div style="font-size: 10px; color: #64748b;">Logged: ${esc(ticket.createdDate || ticket.createdAt)}</div>
+    </div>
+  </div>
+
+  <table>
+    <tbody>
+      <tr>
+        <td class="lbl">Requesting User:</td>
+        <td style="width: 28%">${esc(ticket.requestingEmployee)}</td>
+        <td class="lbl">Department:</td>
+        <td style="width: 28%">${esc(ticket.department)}</td>
+      </tr>
+      <tr>
+        <td class="lbl">Issue Category:</td>
+        <td>${esc(ticket.issueCategory)}</td>
+        <td class="lbl">Priority Level:</td>
+        <td><strong>${esc(ticket.priority)}</strong></td>
+      </tr>
+      <tr>
+        <td class="lbl">Device / Asset:</td>
+        <td>${esc(ticket.deviceId || 'Office Infrastructure')}</td>
+        <td class="lbl">Assigned Technician:</td>
+        <td><strong>${esc(ticket.assignedTechnician)}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="box">
+    <div class="box-title">Problem Description &amp; User Request:</div>
+    <div class="box-content">${esc(ticket.description)}</div>
+  </div>
+
+  <div class="box">
+    <div class="box-title">Technician Action Taken &amp; Resolution Summary:</div>
+    <div class="box-content">${esc(ticket.resolutionDetails || 'Hardware inspected, diagnosed, and repaired in accordance with EPI IT standards.')}</div>
+    ${ticket.completionDate ? `<div style="font-size: 10px; margin-top: 8px; color: #059669; font-weight: 600;">Resolved on: ${esc(ticket.completionDate)} ${esc(ticket.completionTime || '')}</div>` : ''}
+  </div>
+
+  <div class="signatures">
+    <div class="sig-col">Employee Acceptance Signature</div>
+    <div class="sig-col">IT Technician Signature</div>
+    <div class="sig-col">Department Head Authorization</div>
+  </div>
+
+  <div class="footer">
+    <div>EPI UPS Bangladesh Limited · IT Support Helpdesk · Official Service Slip</div>
+    <div>Date Printed: ${new Date().toLocaleDateString('en-GB')}</div>
+  </div>
+</body>
+</html>`;
+
+    printHtmlDocument(html, `IT-Service-Slip-${ticket.id}`);
   };
 
   const handleQuickResolve = () => {

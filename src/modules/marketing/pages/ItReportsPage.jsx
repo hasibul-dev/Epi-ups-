@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
 import { today, addDays, fmt } from '../../sales/utils/helpers.js';
-import { exportToPdf, exportToCsv, triggerPrint } from '../../../services/reportExport.js';
+import { exportToPdf, exportToCsv, triggerPrint, printFormattedReport } from '../../../services/reportExport.js';
 import { PrintHeader, PrintSignatures } from '../../sales/components/PrintHeader.jsx';
 
 const IT_REPORTS = [
@@ -539,7 +539,96 @@ export default function ItReportsPage() {
   };
 
   const handlePrint = () => {
-    triggerPrint(activeDef.label);
+    let headers = [];
+    let pdfRows = [];
+
+    if (activeReport === 'ticket') {
+      headers = ['SL', 'Ticket ID', 'Issue Title', 'User', 'Department', 'Category', 'Priority', 'Technician', 'Status'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        t.requestingEmployee,
+        t.department,
+        t.issueCategory,
+        t.priority,
+        t.assignedTechnician,
+        t.status,
+      ]);
+    } else if (activeReport === 'device') {
+      headers = ['SL', 'Asset Tag', 'Device Model', 'Type', 'Serial No', 'Assigned To', 'Department', 'Status'];
+      pdfRows = filteredData.map((d, i) => [
+        i + 1,
+        d.deviceTag,
+        d.brandModel,
+        d.deviceType,
+        d.serialNumber || 'N/A',
+        d.assignedTo || 'Unassigned',
+        d.department || 'General',
+        d.status,
+      ]);
+    } else if (activeReport === 'technician') {
+      headers = ['SL', 'Technician Name', 'Total Assigned', 'Resolved', 'Pending', 'Critical Done', 'Efficiency'];
+      pdfRows = filteredData.map((tech, i) => [
+        i + 1,
+        tech.name,
+        tech.total,
+        tech.resolved,
+        tech.pending,
+        tech.criticalDone,
+        `${tech.rate}%`,
+      ]);
+    } else if (activeReport === 'hardware') {
+      headers = ['SL', 'Ticket ID', 'Device', 'Problem Details', 'User', 'Technician', 'Status'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.deviceId || 'IT Infrastructure',
+        t.title,
+        t.requestingEmployee,
+        t.assignedTechnician,
+        t.status,
+      ]);
+    } else if (activeReport === 'pending') {
+      headers = ['SL', 'Ticket ID', 'Issue Title', 'User', 'Department', 'Priority', 'Technician', 'Status'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        t.requestingEmployee,
+        t.department,
+        t.priority,
+        t.assignedTechnician,
+        t.status,
+      ]);
+    } else {
+      headers = ['SL', 'Ticket ID', 'Work Order / Title', 'Department', 'Technician', 'Resolved Date', 'Status'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.id,
+        t.title,
+        t.department,
+        t.assignedTechnician,
+        t.completionDate ? fmt(t.completionDate) : 'Pending',
+        t.status,
+      ]);
+    }
+
+    printFormattedReport({
+      title: activeDef.label,
+      department: 'IT Support & Technical Infrastructure',
+      dateRange: dateRangeStr,
+      subtitle: activeDef.desc,
+      headers,
+      rows: pdfRows,
+      summary: {
+        'Total Logged Tickets': `${totalTickets} Tickets`,
+        'Open / In Progress': `${openCount} Tickets`,
+        'Resolved Work': `${resolvedCount} Tickets`,
+        'Active Hardware Assets': `${devices.length} Units`,
+      },
+      orientation: 'landscape',
+    });
   };
 
   return (

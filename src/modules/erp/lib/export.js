@@ -1,4 +1,5 @@
 // Export helpers: CSV, Excel (exceljs), PDF (jsPDF) and print. Columns: [{ key, label, fmt?, align? }]
+import { printHtmlDocument } from '../../../services/reportExport.js';
 const cell = (c, row) => {
   const v = typeof c.key === 'function' ? c.key(row) : row[c.key];
   return v === undefined || v === null ? '' : v;
@@ -80,17 +81,203 @@ export async function exportPDF({ title, subtitle, columns, rows, company }) {
 }
 
 export function printTable({ title, subtitle, columns, rows, company }) {
-  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title>
-  <style>body{font:12px Arial,sans-serif;margin:24px;color:#111}h1{font-size:18px;margin:0}h2{font-size:14px;margin:4px 0}
-  p{margin:2px 0 12px;color:#555}table{border-collapse:collapse;width:100%}th{background:#1e3a8a;color:#fff;text-align:left}
-  th,td{border:1px solid #ccc;padding:5px 7px}td.r,th.r{text-align:right}tr.b td{font-weight:700;background:#f3f4f6}</style></head><body>
-  <h1>${esc(company || 'EPI UPS Bangladesh Limited')}</h1><h2>${esc(title)}</h2><p>${esc(subtitle || '')} Printed ${new Date().toLocaleString('en-GB')}</p>
-  <table><thead><tr>${columns.map((c) => `<th class="${c.numeric || c.align === 'right' ? 'r' : ''}">${esc(c.label)}</th>`).join('')}</tr></thead>
-  <tbody>${rows.map((r) => `<tr class="${r._bold ? 'b' : ''}">${columns.map((c) => `<td class="${c.numeric || c.align === 'right' ? 'r' : ''}">${esc(text(c, r))}</td>`).join('')}</tr>`).join('')}</tbody></table>
-  <script>window.onload=()=>{window.print();}</script></body></html>`;
-  const w = window.open('', '_blank');
-  if (!w) { alert('Allow pop-ups to print.'); return; }
-  w.document.write(html);
-  w.document.close();
+  const esc = (s) => (s === null || s === undefined ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB');
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const html = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>${esc(title)} — EPI UPS Bangladesh Limited</title>
+  <style>
+    @page {
+      size: ${columns.length > 7 ? 'A4 landscape' : 'A4 portrait'};
+      margin: 12mm 10mm 15mm 10mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #0f172a;
+      background: #ffffff;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .header {
+      border-bottom: 2px solid #1e3a8a;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+    .brand p {
+      margin: 2px 0 0;
+      font-size: 10px;
+      color: #475569;
+    }
+    .dept-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      background: #1e3a8a;
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border-radius: 3px;
+      margin-top: 3px;
+    }
+    .meta-box {
+      text-align: right;
+      font-size: 9.5px;
+      color: #334155;
+    }
+    .report-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 3px;
+      text-transform: uppercase;
+    }
+    .report-sub {
+      font-size: 10.5px;
+      color: #475569;
+      margin: 0 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+      margin-bottom: 16px;
+      page-break-inside: auto;
+    }
+    thead {
+      display: table-header-group;
+    }
+    tr {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 7px;
+      text-align: left;
+    }
+    th {
+      background: #1e3a8a;
+      color: #ffffff;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 8.5px;
+    }
+    td.r, th.r {
+      text-align: right;
+    }
+    tr.b td {
+      font-weight: 700;
+      background: #f1f5f9;
+      border-top: 2px solid #94a3b8;
+    }
+    tbody tr:nth-child(even):not(.b) {
+      background: #f8fafc;
+    }
+    .signatures {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 38px;
+      padding-top: 10px;
+      page-break-inside: avoid;
+    }
+    .sig-col {
+      width: 28%;
+      text-align: center;
+      border-top: 1px solid #334155;
+      padding-top: 6px;
+      font-size: 9.5px;
+      color: #334155;
+      font-weight: 600;
+    }
+    .footer {
+      margin-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 6px;
+      font-size: 8.5px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <h1>${esc(company || 'EPI UPS Bangladesh Limited')}</h1>
+      <p>House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230 | Hotline: +88 01778-249416 | Email: accounts@epiups.com.bd</p>
+      <div class="dept-badge">Accounts &amp; Financial Management</div>
+    </div>
+    <div class="meta-box">
+      <div><strong>Date:</strong> ${esc(dateStr)} ${esc(timeStr)}</div>
+      <div><strong>Currency:</strong> BDT (৳)</div>
+      <div>Official Accounts Record</div>
+    </div>
+  </div>
+
+  <div class="report-title">${esc(title)}</div>
+  ${subtitle ? `<div class="report-sub">${esc(subtitle)}</div>` : ''}
+
+  <table>
+    <thead>
+      <tr>
+        ${columns.map((c) => `<th class="${c.numeric || c.align === 'right' ? 'r' : ''}">${esc(c.label)}</th>`).join('')}
+      </tr>
+    </thead>
+    <tbody>
+      ${
+        rows.length > 0
+          ? rows
+              .map(
+                (r) =>
+                  `<tr class="${r._bold ? 'b' : ''}">${columns
+                    .map(
+                      (c) => `<td class="${c.numeric || c.align === 'right' ? 'r' : ''}">${esc(text(c, r))}</td>`
+                    )
+                    .join('')}</tr>`
+              )
+              .join('')
+          : `<tr><td colspan="${columns.length}" style="text-align: center; padding: 18px; color: #94a3b8;">No accounting records found.</td></tr>`
+      }
+    </tbody>
+  </table>
+
+  <div class="signatures">
+    <div class="sig-col">Prepared By (Accounts)</div>
+    <div class="sig-col">Verified By (Manager / Finance)</div>
+    <div class="sig-col">Authorized Signatory</div>
+  </div>
+
+  <div class="footer">
+    <div>EPI UPS Bangladesh Limited · Double-Entry Financial Engine · Confidential</div>
+    <div>Printed ${esc(dateStr)} ${esc(timeStr)}</div>
+  </div>
+</body>
+</html>`;
+
+  printHtmlDocument(html, title);
 }

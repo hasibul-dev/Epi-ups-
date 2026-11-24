@@ -259,6 +259,309 @@ export function exportToCsv({
 }
 
 /**
+ * Programmatic Print Dispatcher via Isolated Hidden Iframe
+ * Bypasses popup blockers and prevents parent styling leaks
+ */
+export function printHtmlDocument(html, title = 'EPI Document') {
+  try {
+    const existing = document.getElementById('epi-print-frame');
+    if (existing) existing.remove();
+
+    const iframe = document.createElement('iframe');
+    iframe.id = 'epi-print-frame';
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    iframe.style.visibility = 'hidden';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    const doPrint = () => {
+      try {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+      } catch (err) {
+        console.error('[printHtmlDocument] iframe print error:', err);
+        window.print();
+      } finally {
+        setTimeout(() => {
+          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        }, 1500);
+      }
+    };
+
+    if (doc.readyState === 'complete') {
+      setTimeout(doPrint, 250);
+    } else {
+      iframe.contentWindow.onload = () => setTimeout(doPrint, 250);
+    }
+  } catch (e) {
+    console.error('[printHtmlDocument] Failed to print:', e);
+    window.print();
+  }
+}
+
+/**
+ * Enterprise Formatted A4 Printable Report Generator
+ * Renders official EPI corporate letterhead, metadata, summary statistics,
+ * crisp table borders, signatures and page numbering.
+ */
+export function printFormattedReport({
+  title = 'Enterprise Report',
+  department = 'EPI UPS Bangladesh Limited',
+  dateRange = '',
+  subtitle = '',
+  summary = {},
+  headers = [],
+  rows = [],
+  orientation = 'portrait',
+}) {
+  const esc = (s) => (s === null || s === undefined ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+  const now = new Date();
+  const generatedStr = `${now.toLocaleDateString('en-GB')} ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  const summaryEntries = Object.entries(summary || {}).filter(([_, v]) => v !== undefined && v !== null);
+
+  const html = `<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>${esc(title)} — EPI UPS Bangladesh Limited</title>
+  <style>
+    @page {
+      size: A4 ${orientation};
+      margin: 12mm 10mm 15mm 10mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #000;
+      text-transform: uppercase;
+    }
+    .brand p {
+      margin: 2px 0 0;
+      font-size: 10px;
+      color: #475569;
+    }
+    .dept-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      background: #0f172a;
+      color: #ffffff;
+      margin-top: 4px;
+    }
+    .meta-box {
+      text-align: right;
+      font-size: 9.5px;
+      color: #334155;
+    }
+    .meta-box strong {
+      color: #0f172a;
+    }
+    .report-title-bar {
+      margin: 10px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #cbd5e1;
+    }
+    .report-title-bar h2 {
+      margin: 0 0 2px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+    .report-title-bar p {
+      margin: 0;
+      font-size: 10px;
+      color: #64748b;
+    }
+    .summary-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+    .summary-item {
+      font-size: 10px;
+    }
+    .summary-item strong {
+      color: #0f172a;
+    }
+    .summary-item span {
+      color: #0052cc;
+      font-weight: 700;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9px;
+      margin-bottom: 16px;
+      page-break-inside: auto;
+    }
+    thead {
+      display: table-header-group;
+    }
+    tr {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 5px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 8px;
+    }
+    tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
+    td.numeric, th.numeric {
+      text-align: right;
+    }
+    .signatures {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 36px;
+      padding-top: 10px;
+      page-break-inside: avoid;
+    }
+    .sig-col {
+      width: 28%;
+      text-align: center;
+      border-top: 1px solid #334155;
+      padding-top: 6px;
+      font-size: 9.5px;
+      color: #334155;
+      font-weight: 600;
+    }
+    .footer {
+      margin-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 6px;
+      font-size: 8.5px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <h1>EPI UPS Bangladesh Limited</h1>
+      <p>House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230 | Hotline: +88 01778-249416 | Web: www.epiups.com.bd</p>
+      <div class="dept-badge">${esc(department)}</div>
+    </div>
+    <div class="meta-box">
+      <div><strong>Date:</strong> ${esc(generatedStr)}</div>
+      ${dateRange ? `<div><strong>Period:</strong> ${esc(dateRange)}</div>` : ''}
+      <div><strong>Classification:</strong> Official Management Record</div>
+    </div>
+  </div>
+
+  <div class="report-title-bar">
+    <h2>${esc(title)}</h2>
+    ${subtitle ? `<p>${esc(subtitle)}</p>` : ''}
+  </div>
+
+  ${
+    summaryEntries.length > 0
+      ? `<div class="summary-strip">
+          ${summaryEntries
+            .map(
+              ([k, v]) => `<div class="summary-item"><strong>${esc(k)}:</strong> <span>${esc(v)}</span></div>`
+            )
+            .join('')}
+        </div>`
+      : ''
+  }
+
+  <table>
+    <thead>
+      <tr>
+        ${headers.map((h, i) => `<th class="${typeof h === 'object' && h.align === 'right' ? 'numeric' : ''}">${esc(typeof h === 'object' ? h.label : h)}</th>`).join('')}
+      </tr>
+    </thead>
+    <tbody>
+      ${
+        rows.length > 0
+          ? rows
+              .map(
+                (r) =>
+                  `<tr>${r
+                    .map(
+                      (cell, i) =>
+                        `<td class="${typeof cell === 'number' || (typeof headers[i] === 'object' && headers[i].align === 'right') ? 'numeric' : ''}">${esc(cell)}</td>`
+                    )
+                    .join('')}</tr>`
+              )
+              .join('')
+          : `<tr><td colspan="${headers.length}" style="text-align: center; padding: 18px; color: #94a3b8;">No records found for the selected criteria.</td></tr>`
+      }
+    </tbody>
+  </table>
+
+  <div class="signatures">
+    <div class="sig-col">Prepared By</div>
+    <div class="sig-col">Verified By (Department Manager)</div>
+    <div class="sig-col">Authorized Signatory</div>
+  </div>
+
+  <div class="footer">
+    <div>EPI UPS Bangladesh Limited · Enterprise Unified Management System · Official Document</div>
+    <div>Generated ${esc(generatedStr)}</div>
+  </div>
+</body>
+</html>`;
+
+  printHtmlDocument(html, title);
+}
+
+/**
  * Triggers native browser Print Dialog with custom document title
  */
 export function triggerPrint(printTitle) {

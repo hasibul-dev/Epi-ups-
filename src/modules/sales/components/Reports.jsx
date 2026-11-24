@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { today, addDays, fmt, inRange, formatTime12h, compareTimes } from '../utils/helpers.js';
 import { PrintHeader, PrintSignatures } from './PrintHeader.jsx';
 import ExpandableText from './ExpandableText.jsx';
-import { exportToPdf, exportToCsv, triggerPrint } from '../../../services/reportExport.js';
+import { exportToPdf, exportToCsv, triggerPrint, printFormattedReport } from '../../../services/reportExport.js';
 import {
   Printer,
   Plus,
@@ -561,9 +561,50 @@ export default function Reports({ db, store, onPrint, initialReport = 'daily' })
     });
   };
 
-  // Native Print
+  // Native Print with complete corporate letterhead & signatures
   const handleTriggerPrint = () => {
-    triggerPrint(`EPI-UPS-${activeDef.label.replace(/\s+/g, '-')}-${today()}`);
+    let headers = [];
+    let reportRows = [];
+
+    if (activeReport === 'client') {
+      headers = ['SL', 'Client Name', 'Company', 'Phone', 'Category', 'Product / Model', 'Serial No', 'Follow-up'];
+      reportRows = rows.map((r, i) => [
+        i + 1,
+        r.clientName || 'N/A',
+        r.company || 'N/A',
+        r.phone || 'N/A',
+        r.category || 'Potential',
+        r.product || 'UPS',
+        r.serial || 'N/A',
+        r.nextDate ? fmt(r.nextDate) : 'None',
+      ]);
+    } else {
+      headers = ['SL', 'Date & Time', 'Activity Details', 'Client Organization', 'Status', 'Notes'];
+      reportRows = rows.map((r, i) => [
+        i + 1,
+        `${fmt(r.date)} ${r.time ? `· ${r.time}` : ''}`,
+        r.activity || '',
+        r.company || r.clientName || 'General Client',
+        r.status || 'Pending',
+        r.notes || '-',
+      ]);
+    }
+
+    printFormattedReport({
+      title: activeDef.label,
+      department: 'Sales Department',
+      subtitle: activeDef.desc,
+      dateRange: `${fmt(from)} to ${fmt(to)}`,
+      headers,
+      rows: reportRows,
+      summary: {
+        'Total Records': totalCount,
+        'Completed': completedCount,
+        'Pending': pendingCount,
+        'Overdue': overdueCount,
+      },
+      orientation: activeReport === 'client' ? 'landscape' : 'portrait',
+    });
   };
 
   return (

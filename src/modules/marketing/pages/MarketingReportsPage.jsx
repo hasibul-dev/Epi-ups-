@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
 import { today, addDays, fmt } from '../../sales/utils/helpers.js';
-import { exportToPdf, exportToCsv, triggerPrint } from '../../../services/reportExport.js';
+import { exportToPdf, exportToCsv, triggerPrint, printFormattedReport } from '../../../services/reportExport.js';
 import { PrintHeader, PrintSignatures } from '../../sales/components/PrintHeader.jsx';
 
 const MKT_REPORTS = [
@@ -275,7 +275,74 @@ export default function MarketingReportsPage() {
   };
 
   const handleTriggerPrint = () => {
-    triggerPrint(`EPI-UPS-${activeDef.label.replace(/\s+/g, '-')}-${today()}`);
+    let headers = [];
+    let pdfRows = [];
+
+    if (activeReport === 'campaign') {
+      headers = ['SL', 'Campaign Name', 'Focus Product', 'Platforms', 'Budget (BDT)', 'Spend (BDT)', 'Leads', 'CPL', 'Status'];
+      pdfRows = filteredData.map((c, i) => [
+        i + 1,
+        c.name,
+        c.focusProduct || 'Industrial UPS',
+        (c.platforms || []).join(', '),
+        `Tk ${c.budget?.toLocaleString()}`,
+        `Tk ${c.spend?.toLocaleString()}`,
+        c.leadsGenerated || 0,
+        c.leadsGenerated > 0 ? `Tk ${Math.round(c.spend / c.leadsGenerated)}` : '-',
+        c.status || 'Active',
+      ]);
+    } else if (activeReport === 'content' || activeReport === 'published') {
+      headers = ['SL', 'Post Title & Topic', 'Platform', 'Scheduled Date', 'Status', 'Engagement / Reach', 'Author'];
+      pdfRows = filteredData.map((p, i) => [
+        i + 1,
+        p.title || p.topic || 'Social Post',
+        p.platform || 'LinkedIn',
+        p.scheduledDate ? fmt(p.scheduledDate) : 'N/A',
+        p.status || 'Draft',
+        p.engagement ? `${p.engagement} interactions` : (p.views ? `${p.views} views` : 'Pending'),
+        p.author || 'Marketing Team',
+      ]);
+    } else if (activeReport === 'leads') {
+      headers = ['SL', 'Campaign', 'Focus Solution', 'Platforms', 'Lead Target', 'Actual Leads', 'Spend (BDT)', 'CPL', 'Status'];
+      pdfRows = filteredData.map((l, i) => [
+        i + 1,
+        l.campaign,
+        l.product,
+        l.platforms,
+        l.leadTarget,
+        l.leadsGenerated,
+        `Tk ${l.spend?.toLocaleString()}`,
+        `Tk ${l.cpl}`,
+        l.status,
+      ]);
+    } else {
+      headers = ['SL', 'Task Title', 'Assigned To', 'Priority', 'Due Date', 'Status'];
+      pdfRows = filteredData.map((t, i) => [
+        i + 1,
+        t.title,
+        t.assignedTo || 'Unassigned',
+        t.priority || 'Normal',
+        t.dueDate ? fmt(t.dueDate) : 'N/A',
+        t.status || 'Pending',
+      ]);
+    }
+
+    printFormattedReport({
+      title: activeDef.label,
+      department: 'Digital Marketing Department',
+      subtitle: activeDef.desc,
+      dateRange: dateRangeStr,
+      headers,
+      rows: pdfRows,
+      summary: {
+        'Total Budget': `Tk ${totalBudget.toLocaleString()}`,
+        'Total Spend': `Tk ${totalSpend.toLocaleString()}`,
+        'Total Leads': `${totalLeads} Leads`,
+        'Average CPL': `Tk ${avgCPL}`,
+        'Average CTR': `${avgCTR}%`,
+      },
+      orientation: 'landscape',
+    });
   };
 
   return (

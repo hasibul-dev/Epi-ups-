@@ -2763,18 +2763,48 @@ table tr:hover td, .t tr:hover td {
    UNIVERSAL PRINT STYLES FOR ENTERPRISE REPORTS ACROSS ALL DEPARTMENTS
    ========================================================================== */
 @media print {
-  body {
-    background: #ffffff !important;
-    color: #0f172a !important;
+  @page {
+    size: A4 portrait;
+    margin: 12mm 10mm 15mm 10mm;
   }
 
+  html,
+  body,
+  #root,
+  .app-layout,
+  .app-shell,
+  .app-body-container,
+  .app-main-viewport,
+  .main-viewport,
+  .main-content {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    position: static !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Universal hide for non-printable navigation, chrome and controls */
   .topbar,
+  .app-header,
   .app-sidebar,
   .sidebar-backdrop,
+  .dept-subnav-bar,
+  .mkt-topbar,
   .mkt-hero-banner button,
   .mkt-hero-banner label,
   .btn-mkt-primary,
   .btn-mkt-secondary,
+  .btn-mkt-it,
   .mobile-toggle-btn,
   .profile-dropdown-menu,
   .sidebar-scroll,
@@ -2783,55 +2813,68 @@ table tr:hover td, .t tr:hover td {
   .sidebar-close-btn,
   .quick-filter-btns,
   .filter-controls,
-  .reports-top-bar button {
+  .reports-top-bar button,
+  .toolbar,
+  .pagination,
+  .modal-close,
+  .no-print,
+  button.btn:not(.allow-print) {
     display: none !important;
   }
 
-  .app-layout,
-  .app-body-container,
-  .app-main-viewport {
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #ffffff !important;
-    width: 100% !important;
-  }
-
+  .panel,
+  .card,
   .mkt-card,
   .print-table-wrap,
-  .sales-print-container {
+  .sales-print-container,
+  .print-page-container {
     background: #ffffff !important;
     color: #0f172a !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
     margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   table {
     width: 100% !important;
     border-collapse: collapse !important;
-    font-size: 10pt !important;
+    font-size: 9.5pt !important;
     color: #0f172a !important;
+    page-break-inside: auto !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   th {
     background: #f1f5f9 !important;
     color: #0f172a !important;
-    border: 1px solid #cbd5e1 !important;
+    border: 1px solid #94a3b8 !important;
     padding: 6px 8px !important;
     font-size: 8.5pt !important;
+    font-weight: 700 !important;
     text-transform: uppercase !important;
   }
 
   td {
-    border: 1px solid #e2e8f0 !important;
+    border: 1px solid #cbd5e1 !important;
     padding: 6px 8px !important;
     color: #1e293b !important;
+    font-size: 9pt !important;
   }
 
-  tr {
-    page-break-inside: avoid !important;
+  /* Bengali & English text rendering optimization */
+  .bangla-text, [lang="bn"], * {
+    text-rendering: optimizeLegibility !important;
   }
 }
 

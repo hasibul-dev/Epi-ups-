@@ -1480,6 +1480,10 @@
 /* ==========================================================================
    PRINT STYLES FOR DIGITAL MARKETING WORK REPORTS
    ========================================================================== */
+.printable-slip {
+  display: none;
+}
+
 @media print {
   body {
     background: #ffffff !important;
@@ -1489,14 +1493,20 @@
   .app-sidebar,
   .app-header,
   .dept-subnav-bar,
+  .mkt-topbar,
+  .mkt-hero-banner button,
+  .mkt-hero-banner label,
+  .mkt-sidebar-toggle,
   .no-print {
     display: none !important;
   }
 
+  /* Marketing Task Print Modal */
   .marketing-modal-backdrop {
     position: static !important;
     background: transparent !important;
     padding: 0 !important;
+    margin: 0 !important;
     backdrop-filter: none !important;
   }
 
@@ -1508,6 +1518,39 @@
     width: 100% !important;
     max-height: none !important;
     overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  /* IT Support Ticket Service Slip Modal */
+  .mkt-modal-backdrop {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    backdrop-filter: none !important;
+  }
+
+  .mkt-modal-dialog {
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .mkt-modal-header,
+  .mkt-modal-footer,
+  .mkt-modal-body > *:not(.printable-slip) {
+    display: none !important;
+  }
+
+  .printable-slip {
+    display: block !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
   }
 
   .print-container {
