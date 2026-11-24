@@ -573,6 +573,8 @@
 }
 
 @media print {
+
+  /* 1. Page Dimension & Margin Setup */
   /* 1. Page Dimension & Margin Setup */
   @page {
     size: auto;
