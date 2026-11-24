@@ -562,6 +562,11 @@
   margin: 0 auto;
 }
 
+/* Hidden on screen so no permanent preview occupies space */
+.dm-print-sheet-mount {
+  display: none !important;
+}
+
 @media print {
   @page {
     size: A4 auto;
@@ -572,22 +577,26 @@
     visibility: hidden;
   }
 
+  .dm-print-sheet-mount {
+    display: block !important;
+  }
+
   body:has(.marketing-modal-backdrop) .marketing-modal-backdrop,
   body:has(.marketing-modal-backdrop) .mkt-print-sheet,
+  body:has(.dm-modal-backdrop) .dm-modal-backdrop,
+  body:has(.dm-modal-backdrop) .mkt-print-sheet,
   .mkt-print-sheet,
   .mkt-print-sheet * {
     visibility: visible !important;
   }
 
-  body:has(.marketing-modal-backdrop) .marketing-modal-card {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    max-width: 100% !important;
+  body:has(.marketing-modal-backdrop) .marketing-modal-card,
+  body:has(.dm-modal-backdrop) .dm-modal-card {
+    display: none !important;
   }
 
-  .marketing-modal-backdrop {
+  .marketing-modal-backdrop,
+  .dm-modal-backdrop {
     position: static !important;
     background: transparent !important;
     padding: 0 !important;
@@ -610,6 +619,6 @@
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
-    color: #111111 !important;
+    color: #000000 !important;
   }
 }

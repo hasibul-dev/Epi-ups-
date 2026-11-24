@@ -4,8 +4,8 @@ import { today } from '../../sales/utils/helpers.js';
 
 /**
  * Brand-New Corporate White A4 Document Renderer for Digital Marketing
- * Strictly isolated: Pure #FFFFFF canvas, #111111 text, #1F2937 table headers,
- * 1px solid #999999 borders, and 3 official signatories.
+ * Strictly isolated: Pure #FFFFFF canvas, solid #000000 and #111111 text, #1F2937 table headers,
+ * 1px solid #111111 and #999999 borders, zero faded text, zero washed-out opacity.
  */
 export default function WorkPrintDocument({
   reportType = 'single', // 'single' | 'history' | 'completion' | 'assignment'
@@ -20,6 +20,15 @@ export default function WorkPrintDocument({
   const completedTasks = allTasks.filter((t) => t.status === 'Completed');
   const assignmentTasks = allTasks.filter((t) => t.status !== 'Completed');
 
+  // Compute period string from filters
+  const dateRangeStr = filters.startDate && filters.endDate
+    ? `${filters.startDate} to ${filters.endDate}`
+    : filters.startDate
+    ? `From ${filters.startDate}`
+    : filters.endDate
+    ? `Up to ${filters.endDate}`
+    : '';
+
   return (
     <div
       className={`mkt-print-sheet print-container ${
@@ -27,12 +36,13 @@ export default function WorkPrintDocument({
       }`}
       style={{
         backgroundColor: '#ffffff',
-        color: '#111111',
-        fontFamily: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-        lineHeight: 1.5,
+        color: '#000000',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
+        lineHeight: 1.45,
         padding: '24px 28px',
         boxSizing: 'border-box',
         width: '100%',
+        margin: '0 auto',
       }}
     >
       {/* =================================================================== */}
@@ -40,102 +50,105 @@ export default function WorkPrintDocument({
       {/* =================================================================== */}
       {reportType === 'single' && (
         task ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {/* Universal EPI UPS Company Header */}
             <CompanyPrintHeader
-              docNumber={`EPI-MKT-WO-${String(task.id).padStart(5, '0')}`}
-              printDate={currentToday}
+              badge="DIGITAL MARKETING & CREATIVE OPERATIONS"
               department="DIGITAL MARKETING & CREATIVE OPERATIONS"
+              dateRange={task.dueDate ? `Deadline: ${task.dueDate}` : ''}
             />
 
+            {/* Document Title Banner */}
             <div
               style={{
-                border: '1.5px solid #111111',
-                padding: '10px 14px',
-                backgroundColor: '#f8fafc',
+                border: '2px solid #000000',
+                padding: '8px 12px',
+                backgroundColor: '#f1f5f9',
                 textAlign: 'center',
-                margin: '4px 0',
+                margin: '2px 0 6px 0',
               }}
             >
               <h2
                 style={{
                   fontSize: '15px',
-                  fontWeight: 800,
+                  fontWeight: 900,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
+                  letterSpacing: '0.04em',
                   margin: 0,
-                  color: '#111111',
+                  color: '#000000',
                 }}
               >
                 INDIVIDUAL WORK ASSIGNMENT & COMPLETION REPORT
               </h2>
-              <span style={{ fontSize: '11px', color: '#475569', fontWeight: 600 }}>
-                Formal Task Brief, Technical Deliverable Scope & Verified Submission Audit
-              </span>
+              <div style={{ fontSize: '11px', color: '#111111', fontWeight: 700, marginTop: '2px' }}>
+                Official Task Brief, Specifications, Deliverables & Submission Verification
+              </div>
             </div>
 
-            {/* Task Metadata Grid */}
+            {/* Task Information Table */}
             <table
               style={{
                 width: '100%',
                 borderCollapse: 'collapse',
                 fontSize: '11.5px',
-                border: '1px solid #999999',
+                border: '1.5px solid #111111',
+                color: '#000000',
               }}
             >
               <tbody>
                 <tr>
-                  <td style={{ padding: '6px 10px', background: '#f1f5f9', fontWeight: 700, width: '20%', border: '1px solid #999999' }}>
+                  <td style={{ padding: '7px 10px', background: '#e2e8f0', fontWeight: 800, width: '20%', border: '1px solid #111111' }}>
                     Work Order ID:
                   </td>
-                  <td style={{ padding: '6px 10px', fontWeight: 800, width: '30%', border: '1px solid #999999', fontFamily: 'monospace' }}>
+                  <td style={{ padding: '7px 10px', fontWeight: 900, width: '30%', border: '1px solid #111111', fontFamily: 'monospace', fontSize: '12px' }}>
                     #{task.id}
                   </td>
-                  <td style={{ padding: '6px 10px', background: '#f1f5f9', fontWeight: 700, width: '20%', border: '1px solid #999999' }}>
-                    Current Status:
+                  <td style={{ padding: '7px 10px', background: '#e2e8f0', fontWeight: 800, width: '20%', border: '1px solid #111111' }}>
+                    Execution Status:
                   </td>
-                  <td style={{ padding: '6px 10px', fontWeight: 700, width: '30%', border: '1px solid #999999' }}>
-                    {task.status || 'Assigned'} {task.progress ? `(${task.progress}%)` : ''}
+                  <td style={{ padding: '7px 10px', fontWeight: 800, width: '30%', border: '1px solid #111111', color: '#000000' }}>
+                    {task.status || 'Assigned'} {typeof task.progress === 'number' ? `(${task.progress}%)` : ''}
                   </td>
                 </tr>
                 <tr>
-                  <td style={{ padding: '6px 10px', background: '#f1f5f9', fontWeight: 700, border: '1px solid #999999' }}>
+                  <td style={{ padding: '7px 10px', background: '#e2e8f0', fontWeight: 800, border: '1px solid #111111' }}>
                     Work Category:
                   </td>
-                  <td style={{ padding: '6px 10px', border: '1px solid #999999' }}>
+                  <td style={{ padding: '7px 10px', fontWeight: 700, border: '1px solid #111111' }}>
                     {task.category || 'General'}
                   </td>
-                  <td style={{ padding: '6px 10px', background: '#f1f5f9', fontWeight: 700, border: '1px solid #999999' }}>
-                    Execution Priority:
+                  <td style={{ padding: '7px 10px', background: '#e2e8f0', fontWeight: 800, border: '1px solid #111111' }}>
+                    Priority Level:
                   </td>
-                  <td style={{ padding: '6px 10px', fontWeight: 700, border: '1px solid #999999' }}>
+                  <td style={{ padding: '7px 10px', fontWeight: 800, border: '1px solid #111111', color: task.priority === 'Urgent' ? '#b91c1c' : '#000000' }}>
                     {task.priority || 'Normal'}
                   </td>
                 </tr>
                 <tr>
-                  <td style={{ padding: '6px 10px', background: '#f1f5f9', fontWeight: 700, border: '1px solid #999999' }}>
+                  <td style={{ padding: '7px 10px', background: '#e2e8f0', fontWeight: 800, border: '1px solid #111111' }}>
                     Assigned Employee:
                   </td>
-                  <td style={{ padding: '6px 10px', fontWeight: 700, border: '1px solid #999999' }}>
+                  <td style={{ padding: '7px 10px', fontWeight: 800, border: '1px solid #111111' }}>
                     {task.assignedTo || 'Unassigned'}
                   </td>
-                  <td style={{ padding: '6px 10px', background: '#f1f5f9', fontWeight: 700, border: '1px solid #999999' }}>
-                    Assigned By (Supervisor):
+                  <td style={{ padding: '7px 10px', background: '#e2e8f0', fontWeight: 800, border: '1px solid #111111' }}>
+                    Assigned By:
                   </td>
-                  <td style={{ padding: '6px 10px', border: '1px solid #999999' }}>
+                  <td style={{ padding: '7px 10px', fontWeight: 700, border: '1px solid #111111' }}>
                     {task.assignedBy || 'Super Administrator'}
                   </td>
                 </tr>
                 <tr>
-                  <td style={{ padding: '6px 10px', background: '#f1f5f9', fontWeight: 700, border: '1px solid #999999' }}>
+                  <td style={{ padding: '7px 10px', background: '#e2e8f0', fontWeight: 800, border: '1px solid #111111' }}>
                     Assignment Date:
                   </td>
-                  <td style={{ padding: '6px 10px', border: '1px solid #999999', fontFamily: 'monospace' }}>
+                  <td style={{ padding: '7px 10px', border: '1px solid #111111', fontFamily: 'monospace', fontWeight: 700 }}>
                     {task.startDate || '—'}
                   </td>
-                  <td style={{ padding: '6px 10px', background: '#f1f5f9', fontWeight: 700, border: '1px solid #999999' }}>
+                  <td style={{ padding: '7px 10px', background: '#e2e8f0', fontWeight: 800, border: '1px solid #111111' }}>
                     Target Deadline:
                   </td>
-                  <td style={{ padding: '6px 10px', fontWeight: 700, border: '1px solid #999999', fontFamily: 'monospace' }}>
+                  <td style={{ padding: '7px 10px', fontWeight: 800, border: '1px solid #111111', fontFamily: 'monospace' }}>
                     {task.dueDate} {task.dueTime ? `at ${task.dueTime}` : ''}
                   </td>
                 </tr>
@@ -143,50 +156,56 @@ export default function WorkPrintDocument({
             </table>
 
             {/* Project Brief & Work Deliverable Scope */}
-            <div style={{ border: '1px solid #999999', padding: '12px', backgroundColor: '#ffffff' }}>
-              <h3 style={{ fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', margin: '0 0 6px 0', color: '#111111', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
+            <div style={{ border: '1.5px solid #111111', padding: '12px', backgroundColor: '#ffffff' }}>
+              <h3 style={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', margin: '0 0 6px 0', color: '#000000', borderBottom: '1.5px solid #111111', paddingBottom: '4px' }}>
                 Project Brief & Work Deliverable Scope
               </h3>
-              <p style={{ fontSize: '12.5px', fontWeight: 700, margin: '0 0 6px 0', color: '#0f172a' }}>
+              <div style={{ fontSize: '13px', fontWeight: 800, margin: '0 0 6px 0', color: '#000000' }}>
                 {task.title}
-              </p>
-              <p style={{ fontSize: '11.5px', color: '#334155', margin: 0, whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+              </div>
+              <div style={{ fontSize: '11.5px', color: '#000000', margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: 1.5, fontWeight: 500 }}>
                 {task.desc || 'No detailed scope outlined for this work order.'}
-              </p>
+              </div>
               {task.refInfo && (
-                <div style={{ marginTop: '8px', fontSize: '11px', color: '#475569' }}>
-                  <strong>Project / Ref Info:</strong> {task.refInfo}
+                <div style={{ marginTop: '8px', fontSize: '11px', color: '#111111', fontWeight: 700 }}>
+                  <strong>Project / Reference Info:</strong> {task.refInfo}
+                </div>
+              )}
+              {task.instructions && (
+                <div style={{ marginTop: '6px', fontSize: '11px', color: '#111111', fontWeight: 700 }}>
+                  <strong>Additional Instructions:</strong> {task.instructions}
                 </div>
               )}
               {task.attachment && (
-                <div style={{ marginTop: '4px', fontSize: '11px', color: '#0284c7' }}>
+                <div style={{ marginTop: '6px', fontSize: '11px', color: '#000000', fontWeight: 700 }}>
                   <strong>Attached Brief Link / Document:</strong> {task.attachment}
                 </div>
               )}
             </div>
 
             {/* Employee Completion Report */}
-            <div style={{ border: '1px solid #999999', padding: '12px', backgroundColor: task.status === 'Completed' ? '#f0fdf4' : '#ffffff' }}>
-              <h3 style={{ fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', margin: '0 0 6px 0', color: '#111111', borderBottom: '1px solid #cbd5e1', paddingBottom: '4px' }}>
+            <div style={{ border: '1.5px solid #111111', padding: '12px', backgroundColor: '#ffffff' }}>
+              <h3 style={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', margin: '0 0 6px 0', color: '#000000', borderBottom: '1.5px solid #111111', paddingBottom: '4px' }}>
                 Employee Completion Report
               </h3>
-              <div style={{ fontSize: '11.5px', color: '#1e293b', lineHeight: 1.5 }}>
-                <p style={{ margin: '0 0 6px 0' }}>
-                  <strong>Status:</strong> {task.status === 'Completed' ? 'Verified Completed & Delivered' : 'Work in Progress / Pending Completion'}
-                  {task.completedDate && ` (Delivered on: ${task.completedDate})`}
+              <div style={{ fontSize: '11.5px', color: '#000000', lineHeight: 1.5 }}>
+                <p style={{ margin: '0 0 6px 0', fontWeight: 700 }}>
+                  <strong>Delivery Status:</strong> {task.status === 'Completed' ? 'Verified Completed & Delivered' : 'Work in Progress / Pending Completion'}
+                  {task.completedDate && ` (Delivered Date: ${task.completedDate})`}
                 </p>
-                <p style={{ margin: '0 0 6px 0' }}>
-                  <strong>Submission Notes & Attached Deliverable Assets:</strong>
+                <p style={{ margin: '0 0 4px 0', fontWeight: 800 }}>
+                  Submission Notes & Attached Deliverable Assets:
                 </p>
-                <p style={{ margin: '0 0 6px 0', fontStyle: task.completionNotes ? 'italic' : 'normal', color: task.completionNotes ? '#0f172a' : '#64748b' }}>
-                  {task.completionNotes || task.note || 'No completion notes submitted yet.'}
-                </p>
-                <div style={{ fontSize: '11px', color: '#334155', marginTop: '6px' }}>
+                <div style={{ margin: '0 0 8px 0', color: '#000000', fontWeight: 600, padding: '6px 8px', background: '#f8fafc', border: '1px solid #999999' }}>
+                  {task.completionNotes || task.workSummary || task.note || 'No completion notes submitted yet.'}
+                </div>
+                <div style={{ fontSize: '11px', color: '#000000', fontWeight: 700 }}>
                   <strong>Attached Deliverable Assets:</strong> {task.completionAttachment || task.deliverables || task.attachment || 'None submitted.'}
                 </div>
               </div>
             </div>
 
+            {/* 3 Signatures */}
             <PrintSignatures
               firstTitle="Marketing Executive"
               secondTitle="Lead Digital Strategist"
@@ -194,7 +213,7 @@ export default function WorkPrintDocument({
             />
           </div>
         ) : (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
+          <div style={{ padding: '40px', textAlign: 'center', color: '#000000', fontWeight: 700 }}>
             No work order record selected for printing.
           </div>
         )
@@ -206,51 +225,51 @@ export default function WorkPrintDocument({
       {reportType === 'history' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <CompanyPrintHeader
-            docNumber={`EPI-MKT-HIST-${currentToday.replace(/-/g, '')}`}
-            printDate={currentToday}
+            badge="DIGITAL MARKETING ARCHIVE & COMPLIANCE"
             department="DIGITAL MARKETING ARCHIVE & COMPLIANCE"
+            dateRange={dateRangeStr}
           />
 
-          <div style={{ border: '1.5px solid #111111', padding: '8px 12px', backgroundColor: '#f8fafc', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '14.5px', fontWeight: 800, textTransform: 'uppercase', margin: 0, color: '#111111' }}>
+          <div style={{ border: '2px solid #000000', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: 900, textTransform: 'uppercase', margin: 0, color: '#000000' }}>
               DIGITAL MARKETING WORK HISTORY & ARCHIVE REPORT
             </h2>
-            <span style={{ fontSize: '11px', color: '#475569', fontWeight: 600 }}>
-              Audit Archive of Digital Operations ({allTasks.length} total tasks recorded)
-            </span>
+            <div style={{ fontSize: '11px', color: '#111111', fontWeight: 700, marginTop: '2px' }}>
+              Audit Archive of Operational Deliverables ({allTasks.length} matching tasks recorded)
+            </div>
           </div>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10.5px', border: '1px solid #999999' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', border: '1.5px solid #111111', color: '#000000' }}>
             <thead>
-              <tr style={{ background: '#f1f5f9', color: '#1f2937' }}>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '55px' }}>ID</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999' }}>Work Title & Deliverable Summary</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '90px' }}>Category</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '100px' }}>Assigned To</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '75px' }}>Deadline</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '65px' }}>Priority</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '80px' }}>Status</th>
+              <tr style={{ background: '#e2e8f0', color: '#000000' }}>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '55px', fontWeight: 800 }}>ID</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', fontWeight: 800 }}>Work Title & Deliverable Summary</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '100px', fontWeight: 800 }}>Category</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '110px', fontWeight: 800 }}>Assigned To</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '80px', fontWeight: 800 }}>Deadline</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '70px', fontWeight: 800 }}>Priority</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '85px', fontWeight: 800 }}>Status</th>
               </tr>
             </thead>
             <tbody>
               {allTasks.map((t) => (
                 <tr key={t.id}>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontFamily: 'monospace', fontWeight: 700 }}>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontFamily: 'monospace', fontWeight: 800, textAlign: 'center' }}>
                     #{t.id}
                   </td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999' }}>
-                    <div style={{ fontWeight: 700, color: '#0f172a' }}>{t.title}</div>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', wordBreak: 'break-word' }}>
+                    <div style={{ fontWeight: 800, color: '#000000' }}>{t.title}</div>
                     {t.completionNotes && (
-                      <div style={{ fontSize: '9.5px', color: '#475569', fontStyle: 'italic' }}>
+                      <div style={{ fontSize: '10px', color: '#111111', fontStyle: 'italic', marginTop: '2px', fontWeight: 500 }}>
                         Notes: {t.completionNotes}
                       </div>
                     )}
                   </td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999' }}>{t.category || 'General'}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontWeight: 600 }}>{t.assignedTo}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontFamily: 'monospace' }}>{t.dueDate}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontWeight: 600 }}>{t.priority}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontWeight: 700 }}>{t.status}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 600 }}>{t.category || 'General'}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 700 }}>{t.assignedTo}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontFamily: 'monospace', fontWeight: 600, textAlign: 'center' }}>{t.dueDate}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 700, textAlign: 'center' }}>{t.priority}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 800, textAlign: 'center' }}>{t.status}</td>
                 </tr>
               ))}
             </tbody>
@@ -270,51 +289,51 @@ export default function WorkPrintDocument({
       {reportType === 'completion' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <CompanyPrintHeader
-            docNumber={`EPI-MKT-COMP-${currentToday.replace(/-/g, '')}`}
-            printDate={currentToday}
+            badge="DIGITAL OPERATIONS AUDIT & VERIFICATION"
             department="DIGITAL OPERATIONS AUDIT & VERIFICATION"
+            dateRange={dateRangeStr}
           />
 
-          <div style={{ border: '1.5px solid #111111', padding: '8px 12px', backgroundColor: '#f0fdf4', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '14.5px', fontWeight: 800, textTransform: 'uppercase', margin: 0, color: '#166534' }}>
+          <div style={{ border: '2px solid #000000', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: 900, textTransform: 'uppercase', margin: 0, color: '#000000' }}>
               DIGITAL MARKETING WORK COMPLETION & AUDIT REPORT
             </h2>
-            <span style={{ fontSize: '11px', color: '#15803d', fontWeight: 600 }}>
-              Verified Delivered Assets & Creative Quality Assurance ({completedTasks.length} completed tasks)
-            </span>
+            <div style={{ fontSize: '11px', color: '#111111', fontWeight: 700, marginTop: '2px' }}>
+              Verified Delivered Assets & Output Deliverables ({completedTasks.length} completed tasks)
+            </div>
           </div>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10.5px', border: '1px solid #999999' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', border: '1.5px solid #111111', color: '#000000' }}>
             <thead>
-              <tr style={{ background: '#f1f5f9', color: '#1f2937' }}>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '55px' }}>ID</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999' }}>Work Title & Deliverables</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '90px' }}>Category</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '100px' }}>Specialist</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '85px' }}>Delivery Date</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999' }}>Evidence / Output Links</th>
+              <tr style={{ background: '#e2e8f0', color: '#000000' }}>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '55px', fontWeight: 800 }}>ID</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', fontWeight: 800 }}>Work Title & Deliverables</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '100px', fontWeight: 800 }}>Category</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '110px', fontWeight: 800 }}>Specialist</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '90px', fontWeight: 800 }}>Delivery Date</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', fontWeight: 800 }}>Evidence / Deliverable Details</th>
               </tr>
             </thead>
             <tbody>
               {completedTasks.map((t) => (
                 <tr key={t.id}>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontFamily: 'monospace', fontWeight: 700 }}>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontFamily: 'monospace', fontWeight: 800, textAlign: 'center' }}>
                     #{t.id}
                   </td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999' }}>
-                    <div style={{ fontWeight: 700 }}>{t.title}</div>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', wordBreak: 'break-word' }}>
+                    <div style={{ fontWeight: 800 }}>{t.title}</div>
                     {t.completionNotes && (
-                      <div style={{ fontSize: '9.5px', color: '#475569', fontStyle: 'italic' }}>
+                      <div style={{ fontSize: '10px', color: '#111111', fontStyle: 'italic', marginTop: '2px', fontWeight: 500 }}>
                         Notes: {t.completionNotes}
                       </div>
                     )}
                   </td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999' }}>{t.category || 'General'}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontWeight: 600 }}>{t.assignedTo}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontFamily: 'monospace' }}>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 600 }}>{t.category || 'General'}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 700 }}>{t.assignedTo}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontFamily: 'monospace', fontWeight: 700, textAlign: 'center' }}>
                     {t.completedDate || t.dueDate}
                   </td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', color: '#0284c7', fontSize: '9.5px' }}>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', color: '#000000', fontSize: '10.5px', fontWeight: 600, wordBreak: 'break-word' }}>
                     {t.completionAttachment || t.deliverables || t.attachment || 'Verified Complete'}
                   </td>
                 </tr>
@@ -336,51 +355,51 @@ export default function WorkPrintDocument({
       {reportType === 'assignment' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <CompanyPrintHeader
-            docNumber={`EPI-MKT-ALLOC-${currentToday.replace(/-/g, '')}`}
-            printDate={currentToday}
+            badge="DIGITAL MARKETING WORKLOAD & CAPACITY DISPATCH"
             department="DIGITAL MARKETING WORKLOAD & CAPACITY DISPATCH"
+            dateRange={dateRangeStr}
           />
 
-          <div style={{ border: '1.5px solid #111111', padding: '8px 12px', backgroundColor: '#eff6ff', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '14.5px', fontWeight: 800, textTransform: 'uppercase', margin: 0, color: '#1e40af' }}>
+          <div style={{ border: '2px solid #000000', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: 900, textTransform: 'uppercase', margin: 0, color: '#000000' }}>
               DIGITAL MARKETING WORK ALLOCATION & ASSIGNMENT REPORT
             </h2>
-            <span style={{ fontSize: '11px', color: '#1d4ed8', fontWeight: 600 }}>
+            <div style={{ fontSize: '11px', color: '#111111', fontWeight: 700, marginTop: '2px' }}>
               Active Task Queue, Employee Capacity & Deadline Schedule ({assignmentTasks.length} active assignments)
-            </span>
+            </div>
           </div>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10.5px', border: '1px solid #999999' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px', border: '1.5px solid #111111', color: '#000000' }}>
             <thead>
-              <tr style={{ background: '#f1f5f9', color: '#1f2937' }}>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '55px' }}>ID</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999' }}>Work Title & Objectives</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '90px' }}>Category</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '100px' }}>Assigned To</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '75px' }}>Deadline</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '65px' }}>Priority</th>
-                <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '70px' }}>Progress</th>
+              <tr style={{ background: '#e2e8f0', color: '#000000' }}>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '55px', fontWeight: 800 }}>ID</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', fontWeight: 800 }}>Work Title & Objectives</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '100px', fontWeight: 800 }}>Category</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '110px', fontWeight: 800 }}>Assigned To</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '80px', fontWeight: 800 }}>Deadline</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '70px', fontWeight: 800 }}>Priority</th>
+                <th style={{ padding: '7px 8px', border: '1px solid #111111', width: '75px', fontWeight: 800 }}>Progress</th>
               </tr>
             </thead>
             <tbody>
               {assignmentTasks.map((t) => (
                 <tr key={t.id}>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontFamily: 'monospace', fontWeight: 700 }}>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontFamily: 'monospace', fontWeight: 800, textAlign: 'center' }}>
                     #{t.id}
                   </td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999' }}>
-                    <div style={{ fontWeight: 700 }}>{t.title}</div>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', wordBreak: 'break-word' }}>
+                    <div style={{ fontWeight: 800, color: '#000000' }}>{t.title}</div>
                     {t.desc && (
-                      <div style={{ fontSize: '9.5px', color: '#475569' }}>
-                        {t.desc.length > 90 ? `${t.desc.slice(0, 90)}...` : t.desc}
+                      <div style={{ fontSize: '10px', color: '#111111', marginTop: '2px', fontWeight: 500 }}>
+                        {t.desc.length > 95 ? `${t.desc.slice(0, 95)}...` : t.desc}
                       </div>
                     )}
                   </td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999' }}>{t.category || 'General'}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontWeight: 600 }}>{t.assignedTo}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontFamily: 'monospace' }}>{t.dueDate}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontWeight: 600 }}>{t.priority}</td>
-                  <td style={{ padding: '5px 8px', border: '1px solid #999999', fontWeight: 700 }}>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 600 }}>{t.category || 'General'}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 700 }}>{t.assignedTo}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontFamily: 'monospace', fontWeight: 600, textAlign: 'center' }}>{t.dueDate}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 700, textAlign: 'center' }}>{t.priority}</td>
+                  <td style={{ padding: '6px 8px', border: '1px solid #111111', fontWeight: 800, textAlign: 'center' }}>
                     {t.progress || 0}%
                   </td>
                 </tr>
