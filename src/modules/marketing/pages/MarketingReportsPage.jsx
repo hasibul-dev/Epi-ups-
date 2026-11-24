@@ -20,7 +20,7 @@ import {
 import { useMarketing } from '../context/MarketingContext.jsx';
 import { today, addDays, fmt } from '../../sales/utils/helpers.js';
 import { exportToPdf, exportToCsv, triggerPrint, printFormattedReport } from '../../../services/reportExport.js';
-import { PrintHeader, PrintSignatures } from '../../sales/components/PrintHeader.jsx';
+import { CompanyPrintHeader, PrintSignatures } from '../../../components/CompanyPrintHeader.jsx';
 
 const MKT_REPORTS = [
   { id: 'campaign', label: 'Campaign Performance Report', icon: Target, desc: 'B2B ad campaigns, budgets, actual spend, impressions, CTR & cost per lead' },
@@ -521,10 +521,10 @@ export default function MarketingReportsPage() {
       {/* 5. Print Preview or Live Table */}
       {previewMode ? (
         <div
-          className="panel print-page-container"
+          className="panel print-page-container mkt-print-sheet"
           style={{
             background: '#ffffff',
-            color: '#0f172a',
+            color: '#111111',
             padding: '32px 36px',
             borderRadius: 8,
             boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
@@ -532,51 +532,52 @@ export default function MarketingReportsPage() {
             margin: '0 auto',
           }}
         >
-          <PrintHeader
+          <CompanyPrintHeader
             title={activeDef.label}
             department="DIGITAL MARKETING DEPARTMENT"
             dateRange={`${fmt(from)} to ${fmt(to)}`}
             subtitle={activeDef.desc}
+            badge="DIGITAL MARKETING"
           />
 
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16, border: '1px solid #999999', fontSize: '10.5px', color: '#111111' }}>
             <thead>
-              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #cbd5e1' }}>
-                <th style={{ padding: '8px 6px', textAlign: 'left', fontSize: 11, color: '#334155' }}>SL</th>
+              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #1F2937' }}>
+                <th style={{ padding: '7px 6px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>SL</th>
                 {activeReport === 'campaign' ? (
                   <>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Campaign Name</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Focus Solution</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Platforms</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Budget</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Actual Spend</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Leads</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Status</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Campaign Name</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Focus Solution</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Platforms</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'right', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Budget</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'right', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Actual Spend</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'right', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Leads</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Status</th>
                   </>
                 ) : activeReport === 'content' || activeReport === 'published' ? (
                   <>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Post Title &amp; Topic</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Platform</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Scheduled Date</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Status</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Engagement</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Post Title &amp; Topic</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Platform</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Scheduled Date</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Status</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Engagement</th>
                   </>
                 ) : activeReport === 'leads' ? (
                   <>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Campaign</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Target Product</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Target Leads</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Actual Leads</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>Spend</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'right', fontSize: 11, color: '#334155' }}>CPL</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Campaign</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Target Product</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'right', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Target Leads</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'right', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Actual Leads</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'right', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Spend</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'right', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>CPL</th>
                   </>
                 ) : (
                   <>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Task Title</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Assigned To</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Priority</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Due Date</th>
-                    <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#334155' }}>Status</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Task Title</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Assigned To</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Priority</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Due Date</th>
+                    <th style={{ padding: '7px 8px', textAlign: 'left', fontSize: 11, color: '#1F2937', fontWeight: 800, border: '1px solid #999999' }}>Status</th>
                   </>
                 )}
               </tr>
@@ -584,57 +585,57 @@ export default function MarketingReportsPage() {
             <tbody>
               {filteredData.length > 0 ? (
                 filteredData.map((row, i) => (
-                  <tr key={row.id || i} style={{ borderBottom: '1px solid #e2e8f0', fontSize: 10.5 }}>
-                    <td style={{ padding: '6px 6px', color: '#64748b' }}>{i + 1}</td>
+                  <tr key={row.id || i} style={{ borderBottom: '1px solid #999999', fontSize: '10.5px' }}>
+                    <td style={{ padding: '6px 6px', color: '#111111', fontWeight: 700, border: '1px solid #999999' }}>{i + 1}</td>
                     {activeReport === 'campaign' ? (
                       <>
-                        <td style={{ padding: '6px 8px', fontWeight: 600 }}>{row.name}</td>
-                        <td style={{ padding: '6px 8px', color: '#475569' }}>{row.focusProduct || 'Industrial UPS'}</td>
-                        <td style={{ padding: '6px 8px', color: '#7c3aed', fontWeight: 600 }}>{(row.platforms || []).join(', ')}</td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right' }}>৳{row.budget?.toLocaleString()}</td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 600 }}>৳{row.spend?.toLocaleString()}</td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#059669', fontWeight: 700 }}>{row.leadsGenerated || 0}</td>
-                        <td style={{ padding: '6px 8px' }}>
-                          <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9.5, fontWeight: 700, background: '#ecfdf5', color: '#059669' }}>
+                        <td style={{ padding: '6px 8px', fontWeight: 800, color: '#000000', border: '1px solid #999999' }}>{row.name}</td>
+                        <td style={{ padding: '6px 8px', color: '#111111', border: '1px solid #999999' }}>{row.focusProduct || 'Industrial UPS'}</td>
+                        <td style={{ padding: '6px 8px', color: '#000000', fontWeight: 700, border: '1px solid #999999' }}>{(row.platforms || []).join(', ')}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#111111', border: '1px solid #999999' }}>৳{row.budget?.toLocaleString()}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, color: '#000000', border: '1px solid #999999' }}>৳{row.spend?.toLocaleString()}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#047857', fontWeight: 800, border: '1px solid #999999' }}>{row.leadsGenerated || 0}</td>
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999' }}>
+                          <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: '9.5px', fontWeight: 800, background: '#f1f5f9', color: '#1F2937', border: '1px solid #999999' }}>
                             {row.status}
                           </span>
                         </td>
                       </>
                     ) : activeReport === 'content' || activeReport === 'published' ? (
                       <>
-                        <td style={{ padding: '6px 8px', fontWeight: 600 }}>{row.title || row.topic}</td>
-                        <td style={{ padding: '6px 8px', color: '#0052cc', fontWeight: 600 }}>{row.platform}</td>
-                        <td style={{ padding: '6px 8px' }}>{row.scheduledDate ? fmt(row.scheduledDate) : '-'}</td>
-                        <td style={{ padding: '6px 8px' }}>
-                          <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: 9.5, fontWeight: 700, background: '#f1f5f9', color: '#334155' }}>
+                        <td style={{ padding: '6px 8px', fontWeight: 800, color: '#000000', border: '1px solid #999999' }}>{row.title || row.topic}</td>
+                        <td style={{ padding: '6px 8px', color: '#000000', fontWeight: 700, border: '1px solid #999999' }}>{row.platform}</td>
+                        <td style={{ padding: '6px 8px', color: '#111111', border: '1px solid #999999' }}>{row.scheduledDate ? fmt(row.scheduledDate) : '-'}</td>
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999' }}>
+                          <span style={{ padding: '2px 6px', borderRadius: 4, fontSize: '9.5px', fontWeight: 800, background: '#f1f5f9', color: '#1F2937', border: '1px solid #999999' }}>
                             {row.status}
                           </span>
                         </td>
-                        <td style={{ padding: '6px 8px', color: '#059669' }}>{row.engagement || 'Recorded Live'}</td>
+                        <td style={{ padding: '6px 8px', color: '#047857', fontWeight: 700, border: '1px solid #999999' }}>{row.engagement || 'Recorded Live'}</td>
                       </>
                     ) : activeReport === 'leads' ? (
                       <>
-                        <td style={{ padding: '6px 8px', fontWeight: 600 }}>{row.campaign}</td>
-                        <td style={{ padding: '6px 8px' }}>{row.product}</td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right' }}>{row.leadTarget}</td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 700, color: '#059669' }}>{row.leadsGenerated}</td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right' }}>৳{row.spend?.toLocaleString()}</td>
-                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#0052cc', fontWeight: 600 }}>৳{row.cpl}</td>
+                        <td style={{ padding: '6px 8px', fontWeight: 800, color: '#000000', border: '1px solid #999999' }}>{row.campaign}</td>
+                        <td style={{ padding: '6px 8px', color: '#111111', border: '1px solid #999999' }}>{row.product}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#111111', border: '1px solid #999999' }}>{row.leadTarget}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', fontWeight: 800, color: '#047857', border: '1px solid #999999' }}>{row.leadsGenerated}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#111111', border: '1px solid #999999' }}>৳{row.spend?.toLocaleString()}</td>
+                        <td style={{ padding: '6px 8px', textAlign: 'right', color: '#000000', fontWeight: 800, border: '1px solid #999999' }}>৳{row.cpl}</td>
                       </>
                     ) : (
                       <>
-                        <td style={{ padding: '6px 8px', fontWeight: 600 }}>{row.title}</td>
-                        <td style={{ padding: '6px 8px' }}>{row.assignedTo || 'Unassigned'}</td>
-                        <td style={{ padding: '6px 8px' }}>{row.priority}</td>
-                        <td style={{ padding: '6px 8px' }}>{row.dueDate ? fmt(row.dueDate) : '-'}</td>
-                        <td style={{ padding: '6px 8px' }}>{row.status}</td>
+                        <td style={{ padding: '6px 8px', fontWeight: 800, color: '#000000', border: '1px solid #999999' }}>{row.title}</td>
+                        <td style={{ padding: '6px 8px', color: '#000000', fontWeight: 700, border: '1px solid #999999' }}>{row.assignedTo || 'Unassigned'}</td>
+                        <td style={{ padding: '6px 8px', fontWeight: 700, border: '1px solid #999999' }}>{row.priority}</td>
+                        <td style={{ padding: '6px 8px', color: '#111111', border: '1px solid #999999' }}>{row.dueDate ? fmt(row.dueDate) : '-'}</td>
+                        <td style={{ padding: '6px 8px', fontWeight: 800, border: '1px solid #999999' }}>{row.status}</td>
                       </>
                     )}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} style={{ padding: 24, textAlign: 'center', color: '#94a3b8' }}>
+                  <td colSpan={7} style={{ padding: 24, textAlign: 'center', color: '#111111', fontWeight: 700, background: '#f9fafb', border: '1px solid #999999' }}>
                     No records found for the selected period and criteria.
                   </td>
                 </tr>
@@ -643,7 +644,11 @@ export default function MarketingReportsPage() {
           </table>
 
           <PrintSignatures
-            roles={['Marketing Executive', 'Head of Digital Marketing', 'Managing Director']}
+            signatories={[
+              { title: 'Marketing Executive', note: 'Prepared By' },
+              { title: 'Lead Digital Strategist', note: 'Verified & Inspected' },
+              { title: 'Managing Director / Super Admin', note: 'Approved & Signed' },
+            ]}
           />
         </div>
       ) : (

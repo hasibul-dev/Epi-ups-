@@ -382,7 +382,7 @@ export default function DigitalMarketingMainPage() {
             onClick={() =>
               openTaskPrintModal(
                 null,
-                'summary',
+                activeTab === 'reports' ? 'history' : activeTab === 'today' ? 'assignment' : 'history',
                 activeTab === 'reports' ? filteredHistory : activeTab === 'today' ? todayTasks : marketingTasks,
                 {
                   employee: activeTab === 'reports' ? reportEmployee : employeeFilter,
@@ -1377,14 +1377,14 @@ export default function DigitalMarketingMainPage() {
               </div>
 
               <div className="flex items-center justify-between text-xs pt-1 text-slate-400">
-                <div className="flex items-center gap-3">
-                  <span>
-                    Found <strong className="text-emerald-400">{filteredHistory.length}</strong> completed work records
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[11px] text-slate-300">
+                    Found <strong className="text-emerald-400">{filteredHistory.length}</strong> records:
                   </span>
                   <button
                     type="button"
                     onClick={() =>
-                      openTaskPrintModal(null, 'summary', filteredHistory, {
+                      openTaskPrintModal(null, 'history', filteredHistory, {
                         employee: reportEmployee,
                         category: reportCategory,
                         startDate: reportStartDate,
@@ -1396,6 +1396,23 @@ export default function DigitalMarketingMainPage() {
                   >
                     <Printer size={13} />
                     <span>Print History Report ({filteredHistory.length})</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openTaskPrintModal(null, 'completion', filteredHistory, {
+                        employee: reportEmployee,
+                        category: reportCategory,
+                        startDate: reportStartDate,
+                        endDate: reportEndDate,
+                      })
+                    }
+                    className="btn-mkt-secondary mkt-header-action-btn flex items-center gap-1.5 text-xs font-bold text-emerald-300 hover:text-white"
+                    title="Print Work Completion & Audit Report"
+                  >
+                    <CheckCircle2 size={13} className="text-emerald-400" />
+                    <span>Completion Report</span>
                   </button>
                 </div>
                 {(reportEmployee !== 'All' || reportCategory !== 'All' || reportStartDate || reportEndDate || reportSearch) && (

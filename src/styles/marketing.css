@@ -1538,24 +1538,41 @@
 
 /* ==========================================================================
    PRINT STYLES FOR DIGITAL MARKETING WORK REPORTS
+   Complete Isolated Print Engine for A4 Portrait & Landscape Corporate Output
    ========================================================================== */
 .printable-slip {
   display: none;
 }
 
 @media print {
-  body {
-    background: #ffffff !important;
-    color: #000000 !important;
+  @page {
+    size: A4 portrait;
+    margin: 10mm 10mm 12mm 10mm;
   }
 
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Universal hide for non-printable navigation, chrome and controls */
   .app-sidebar,
   .app-header,
+  .topbar,
   .dept-subnav-bar,
   .mkt-topbar,
   .mkt-hero-banner button,
   .mkt-hero-banner label,
   .mkt-sidebar-toggle,
+  .marketing-modal-header,
   .no-print {
     display: none !important;
   }
@@ -1570,13 +1587,18 @@
     display: none !important;
   }
 
-  /* Marketing Task Print Modal */
+  /* Marketing Task Print Modal Canvas */
   .marketing-modal-backdrop {
     position: static !important;
-    background: transparent !important;
+    background: #ffffff !important;
     padding: 0 !important;
     margin: 0 !important;
     backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
   }
 
   .marketing-modal-card {
@@ -1586,64 +1608,57 @@
     max-width: 100% !important;
     width: 100% !important;
     max-height: none !important;
+    height: auto !important;
     overflow: visible !important;
     padding: 0 !important;
+    margin: 0 !important;
   }
 
-  /* IT Support Ticket Service Slip Modal */
-  .mkt-modal-backdrop {
-    position: static !important;
-    background: transparent !important;
+  /* Dedicated Printable Document Container */
+  .mkt-print-sheet,
+  .print-container {
+    background: #ffffff !important;
+    color: #111111 !important;
     padding: 0 !important;
     margin: 0 !important;
-    backdrop-filter: none !important;
-  }
-
-  .mkt-modal-dialog {
-    border: none !important;
+    width: 100% !important;
     box-shadow: none !important;
-    background: #ffffff !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    padding: 0 !important;
-  }
-
-  .mkt-modal-header,
-  .mkt-modal-footer,
-  .mkt-modal-body > *:not(.printable-slip) {
-    display: none !important;
-  }
-
-  .printable-slip {
+    border: none !important;
     display: block !important;
-    width: 100% !important;
-    background: #ffffff !important;
-    color: #000000 !important;
-    padding: 0 !important;
+    page-break-inside: auto !important;
   }
 
-  .print-container {
-    padding: 0 !important;
-    color: #111111 !important;
-    background: #ffffff !important;
-  }
-
+  .mkt-print-sheet table,
   table {
     border-collapse: collapse !important;
     width: 100% !important;
     border: 1px solid #999999 !important;
     color: #111111 !important;
+    page-break-inside: auto !important;
   }
 
+  .mkt-print-sheet thead,
+  thead {
+    display: table-header-group !important;
+  }
+
+  .mkt-print-sheet tr,
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .mkt-print-sheet th,
   th {
     border: 1px solid #999999 !important;
-    border-bottom: 2px solid #111827 !important;
+    border-bottom: 2px solid #1F2937 !important;
     background-color: #f1f5f9 !important;
-    color: #111827 !important;
+    color: #1F2937 !important;
     font-weight: 800 !important;
     padding: 6px 8px !important;
   }
 
+  .mkt-print-sheet td,
   td {
     border: 1px solid #999999 !important;
     color: #111111 !important;
@@ -1651,6 +1666,7 @@
     padding: 6px 8px !important;
   }
 
+  /* High-Contrast Print Typography & Overrides */
   .text-slate-400,
   .text-slate-500,
   .text-slate-600 {
@@ -1677,6 +1693,14 @@
     background-color: #f9fafb !important;
     text-align: center !important;
     padding: 12px !important;
+    border: 1px solid #999999 !important;
+  }
+
+  /* Signatures Line */
+  .sig div,
+  .print-signatures div div {
+    border-top: 1.5px solid #111111 !important;
+    color: #000000 !important;
   }
 }
 
