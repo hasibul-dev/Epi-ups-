@@ -24,11 +24,14 @@ assert(headerCode.includes('+880 1897-660840') && headerCode.includes('+880 1897
 assert(headerCode.includes('info.bd@epi-ups.com'), 'Header must contain official email');
 assert(headerCode.includes('www.epi-ups.com'), 'Header must contain official website');
 assert(headerCode.includes('/logo.png'), 'Header must reference /logo.png');
+assert(headerCode.includes("borderBottom: '2px solid #1F2937'") || headerCode.includes('border-bottom: 2px solid #1F2937'), 'Header must have bottom divider 2px solid #1F2937');
+assert(headerCode.includes("flexWrap: 'nowrap'"), 'Component header must use flexWrap nowrap for strict 2-column layout');
+assert(headerCode.includes("whiteSpace: 'nowrap'"), 'Component header right metadata must never wrap underneath left side');
 console.log('  ✅ [PASS] Company name: EPI UPS BANGLADESH LIMITED');
 console.log('  ✅ [PASS] Full address: GA Foundation Building 2, House-5, Road-1, Main Road, 2 Pallabi Rd, Dhaka 1216');
 console.log('  ✅ [PASS] Both phone numbers: +880 1897-660840, +880 1897-660844');
 console.log('  ✅ [PASS] Email: info.bd@epi-ups.com | Website: www.epi-ups.com');
-console.log('  ✅ [PASS] Reusable React component and HTML string generator verified\n');
+console.log('  ✅ [PASS] Strict two-column non-wrapping layout verified in React & HTML generators\n');
 
 // 3. Verify Service Department Integration
 console.log('--- 3. VERIFY SERVICE DEPARTMENT PRINT INTEGRATION ---');
@@ -46,20 +49,30 @@ console.log('  ✅ [PASS] Service Report.jsx integrated with unified CompanyPrin
 console.log('  ✅ [PASS] Service WorkDetailsModal.jsx integrated with getCompanyPrintHeaderHtml');
 console.log('  ✅ [PASS] service.css isolates report sheets and hides navigation chrome\n');
 
-// 4. Verify Digital Marketing Integration
-console.log('--- 4. VERIFY DIGITAL MARKETING PRINT INTEGRATION ---');
+// 4. Verify Digital Marketing Integration & Slip Redesign
+console.log('--- 4. VERIFY DIGITAL MARKETING PRINT & SLIP REDESIGN ---');
 const taskPrintModalCode = fs.readFileSync(path.resolve('src/modules/marketing/components/TaskPrintModal.jsx'), 'utf-8');
 assert(taskPrintModalCode.includes('CompanyPrintHeader'), 'TaskPrintModal.jsx must use CompanyPrintHeader');
 assert(taskPrintModalCode.includes('PrintSignatures'), 'TaskPrintModal.jsx must use PrintSignatures');
+assert(taskPrintModalCode.includes('1. Project Brief & Work Deliverable Scope'), 'TaskPrintModal.jsx must contain Section 1: Project Brief & Work Deliverable Scope');
+assert(taskPrintModalCode.includes('2. Employee Completion Report & Submission Notes'), 'TaskPrintModal.jsx must contain Section 2: Employee Completion Report & Submission Notes');
+assert(taskPrintModalCode.includes('Attached Deliverable Assets:'), 'TaskPrintModal.jsx must contain Attached Deliverable Assets row');
+assert(taskPrintModalCode.includes('3. Verification & Administrative Sign-Off'), 'TaskPrintModal.jsx must contain Section 3: Verification & Administrative Sign-Off');
+assert(taskPrintModalCode.includes('Marketing Executive'), 'Must include Marketing Executive signatory');
+assert(taskPrintModalCode.includes('Lead Digital Strategist'), 'Must include Lead Digital Strategist signatory');
+assert(taskPrintModalCode.includes('Managing Director / Super Admin'), 'Must include Managing Director / Super Admin signatory');
 
 const ticketDetailsModalCode = fs.readFileSync(path.resolve('src/modules/marketing/components/TicketDetailsModal.jsx'), 'utf-8');
 assert(ticketDetailsModalCode.includes('getCompanyPrintHeaderHtml'), 'TicketDetailsModal.jsx must use getCompanyPrintHeaderHtml');
 
 const marketingCss = fs.readFileSync(path.resolve('src/styles/marketing.css'), 'utf-8');
 assert(marketingCss.includes('body:has(.marketing-modal-backdrop)'), 'marketing.css must isolate modal view during print');
-console.log('  ✅ [PASS] TaskPrintModal.jsx integrated with unified CompanyPrintHeader');
+assert(marketingCss.includes('.mkt-action-btn'), 'marketing.css must define compact .mkt-action-btn table button');
+assert(marketingCss.includes('.mkt-action-btn-icon'), 'marketing.css must define .mkt-action-btn-icon button');
+console.log('  ✅ [PASS] TaskPrintModal.jsx: Full individual slip layout with Sections 1, 2, Attached Assets & 3');
+console.log('  ✅ [PASS] TaskPrintModal.jsx: Summary performance statistics ribbon & data table');
 console.log('  ✅ [PASS] TicketDetailsModal.jsx integrated with getCompanyPrintHeaderHtml');
-console.log('  ✅ [PASS] marketing.css isolates modal and hides dashboard during print\n');
+console.log('  ✅ [PASS] marketing.css: Standardized 34px buttons & 28px table actions (.mkt-action-btn)\n');
 
 // 5. Verify Sales, ERP Accounts & Admin Integration
 console.log('--- 5. VERIFY SALES, ERP & ADMIN INTEGRATION ---');

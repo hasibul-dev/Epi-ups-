@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Printer, Download, CheckCircle2, Calendar, User, Tag, FileText } from 'lucide-react';
+import { X, Printer, CheckCircle2, Calendar, User, Tag, FileText } from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
 import { today } from '../../sales/utils/helpers.js';
 import { CompanyPrintHeader, PrintSignatures } from '../../../components/CompanyPrintHeader.jsx';
@@ -41,14 +41,15 @@ export default function TaskPrintModal() {
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="btn-mkt-primary !py-1.5 !px-3 text-xs"
+              className="btn-mkt-primary !h-[34px] !min-h-[34px] !py-1.5 !px-3.5 text-xs flex items-center gap-1.5"
             >
-              <Printer size={13} />
+              <Printer size={14} />
               <span>Print to Paper / PDF</span>
             </button>
             <button
               onClick={closeTaskPrintModal}
-              className="p-1 rounded text-slate-400 hover:text-white"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+              title="Close Preview"
             >
               <X size={18} />
             </button>
@@ -57,12 +58,12 @@ export default function TaskPrintModal() {
 
         {/* Printable Document Container */}
         <div className="p-6 sm:p-8 bg-white text-slate-900 rounded-b-xl print-container">
-          {/* Unified Official Corporate Header */}
+          {/* Universal Official Company Header with strict 2-column layout */}
           <CompanyPrintHeader
             title={
               type === 'summary'
-                ? 'OFFICIAL DIGITAL MARKETING WORK PERFORMANCE & HISTORY REPORT'
-                : 'INDIVIDUAL WORK ASSIGNMENT & COMPLETION CERTIFICATE'
+                ? 'DIGITAL MARKETING WORK PERFORMANCE & HISTORY REPORT'
+                : 'DIGITAL MARKETING WORK ORDER SLIP & CERTIFICATE'
             }
             department="DIGITAL MARKETING DEPARTMENT"
             dateRange={filters?.startDate && filters?.endDate ? `${filters.startDate} to ${filters.endDate}` : `Report Date: ${currentToday}`}
@@ -73,11 +74,13 @@ export default function TaskPrintModal() {
                     { label: 'Total Works', value: tasksToPrint.length },
                     { label: 'Completed', value: tasksToPrint.filter(t => t.status === 'Completed').length },
                     { label: 'In Progress', value: tasksToPrint.filter(t => t.status === 'In Progress').length },
+                    { label: 'On Hold / Other', value: tasksToPrint.filter(t => t.status === 'On Hold' || t.status === 'Assigned' || t.status === 'To Do').length },
                   ]
                 : singleTask
                 ? [
                     { label: 'Work Order ID', value: singleTask.id || 'N/A' },
                     { label: 'Assigned Employee', value: singleTask.assignedTo || 'Unassigned' },
+                    { label: 'Priority', value: singleTask.priority || 'Normal' },
                     { label: 'Status', value: singleTask.status || 'Assigned' },
                   ]
                 : []
@@ -85,97 +88,131 @@ export default function TaskPrintModal() {
             badge="DIGITAL MARKETING"
           />
 
-          {/* SINGLE WORK SLIP VIEW */}
+          {/* SINGLE WORK ORDER SLIP VIEW */}
           {type === 'single' && (
             singleTask ? (
-              <div className="space-y-6 text-xs text-slate-800">
-                {/* Task Meta Table */}
-                <table className="w-full border-collapse border border-slate-300 text-xs">
+              <div className="space-y-4 text-xs text-slate-800">
+                {/* Formatted Info Table with Visible #999999 Borders */}
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #999999', fontSize: '11px', color: '#111111' }}>
                   <tbody>
-                    <tr className="border-b border-slate-300">
-                      <td className="w-36 bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
+                    <tr style={{ borderBottom: '1px solid #999999' }}>
+                      <td style={{ width: '140px', background: '#f1f5f9', padding: '7px 10px', fontWeight: 700, color: '#1F2937', borderRight: '1px solid #999999' }}>
                         Work Order ID:
                       </td>
-                      <td className="p-2 font-mono font-semibold">{singleTask.id}</td>
-                      <td className="w-36 bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
+                      <td style={{ padding: '7px 10px', fontFamily: 'monospace', fontWeight: 700, color: '#000000', borderRight: '1px solid #999999' }}>
+                        {singleTask.id || 'N/A'}
+                      </td>
+                      <td style={{ width: '140px', background: '#f1f5f9', padding: '7px 10px', fontWeight: 700, color: '#1F2937', borderRight: '1px solid #999999' }}>
                         Category:
                       </td>
-                      <td className="p-2 font-semibold">{singleTask.category}</td>
-                    </tr>
-                    <tr className="border-b border-slate-300">
-                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
-                        Work Title:
+                      <td style={{ padding: '7px 10px', fontWeight: 600, color: '#111111' }}>
+                        {singleTask.category || 'General Marketing'}
                       </td>
-                      <td colSpan={3} className="p-2 font-bold text-slate-900 text-sm">
+                    </tr>
+                    <tr style={{ borderBottom: '1px solid #999999' }}>
+                      <td style={{ background: '#f1f5f9', padding: '7px 10px', fontWeight: 700, color: '#1F2937', borderRight: '1px solid #999999' }}>
+                        Work Title & Objective:
+                      </td>
+                      <td colSpan={3} style={{ padding: '7px 10px', fontWeight: 800, fontSize: '12.5px', color: '#000000', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                         {singleTask.title}
                       </td>
                     </tr>
-                    <tr className="border-b border-slate-300">
-                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
+                    <tr style={{ borderBottom: '1px solid #999999' }}>
+                      <td style={{ background: '#f1f5f9', padding: '7px 10px', fontWeight: 700, color: '#1F2937', borderRight: '1px solid #999999' }}>
                         Assigned Employee:
                       </td>
-                      <td className="p-2 font-bold text-slate-900">{singleTask.assignedTo}</td>
-                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
+                      <td style={{ padding: '7px 10px', fontWeight: 800, color: '#000000', borderRight: '1px solid #999999' }}>
+                        {singleTask.assignedTo || 'Unassigned'}
+                      </td>
+                      <td style={{ background: '#f1f5f9', padding: '7px 10px', fontWeight: 700, color: '#1F2937', borderRight: '1px solid #999999' }}>
                         Priority Level:
                       </td>
-                      <td className="p-2 font-bold">{singleTask.priority}</td>
+                      <td style={{ padding: '7px 10px', fontWeight: 800, color: singleTask.priority === 'Urgent' ? '#be123c' : '#000000' }}>
+                        {singleTask.priority || 'Normal'}
+                      </td>
                     </tr>
-                    <tr className="border-b border-slate-300">
-                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
+                    <tr style={{ borderBottom: '1px solid #999999' }}>
+                      <td style={{ background: '#f1f5f9', padding: '7px 10px', fontWeight: 700, color: '#1F2937', borderRight: '1px solid #999999' }}>
                         Assignment Date:
                       </td>
-                      <td className="p-2">{singleTask.startDate || '—'}</td>
-                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
+                      <td style={{ padding: '7px 10px', color: '#111111', fontWeight: 600, borderRight: '1px solid #999999' }}>
+                        {singleTask.startDate || '—'}
+                      </td>
+                      <td style={{ background: '#f1f5f9', padding: '7px 10px', fontWeight: 700, color: '#1F2937', borderRight: '1px solid #999999' }}>
                         Target Deadline:
                       </td>
-                      <td className="p-2 font-semibold text-rose-700">{singleTask.dueDate || '—'}</td>
+                      <td style={{ padding: '7px 10px', fontWeight: 700, color: '#be123c' }}>
+                        {singleTask.dueDate ? `${singleTask.dueDate} ${singleTask.dueTime || ''}` : '—'}
+                      </td>
                     </tr>
                     <tr>
-                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
+                      <td style={{ background: '#f1f5f9', padding: '7px 10px', fontWeight: 700, color: '#1F2937', borderRight: '1px solid #999999' }}>
                         Current Status:
                       </td>
-                      <td className="p-2 font-extrabold text-slate-900">{singleTask.status}</td>
-                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
+                      <td style={{ padding: '7px 10px', fontWeight: 800, color: '#000000', borderRight: '1px solid #999999' }}>
+                        {singleTask.status || 'Assigned'}
+                      </td>
+                      <td style={{ background: '#f1f5f9', padding: '7px 10px', fontWeight: 700, color: '#1F2937', borderRight: '1px solid #999999' }}>
                         Completion Date:
                       </td>
-                      <td className="p-2 font-bold text-emerald-800">
+                      <td style={{ padding: '7px 10px', fontWeight: 800, color: singleTask.completedDate ? '#047857' : '#4b5563' }}>
                         {singleTask.completedDate ? `${singleTask.completedDate} ${singleTask.completedTime || ''}` : 'Pending Completion'}
                       </td>
                     </tr>
                   </tbody>
                 </table>
 
-                {/* Scope & Detailed Brief */}
-                <div className="border border-slate-300 rounded p-4 bg-slate-50">
-                  <div className="font-bold text-slate-900 mb-1 border-b border-slate-200 pb-1 flex items-center gap-1.5">
-                    <FileText size={14} className="text-slate-600" />
-                    <span>Project Brief & Work Deliverable Scope</span>
+                {/* Section 1: Project Brief & Work Deliverable Scope */}
+                <div style={{ border: '1px solid #999999', borderRadius: '4px', padding: '12px 14px', background: '#ffffff' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', fontWeight: 800, color: '#1F2937', borderBottom: '1px solid #e2e8f0', paddingBottom: '6px', marginBottom: '8px' }}>
+                    <FileText size={14} style={{ color: '#475569' }} />
+                    <span>1. Project Brief & Work Deliverable Scope</span>
                   </div>
-                  <p className="whitespace-pre-wrap text-slate-800 leading-relaxed mt-2">
-                    {singleTask.desc || 'Complete the assigned industrial marketing deliverable according to EPI UPS brand guidelines.'}
+                  <p style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '11px', lineHeight: 1.6, color: '#111111', margin: 0 }}>
+                    {singleTask.desc || 'Complete the assigned industrial marketing deliverable according to EPI UPS brand guidelines and commercial technical specifications.'}
                   </p>
                 </div>
 
-                {/* Completion & Execution Report */}
-                <div className="border border-slate-300 rounded p-4 bg-slate-50">
-                  <div className="font-bold text-slate-900 mb-1 border-b border-slate-200 pb-1 flex items-center gap-1.5">
-                    <CheckCircle2 size={14} className="text-emerald-600" />
-                    <span>Employee Completion Report & Submission Notes</span>
+                {/* Section 2: Employee Completion Report & Submission Notes */}
+                <div style={{ border: '1px solid #999999', borderRadius: '4px', padding: '12px 14px', background: '#ffffff' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', fontWeight: 800, color: '#1F2937', borderBottom: '1px solid #e2e8f0', paddingBottom: '6px', marginBottom: '8px' }}>
+                    <CheckCircle2 size={14} style={{ color: '#047857' }} />
+                    <span>2. Employee Completion Report & Submission Notes</span>
                   </div>
-                  <p className="whitespace-pre-wrap text-slate-800 leading-relaxed mt-2 italic">
-                    {singleTask.completionNotes || 'Work delivered and verified in accordance with corporate digital marketing objectives.'}
+                  <p style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '11px', lineHeight: 1.6, color: '#111111', margin: 0, fontStyle: singleTask.completionNotes ? 'normal' : 'italic' }}>
+                    {singleTask.completionNotes || 'Work deliverable completed, reviewed, and handed over in full accordance with corporate digital marketing objectives.'}
                   </p>
-                  {singleTask.completionAttachment && (
-                    <div className="mt-3 pt-2 border-t border-slate-200 text-slate-600 flex items-center gap-1">
-                      <Tag size={12} />
-                      <span className="font-bold">Attached Deliverable Asset:</span>
-                      <span className="font-mono">{singleTask.completionAttachment}</span>
-                    </div>
-                  )}
+                  
+                  {/* Attached Deliverable Assets Row */}
+                  <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' }}>
+                    <Tag size={13} style={{ color: '#475569' }} />
+                    <span style={{ fontWeight: 800, color: '#1F2937' }}>Attached Deliverable Assets:</span>
+                    {singleTask.completionAttachment || singleTask.attachment ? (
+                      <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#000000', background: '#f1f5f9', padding: '2px 8px', border: '1px solid #999999', borderRadius: '4px' }}>
+                        {singleTask.completionAttachment || singleTask.attachment}
+                      </span>
+                    ) : (
+                      <span style={{ color: '#64748b', fontStyle: 'italic' }}>No deliverable assets attached</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Section 3: Signature and Approval Section */}
+                <div style={{ marginTop: '24px', pageBreakInside: 'avoid' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 800, color: '#1F2937', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '6px', borderBottom: '1px solid #999999', paddingBottom: '4px' }}>
+                    3. Verification & Administrative Sign-Off
+                  </div>
+                  <PrintSignatures
+                    signatories={[
+                      { title: 'Marketing Executive', note: 'Prepared By' },
+                      { title: 'Lead Digital Strategist', note: 'Verified & Inspected' },
+                      { title: 'Managing Director / Super Admin', note: 'Approved & Signed' },
+                    ]}
+                  />
                 </div>
               </div>
             ) : (
-              <div className="p-6 text-center text-slate-800 font-bold border border-slate-400 bg-slate-50 rounded">
+              <div style={{ padding: '24px', textAlign: 'center', color: '#111111', fontWeight: 700, border: '1px solid #999999', background: '#f9fafb', borderRadius: '4px' }}>
                 No task record selected for this slip preview.
               </div>
             )
@@ -183,91 +220,109 @@ export default function TaskPrintModal() {
 
           {/* SUMMARY REPORT VIEW */}
           {type === 'summary' && (
-            <div className="space-y-6">
-              {/* Summary Metric Ribbon */}
-              <div className="grid grid-cols-4 gap-3 p-3 bg-slate-100 rounded-lg border border-slate-300 text-center">
+            <div className="space-y-4">
+              {/* Summary Statistics Ribbon */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', padding: '12px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #999999', textAlign: 'center' }}>
                 <div>
-                  <div className="font-bold text-slate-500 uppercase text-[10px]">Total Works</div>
-                  <div className="text-base font-extrabold text-slate-900">{tasksToPrint.length}</div>
+                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Works</div>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#000000', marginTop: '2px' }}>{tasksToPrint.length}</div>
                 </div>
                 <div>
-                  <div className="font-bold text-slate-500 uppercase text-[10px]">Completed</div>
-                  <div className="text-base font-extrabold text-emerald-700">
+                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Completed</div>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#047857', marginTop: '2px' }}>
                     {tasksToPrint.filter(t => t.status === 'Completed').length}
                   </div>
                 </div>
                 <div>
-                  <div className="font-bold text-slate-500 uppercase text-[10px]">In Progress</div>
-                  <div className="text-base font-extrabold text-purple-700">
+                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>In Progress</div>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#6d28d9', marginTop: '2px' }}>
                     {tasksToPrint.filter(t => t.status === 'In Progress').length}
                   </div>
                 </div>
                 <div>
-                  <div className="font-bold text-slate-500 uppercase text-[10px]">On Hold / Other</div>
-                  <div className="text-base font-extrabold text-amber-700">
-                    {tasksToPrint.filter(t => t.status === 'On Hold' || t.status === 'Assigned').length}
+                  <div style={{ fontSize: '10px', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>On Hold / Other</div>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#b45309', marginTop: '2px' }}>
+                    {tasksToPrint.filter(t => t.status === 'On Hold' || t.status === 'Assigned' || t.status === 'To Do').length}
                   </div>
                 </div>
               </div>
 
               {/* Data Table */}
-              <table className="w-full border-collapse border border-slate-300 text-[11px] text-slate-800">
+              <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #999999', fontSize: '10px', color: '#111111' }}>
                 <thead>
-                  <tr className="bg-slate-100 border-b border-slate-300 font-bold text-slate-800 text-left">
-                    <th className="p-2 border-r border-slate-300 w-8 text-center">#</th>
-                    <th className="p-2 border-r border-slate-300 min-w-[200px]">Work Title & Deliverable</th>
-                    <th className="p-2 border-r border-slate-300 w-28">Category</th>
-                    <th className="p-2 border-r border-slate-300 w-28">Employee</th>
-                    <th className="p-2 border-r border-slate-300 w-20">Assigned</th>
-                    <th className="p-2 border-r border-slate-300 w-24">Completed Date</th>
-                    <th className="p-2 border-r border-slate-300 w-16">Status</th>
-                    <th className="p-2 min-w-[140px]">Completion Notes</th>
+                  <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #1F2937' }}>
+                    <th style={{ padding: '6px 4px', border: '1px solid #999999', width: '28px', textAlign: 'center', color: '#1F2937', fontWeight: 800 }}>#</th>
+                    <th style={{ padding: '6px 8px', border: '1px solid #999999', minWidth: '180px', textAlign: 'left', color: '#1F2937', fontWeight: 800 }}>Work Title & Deliverable</th>
+                    <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '90px', textAlign: 'left', color: '#1F2937', fontWeight: 800 }}>Category</th>
+                    <th style={{ padding: '6px 8px', border: '1px solid #999999', width: '105px', textAlign: 'left', color: '#1F2937', fontWeight: 800 }}>Assigned Employee</th>
+                    <th style={{ padding: '6px 6px', border: '1px solid #999999', width: '70px', textAlign: 'center', color: '#1F2937', fontWeight: 800 }}>Assigned</th>
+                    <th style={{ padding: '6px 6px', border: '1px solid #999999', width: '85px', textAlign: 'center', color: '#1F2937', fontWeight: 800 }}>Deadline / Completed</th>
+                    <th style={{ padding: '6px 6px', border: '1px solid #999999', width: '75px', textAlign: 'center', color: '#1F2937', fontWeight: 800 }}>Status</th>
+                    <th style={{ padding: '6px 8px', border: '1px solid #999999', minWidth: '140px', textAlign: 'left', color: '#1F2937', fontWeight: 800 }}>Completion Notes & Deliverables</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tasksToPrint.length > 0 ? (
                     tasksToPrint.map((t, idx) => (
-                      <tr key={t.id || idx} className="border-b border-slate-400 hover:bg-slate-50">
-                        <td className="p-2 border-r border-slate-400 text-center font-bold text-slate-900">
+                      <tr key={t.id || idx} style={{ borderBottom: '1px solid #999999', pageBreakInside: 'avoid' }}>
+                        <td style={{ padding: '6px 4px', border: '1px solid #999999', textAlign: 'center', fontWeight: 800, color: '#000000', background: '#ffffff' }}>
                           {idx + 1}
                         </td>
-                        <td className="p-2 border-r border-slate-400 font-bold text-black">
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999', fontWeight: 700, color: '#000000', background: '#ffffff', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                           {t.title}
+                          {t.attachment && (
+                            <div style={{ fontSize: '9px', color: '#333333', fontWeight: 600, marginTop: '2px' }}>
+                              📎 Asset: {t.attachment}
+                            </div>
+                          )}
                         </td>
-                        <td className="p-2 border-r border-slate-400 font-medium text-slate-900">{t.category}</td>
-                        <td className="p-2 border-r border-slate-400 font-semibold text-slate-950">{t.assignedTo}</td>
-                        <td className="p-2 border-r border-slate-400 text-slate-800 font-medium">{t.startDate}</td>
-                        <td className="p-2 border-r border-slate-400 font-bold text-black">
-                          {t.completedDate || t.dueDate || '—'}
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999', color: '#111111', background: '#ffffff', fontWeight: 500 }}>
+                          {t.category || '—'}
                         </td>
-                        <td className="p-2 border-r border-slate-400 font-extrabold text-black">
-                          {t.status}
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999', color: '#000000', background: '#ffffff', fontWeight: 700 }}>
+                          {t.assignedTo || 'Unassigned'}
                         </td>
-                        <td className="p-2 text-slate-900 font-medium line-clamp-2">
+                        <td style={{ padding: '6px 6px', border: '1px solid #999999', textAlign: 'center', color: '#111111', background: '#ffffff' }}>
+                          {t.startDate || '—'}
+                        </td>
+                        <td style={{ padding: '6px 6px', border: '1px solid #999999', textAlign: 'center', fontWeight: 700, color: '#000000', background: '#ffffff' }}>
+                          {t.completedDate ? `✓ ${t.completedDate}` : (t.dueDate || '—')}
+                        </td>
+                        <td style={{ padding: '6px 6px', border: '1px solid #999999', textAlign: 'center', fontWeight: 800, color: '#000000', background: '#ffffff' }}>
+                          {t.status || 'Assigned'}
+                        </td>
+                        <td style={{ padding: '6px 8px', border: '1px solid #999999', color: '#111111', background: '#ffffff', whiteSpace: 'pre-wrap', wordBreak: 'break-word', lineHeight: 1.4 }}>
                           {t.completionNotes || t.desc || '—'}
+                          {t.completionAttachment && (
+                            <div style={{ fontSize: '9px', color: '#047857', fontWeight: 700, marginTop: '2px' }}>
+                              ✓ Attached: {t.completionAttachment}
+                            </div>
+                          )}
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={8} className="p-4 text-center font-bold text-black bg-slate-50 border border-slate-400">
+                      <td colSpan={8} style={{ padding: '16px', textAlign: 'center', fontWeight: 700, color: '#111111', background: '#f9fafb', border: '1px solid #999999' }}>
                         No marketing work records found for the selected criteria.
                       </td>
                     </tr>
                   )}
                 </tbody>
               </table>
+
+              {/* Signatures Sign-Off Block */}
+              <div style={{ marginTop: '28px', pageBreakInside: 'avoid' }}>
+                <PrintSignatures
+                  signatories={[
+                    { title: 'Marketing Executive', note: 'Prepared By' },
+                    { title: 'Lead Digital Strategist', note: 'Verified & Inspected' },
+                    { title: 'Managing Director / Super Admin', note: 'Approved & Signed' },
+                  ]}
+                />
+              </div>
             </div>
           )}
-
-          {/* Official Unified Signatures Sign-Off Block */}
-          <PrintSignatures
-            signatories={[
-              { title: 'Marketing Executive', note: 'Prepared By' },
-              { title: 'Lead Digital Strategist', note: 'Verified & Inspected' },
-              { title: 'Managing Director / Super Admin', note: 'Approved & Signed' },
-            ]}
-          />
         </div>
       </div>
     </div>

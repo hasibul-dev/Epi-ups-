@@ -816,7 +816,7 @@ export default function DigitalMarketingMainPage() {
                               {/* Update Button (Blue) */}
                               <button
                                 onClick={() => openTaskUpdateModal(task)}
-                                className="btn-mkt-primary-blue text-xs !py-1 !px-2.5"
+                                className="mkt-action-btn btn-mkt-primary-blue"
                                 title="Update Progress / Submit Completion"
                               >
                                 Update
@@ -825,7 +825,7 @@ export default function DigitalMarketingMainPage() {
                               {/* Slip Print Button */}
                               <button
                                 onClick={() => openTaskPrintModal(task, 'single')}
-                                className="btn-mkt-cyan text-xs !p-1.5"
+                                className="mkt-action-btn-icon btn-mkt-cyan"
                                 title="Print Work Order Slip"
                               >
                                 <Printer size={13} />
@@ -834,7 +834,7 @@ export default function DigitalMarketingMainPage() {
                               {/* Edit Button (Dark glass with blue border) */}
                               <button
                                 onClick={() => openTaskModal(task)}
-                                className="btn-mkt-glass text-xs !p-1.5 text-sky-400 hover:text-white"
+                                className="mkt-action-btn-icon btn-mkt-glass text-sky-400 hover:text-white"
                                 title="Edit Assignment"
                               >
                                 <Edit2 size={13} />
@@ -843,7 +843,7 @@ export default function DigitalMarketingMainPage() {
                               {/* Delete Button (Dark glass with red border) */}
                               <button
                                 onClick={() => handleDelete(task.id, task.title)}
-                                className="btn-mkt-delete-red text-xs !p-1.5"
+                                className="mkt-action-btn-icon btn-mkt-delete-red"
                                 title="Delete Task"
                               >
                                 <Trash2 size={13} />
@@ -1129,7 +1129,7 @@ export default function DigitalMarketingMainPage() {
                               {/* Update Button (Blue) */}
                               <button
                                 onClick={() => openTaskUpdateModal(task)}
-                                className="btn-mkt-primary-blue text-xs !py-1 !px-2.5"
+                                className="mkt-action-btn btn-mkt-primary-blue"
                                 title="Update Progress / Submit Completion"
                               >
                                 Update
@@ -1138,7 +1138,7 @@ export default function DigitalMarketingMainPage() {
                               {/* Slip Print Button */}
                               <button
                                 onClick={() => openTaskPrintModal(task, 'single')}
-                                className="btn-mkt-cyan text-xs !p-1.5"
+                                className="mkt-action-btn-icon btn-mkt-cyan"
                                 title="Print Work Order Slip"
                               >
                                 <Printer size={13} />
@@ -1147,7 +1147,7 @@ export default function DigitalMarketingMainPage() {
                               {/* Edit Button (Dark glass with blue border) */}
                               <button
                                 onClick={() => openTaskModal(task)}
-                                className="btn-mkt-glass text-xs !p-1.5 text-sky-400 hover:text-white"
+                                className="mkt-action-btn-icon btn-mkt-glass text-sky-400 hover:text-white"
                                 title="Edit Assignment"
                               >
                                 <Edit2 size={13} />
@@ -1156,7 +1156,7 @@ export default function DigitalMarketingMainPage() {
                               {/* Delete Button (Dark glass with red border) */}
                               <button
                                 onClick={() => handleDelete(task.id, task.title)}
-                                className="btn-mkt-delete-red text-xs !p-1.5"
+                                className="mkt-action-btn-icon btn-mkt-delete-red"
                                 title="Delete Task"
                               >
                                 <Trash2 size={13} />
@@ -1266,14 +1266,15 @@ export default function DigitalMarketingMainPage() {
                             <div className="flex items-center justify-end gap-1.5">
                               <button
                                 onClick={() => openTaskUpdateModal(task)}
-                                className="btn-mkt-primary-blue text-xs !py-1 !px-2.5"
+                                className="mkt-action-btn btn-mkt-primary-blue"
+                                title="Update Progress / Submit Completion"
                               >
                                 Update
                               </button>
                               <button
                                 onClick={() => openTaskPrintModal(task, 'single')}
-                                className="btn-mkt-cyan text-xs !p-1.5"
-                                title="Print Slip"
+                                className="mkt-action-btn-icon btn-mkt-cyan"
+                                title="Print Work Order Slip"
                               >
                                 <Printer size={13} />
                               </button>
@@ -1390,10 +1391,10 @@ export default function DigitalMarketingMainPage() {
                         endDate: reportEndDate,
                       })
                     }
-                    className="btn-mkt-secondary flex items-center gap-1.5 !py-1 !px-2.5 text-[11px] font-bold text-cyan-300 hover:text-white border border-cyan-500/30 rounded"
+                    className="btn-mkt-cyan mkt-header-action-btn flex items-center gap-1.5 text-xs font-bold"
                     title="Print Filtered Work History Report"
                   >
-                    <Printer size={12} />
+                    <Printer size={13} />
                     <span>Print History Report ({filteredHistory.length})</span>
                   </button>
                 </div>
@@ -1468,8 +1469,8 @@ export default function DigitalMarketingMainPage() {
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => openTaskPrintModal(task, 'single')}
-                              className="btn-mkt-cyan text-xs !py-1 !px-2 flex items-center gap-1"
-                              title="Print Work Slip Certificate"
+                              className="mkt-action-btn btn-mkt-cyan"
+                              title="Print Work Order Slip"
                             >
                               <Printer size={12} />
                               <span>Slip</span>
