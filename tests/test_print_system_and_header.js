@@ -68,6 +68,24 @@ assert(taskPrintModalCode.includes('Managing Director / Super Admin'), 'Must inc
 assert(taskPrintModalCode.includes('exportToPdf'), 'Must support direct PDF export');
 assert(taskPrintModalCode.includes('window.print'), 'Must support browser printing to paper & PDF');
 
+const mktPrintDocCode = fs.readFileSync(path.resolve('src/modules/marketing/components/MarketingPrintDocument.jsx'), 'utf-8');
+assert(mktPrintDocCode.includes('CompanyPrintHeader'), 'MarketingPrintDocument.jsx must use CompanyPrintHeader');
+assert(mktPrintDocCode.includes('PrintSignatures'), 'MarketingPrintDocument.jsx must use PrintSignatures');
+assert(mktPrintDocCode.includes('INDIVIDUAL WORK ASSIGNMENT & COMPLETION REPORT'), 'MarketingPrintDocument must support Individual Work Order Slip');
+assert(mktPrintDocCode.includes('DIGITAL MARKETING WORK HISTORY & ARCHIVE REPORT'), 'MarketingPrintDocument must support Work History Report');
+assert(mktPrintDocCode.includes('DIGITAL MARKETING WORK COMPLETION & AUDIT REPORT'), 'MarketingPrintDocument must support Work Completion Report');
+assert(mktPrintDocCode.includes('DIGITAL MARKETING WORK ALLOCATION & ASSIGNMENT REPORT'), 'MarketingPrintDocument must support Work Assignment Report');
+assert(mktPrintDocCode.includes('#999999'), 'MarketingPrintDocument must use visible #999999 borders');
+
+const mktPrintCenterCode = fs.readFileSync(path.resolve('src/modules/marketing/components/MarketingPrintCenter.jsx'), 'utf-8');
+assert(mktPrintCenterCode.includes('Corporate Print & Reporting Center'), 'MarketingPrintCenter must have header title');
+assert(mktPrintCenterCode.includes('MarketingPrintDocument'), 'MarketingPrintCenter must render MarketingPrintDocument');
+assert(mktPrintCenterCode.includes('handlePrintDocument') || mktPrintCenterCode.includes('window.print'), 'MarketingPrintCenter must support printing');
+assert(mktPrintCenterCode.includes('handleDownloadPdf') || mktPrintCenterCode.includes('exportToPdf'), 'MarketingPrintCenter must support PDF export');
+
+const dgtlMktMainCode = fs.readFileSync(path.resolve('src/modules/marketing/pages/DigitalMarketingMainPage.jsx'), 'utf-8');
+assert(dgtlMktMainCode.includes('<MarketingPrintCenter'), 'DigitalMarketingMainPage must embed MarketingPrintCenter');
+
 const mktReportsCode = fs.readFileSync(path.resolve('src/modules/marketing/pages/MarketingReportsPage.jsx'), 'utf-8');
 assert(mktReportsCode.includes('CompanyPrintHeader'), 'MarketingReportsPage.jsx must use CompanyPrintHeader');
 assert(mktReportsCode.includes('PrintSignatures'), 'MarketingReportsPage.jsx must use PrintSignatures');
