@@ -477,8 +477,9 @@
   transform: translateY(-1px);
 }
 
-/* Completed: Green Glass */
+/* Completed / Success: Green Glass */
 .btn-mkt-completed,
+.btn-mkt-green,
 .btn-color-green {
   display: inline-flex;
   align-items: center;
@@ -500,6 +501,7 @@
 }
 
 .btn-mkt-completed:hover,
+.btn-mkt-green:hover,
 .btn-color-green:hover {
   background: rgba(16, 185, 129, 0.28) !important;
   color: #ffffff !important;
@@ -507,8 +509,9 @@
   box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
 }
 
-/* Pending: Amber Glass */
+/* Pending / Warning: Amber Glass */
 .btn-mkt-pending,
+.btn-mkt-amber,
 .btn-color-amber {
   display: inline-flex;
   align-items: center;
@@ -530,6 +533,7 @@
 }
 
 .btn-mkt-pending:hover,
+.btn-mkt-amber:hover,
 .btn-color-amber:hover {
   background: rgba(245, 158, 11, 0.28) !important;
   color: #ffffff !important;
@@ -537,8 +541,9 @@
   box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
 }
 
-/* Delete: Red Glass */
+/* Delete / Urgent: Red Glass */
 .btn-mkt-delete-red,
+.btn-mkt-red,
 .btn-color-red {
   display: inline-flex;
   align-items: center;
@@ -560,6 +565,7 @@
 }
 
 .btn-mkt-delete-red:hover,
+.btn-mkt-red:hover,
 .btn-color-red:hover {
   background: rgba(239, 68, 68, 0.28) !important;
   color: #ffffff !important;

@@ -16,6 +16,7 @@ export function MarketingProvider({ children }) {
   const [creativeModal, setCreativeModal] = useState({ open: false, item: null });
   const [taskModal, setTaskModal] = useState({ open: false, item: null });
   const [taskUpdateModal, setTaskUpdateModal] = useState({ open: false, item: null });
+  const [taskDetailsModal, setTaskDetailsModal] = useState({ open: false, item: null });
   const [taskPrintModal, setTaskPrintModal] = useState({ open: false, item: null, type: 'single' });
   const [ticketModal, setTicketModal] = useState({ open: false, item: null });
   const [deviceModal, setDeviceModal] = useState({ open: false, item: null });
@@ -62,6 +63,9 @@ export function MarketingProvider({ children }) {
 
   const openTaskUpdateModal = (item = null) => setTaskUpdateModal({ open: true, item });
   const closeTaskUpdateModal = () => setTaskUpdateModal({ open: false, item: null });
+
+  const openTaskDetailsModal = (item = null) => setTaskDetailsModal({ open: true, item });
+  const closeTaskDetailsModal = () => setTaskDetailsModal({ open: false, item: null });
 
   const openTaskPrintModal = (item = null, type = 'single', list = [], filters = {}) =>
     setTaskPrintModal({ open: true, item, type, list, filters });
@@ -183,6 +187,10 @@ export function MarketingProvider({ children }) {
         taskUpdateModal,
         openTaskUpdateModal,
         closeTaskUpdateModal,
+
+        taskDetailsModal,
+        openTaskDetailsModal,
+        closeTaskDetailsModal,
 
         taskPrintModal,
         openTaskPrintModal,

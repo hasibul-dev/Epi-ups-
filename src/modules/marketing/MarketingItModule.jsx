@@ -6,6 +6,7 @@ import DigitalMarketingMainPage from './pages/DigitalMarketingMainPage.jsx';
 import TaskModal from './components/TaskModal.jsx';
 import TaskUpdateModal from './components/TaskUpdateModal.jsx';
 import TaskPrintModal from './components/TaskPrintModal.jsx';
+import TaskDetailsModal from './components/TaskDetailsModal.jsx';
 
 function MarketingItInner() {
   return (
@@ -19,6 +20,7 @@ function MarketingItInner() {
       <TaskModal />
       <TaskUpdateModal />
       <TaskPrintModal />
+      <TaskDetailsModal />
     </div>
   );
 }

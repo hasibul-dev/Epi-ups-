@@ -33,6 +33,7 @@ import {
   ShieldCheck,
   Zap,
   CheckSquare,
+  Eye,
 } from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
 import { centralStore } from '../../admin/services/centralStorage.js';
@@ -64,6 +65,7 @@ export default function DigitalMarketingMainPage() {
     data,
     openTaskModal,
     openTaskUpdateModal,
+    openTaskDetailsModal,
     openTaskPrintModal,
     saveTask,
     deleteTask,
@@ -117,6 +119,9 @@ export default function DigitalMarketingMainPage() {
 
   // Notification Drawer state
   const [isNotifDrawerOpen, setIsNotifDrawerOpen] = useState(false);
+
+  // Delete Confirmation state
+  const [taskToDelete, setTaskToDelete] = useState(null);
 
   // List of all employees in database
   const employeeOptions = useMemo(() => {
@@ -279,9 +284,7 @@ export default function DigitalMarketingMainPage() {
   }, [marketingTasks, reportEmployee, reportCategory, reportStartDate, reportEndDate, reportSearch]);
 
   const handleDelete = (id, title) => {
-    if (window.confirm(`Are you sure you want to delete task "${title}"?`)) {
-      deleteTask(id);
-    }
+    setTaskToDelete({ id, title });
   };
 
   const getPriorityBadge = (priority) => {
@@ -665,20 +668,33 @@ export default function DigitalMarketingMainPage() {
               <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/5 text-xs">
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-semibold text-slate-400">Priority:</span>
-                  <div className="flex items-center gap-1">
-                    {PRIORITIES.map((p) => (
-                      <button
-                        key={p}
-                        onClick={() => setPriorityFilter(p)}
-                        className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                          priorityFilter === p
-                            ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
-                            : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        {p}
-                      </button>
-                    ))}
+                  <div className="flex items-center bg-slate-950/90 p-0.5 rounded-lg border border-white/10">
+                    {PRIORITIES.map((p) => {
+                      const isSel = priorityFilter === p;
+                      return (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => setPriorityFilter(p)}
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
+                            isSel
+                              ? p === 'Urgent'
+                                ? 'bg-rose-600 text-white shadow-md shadow-rose-900/40'
+                                : p === 'High'
+                                ? 'bg-amber-600 text-white shadow-md shadow-amber-900/40'
+                                : p === 'Normal'
+                                ? 'bg-sky-600 text-white shadow-md shadow-sky-900/40'
+                                : p === 'Low'
+                                ? 'bg-slate-700 text-white'
+                                : 'bg-purple-600 text-white shadow-md shadow-purple-900/40'
+                              : 'text-slate-400 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          {p === 'Urgent' && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                          <span>{p}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -740,8 +756,12 @@ export default function DigitalMarketingMainPage() {
                         >
                           {/* 1. Work Title */}
                           <td>
-                            <div className="space-y-0.5">
-                              <div className="font-semibold text-xs text-white leading-snug">
+                            <div className="space-y-1">
+                              <div
+                                onClick={() => openTaskDetailsModal(task)}
+                                className="font-semibold text-xs text-white leading-snug cursor-pointer hover:text-purple-300 transition-colors"
+                                title="Click to inspect full work order details"
+                              >
                                 {task.title}
                               </div>
                               {task.desc && (
@@ -757,6 +777,13 @@ export default function DigitalMarketingMainPage() {
                                     <span>{task.attachment}</span>
                                   </span>
                                 )}
+                                <button
+                                  type="button"
+                                  onClick={() => openTaskDetailsModal(task)}
+                                  className="text-[10px] text-purple-400 hover:text-purple-300 font-semibold flex items-center gap-0.5"
+                                >
+                                  <span>Details</span> <ChevronRight size={10} />
+                                </button>
                               </div>
                             </div>
                           </td>
@@ -814,6 +841,15 @@ export default function DigitalMarketingMainPage() {
                           {/* 6. Actions */}
                           <td>
                             <div className="flex items-center justify-end gap-1.5">
+                              {/* Details Button */}
+                              <button
+                                onClick={() => openTaskDetailsModal(task)}
+                                className="mkt-action-btn-icon btn-mkt-glass text-purple-400 hover:text-white"
+                                title="View Complete Work Order Specifications"
+                              >
+                                <Eye size={13} />
+                              </button>
+
                               {/* Update Button (Blue) */}
                               <button
                                 onClick={() => openTaskUpdateModal(task)}
@@ -859,36 +895,93 @@ export default function DigitalMarketingMainPage() {
               </table>
             </div>
 
-            {/* Team Workload Summary Strip underneath Overview Table */}
-            <div className="mkt-card !p-4 space-y-3">
+            {/* Team Workload Allocation & Performance Card Grid */}
+            <div className="mkt-card !p-4 space-y-3.5">
               <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
                 <div className="flex items-center gap-2">
-                  <User size={16} className="text-purple-400" />
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                    Team Workload Allocation
-                  </h3>
+                  <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-400">
+                    <User size={15} />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                      Team Workload Allocation & Performance
+                    </h3>
+                    <p className="text-[11px] text-slate-400">
+                      Real-time deliverable capacity and completion progress by team member
+                    </p>
+                  </div>
                 </div>
-                <span className="text-[11px] text-slate-400">{employeeOptions.length} Active Members</span>
+                <span className="text-[11px] text-slate-300 bg-slate-900/80 px-2.5 py-1 rounded-lg border border-white/5 font-mono">
+                  {employeeOptions.length} Active Team Members
+                </span>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                 {employeeOptions.map((emp) => {
                   const empTasks = marketingTasks.filter((t) => t.assignedTo === emp);
                   const empCompleted = empTasks.filter((t) => t.status === 'Completed').length;
                   const empPending = empTasks.length - empCompleted;
+                  const completionRate = empTasks.length > 0 ? Math.round((empCompleted / empTasks.length) * 100) : 0;
+                  const isSelected = employeeFilter === emp;
+
                   return (
                     <div
                       key={emp}
                       onClick={() => {
-                        setEmployeeFilter(emp);
+                        setEmployeeFilter(isSelected ? 'All' : emp);
                         handleTabChange('all_works');
                       }}
-                      className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5 hover:border-purple-500/40 cursor-pointer transition-all space-y-1"
+                      className={`p-3 rounded-xl border transition-all cursor-pointer relative group flex flex-col justify-between ${
+                        isSelected
+                          ? 'bg-purple-950/40 border-purple-500/60 shadow-lg shadow-purple-950/40 ring-1 ring-purple-500/50'
+                          : 'bg-slate-900/60 border-white/5 hover:border-purple-500/30 hover:bg-slate-900/90'
+                      }`}
                     >
-                      <div className="font-semibold text-slate-200 text-xs truncate">{emp}</div>
-                      <div className="text-[10px] text-slate-400 flex items-center justify-between">
-                        <span>{empPending} pending</span>
-                        <span className="text-emerald-400 font-bold">{empCompleted} done</span>
+                      <div className="space-y-2">
+                        {/* Avatar & Name */}
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-sky-500 flex items-center justify-center text-xs font-extrabold text-white shadow-md flex-shrink-0">
+                            {emp.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-bold text-xs text-white truncate group-hover:text-purple-300 transition-colors">
+                              {emp}
+                            </div>
+                            <div className="text-[10px] text-slate-400 truncate">
+                              Marketing Team
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Metric Statistics Badges */}
+                        <div className="grid grid-cols-3 gap-1 text-center pt-1">
+                          <div className="bg-slate-950/70 p-1 rounded border border-white/5">
+                            <span className="text-[9px] text-slate-400 block">Total</span>
+                            <span className="text-xs font-mono font-bold text-white">{empTasks.length}</span>
+                          </div>
+                          <div className="bg-slate-950/70 p-1 rounded border border-white/5">
+                            <span className="text-[9px] text-emerald-400 block">Done</span>
+                            <span className="text-xs font-mono font-bold text-emerald-300">{empCompleted}</span>
+                          </div>
+                          <div className="bg-slate-950/70 p-1 rounded border border-white/5">
+                            <span className="text-[9px] text-amber-400 block">Wait</span>
+                            <span className="text-xs font-mono font-bold text-amber-300">{empPending}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="space-y-1 pt-2.5 mt-2 border-t border-white/5">
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="text-slate-400">Progress</span>
+                          <span className="font-mono font-bold text-purple-300">{completionRate}%</span>
+                        </div>
+                        <div className="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-purple-500 to-emerald-400 rounded-full transition-all duration-300"
+                            style={{ width: `${completionRate}%` }}
+                          />
+                        </div>
                       </div>
                     </div>
                   );
@@ -970,20 +1063,33 @@ export default function DigitalMarketingMainPage() {
               <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/5 text-xs">
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-semibold text-slate-400">Priority:</span>
-                  <div className="flex items-center gap-1">
-                    {PRIORITIES.map((p) => (
-                      <button
-                        key={p}
-                        onClick={() => setPriorityFilter(p)}
-                        className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                          priorityFilter === p
-                            ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
-                            : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        {p}
-                      </button>
-                    ))}
+                  <div className="flex items-center bg-slate-950/90 p-0.5 rounded-lg border border-white/10">
+                    {PRIORITIES.map((p) => {
+                      const isSel = priorityFilter === p;
+                      return (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => setPriorityFilter(p)}
+                          className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
+                            isSel
+                              ? p === 'Urgent'
+                                ? 'bg-rose-600 text-white shadow-md shadow-rose-900/40'
+                                : p === 'High'
+                                ? 'bg-amber-600 text-white shadow-md shadow-amber-900/40'
+                                : p === 'Normal'
+                                ? 'bg-sky-600 text-white shadow-md shadow-sky-900/40'
+                                : p === 'Low'
+                                ? 'bg-slate-700 text-white'
+                                : 'bg-purple-600 text-white shadow-md shadow-purple-900/40'
+                              : 'text-slate-400 hover:text-white hover:bg-white/5'
+                          }`}
+                        >
+                          {p === 'Urgent' && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                          <span>{p}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -1053,8 +1159,12 @@ export default function DigitalMarketingMainPage() {
                         >
                           {/* 1. Work Title */}
                           <td>
-                            <div className="space-y-0.5">
-                              <div className="font-semibold text-xs text-white leading-snug">
+                            <div className="space-y-1">
+                              <div
+                                onClick={() => openTaskDetailsModal(task)}
+                                className="font-semibold text-xs text-white leading-snug cursor-pointer hover:text-purple-300 transition-colors"
+                                title="Click to inspect full work order details"
+                              >
                                 {task.title}
                               </div>
                               {task.desc && (
@@ -1070,6 +1180,13 @@ export default function DigitalMarketingMainPage() {
                                     <span>{task.attachment}</span>
                                   </span>
                                 )}
+                                <button
+                                  type="button"
+                                  onClick={() => openTaskDetailsModal(task)}
+                                  className="text-[10px] text-purple-400 hover:text-purple-300 font-semibold flex items-center gap-0.5"
+                                >
+                                  <span>Details</span> <ChevronRight size={10} />
+                                </button>
                               </div>
                             </div>
                           </td>
@@ -1127,6 +1244,15 @@ export default function DigitalMarketingMainPage() {
                           {/* 6. Actions */}
                           <td>
                             <div className="flex items-center justify-end gap-1.5">
+                              {/* Details Button */}
+                              <button
+                                onClick={() => openTaskDetailsModal(task)}
+                                className="mkt-action-btn-icon btn-mkt-glass text-purple-400 hover:text-white"
+                                title="View Complete Work Order Specifications"
+                              >
+                                <Eye size={13} />
+                              </button>
+
                               {/* Update Button (Blue) */}
                               <button
                                 onClick={() => openTaskUpdateModal(task)}
@@ -1243,7 +1369,13 @@ export default function DigitalMarketingMainPage() {
                         <tr key={task.id} className={`${isDone ? 'is-completed' : ''} ${isOverdue ? 'is-overdue' : ''}`}>
                           <td>
                             <div className="space-y-0.5">
-                              <div className="font-semibold text-xs text-white">{task.title}</div>
+                              <div
+                                onClick={() => openTaskDetailsModal(task)}
+                                className="font-semibold text-xs text-white cursor-pointer hover:text-purple-300 transition-colors"
+                                title="Click to view full work details"
+                              >
+                                {task.title}
+                              </div>
                               {task.desc && <p className="text-[11px] text-slate-400 line-clamp-1">{task.desc}</p>}
                             </div>
                           </td>
@@ -1265,6 +1397,16 @@ export default function DigitalMarketingMainPage() {
                           <td>{getStatusBadge(task.status)}</td>
                           <td>
                             <div className="flex items-center justify-end gap-1.5">
+                              {/* Details Button */}
+                              <button
+                                onClick={() => openTaskDetailsModal(task)}
+                                className="mkt-action-btn-icon btn-mkt-glass text-purple-400 hover:text-white"
+                                title="View Complete Work Order Specifications"
+                              >
+                                <Eye size={13} />
+                              </button>
+
+                              {/* Update Button */}
                               <button
                                 onClick={() => openTaskUpdateModal(task)}
                                 className="mkt-action-btn btn-mkt-primary-blue"
@@ -1272,6 +1414,8 @@ export default function DigitalMarketingMainPage() {
                               >
                                 Update
                               </button>
+
+                              {/* Slip Print Button */}
                               <button
                                 onClick={() => openTaskPrintModal(task, 'single')}
                                 className="mkt-action-btn-icon btn-mkt-cyan"
@@ -1296,6 +1440,49 @@ export default function DigitalMarketingMainPage() {
           <MarketingPrintCenter />
         )}
       </div>
+
+      {/* ============================================================= */}
+      {/* DELETE CONFIRMATION MODAL                                     */}
+      {/* ============================================================= */}
+      {taskToDelete && (
+        <div className="marketing-modal-backdrop" onClick={() => setTaskToDelete(null)}>
+          <div
+            className="marketing-modal-card max-w-md p-6 text-center space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="w-14 h-14 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center mx-auto shadow-lg shadow-rose-950/40">
+              <Trash2 size={24} />
+            </div>
+
+            <div className="space-y-1.5">
+              <h3 className="text-base font-bold text-white">Delete Work Order?</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Are you sure you want to permanently delete work order <strong className="text-white">"{taskToDelete.title}"</strong> ({taskToDelete.id})? This action cannot be undone.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setTaskToDelete(null)}
+                className="btn-mkt-secondary text-xs !h-[34px] !px-4"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  deleteTask(taskToDelete.id);
+                  setTaskToDelete(null);
+                }}
+                className="btn-mkt-delete-red text-xs !h-[34px] !px-4 font-bold"
+              >
+                Yes, Delete Work
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ============================================================= */}
       {/* NOTIFICATIONS DRAWER COMPONENT                                */}
