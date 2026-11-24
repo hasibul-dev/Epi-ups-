@@ -128,11 +128,11 @@ export default function TaskPrintModal() {
         </div>
 
         {/* Clean A4 Document Canvas Preview */}
-        <div className="p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-950/80 flex justify-center">
+        <div className="dm-modal-preview-wrapper p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-950/80 flex justify-center">
           <div
             id="dm-modal-print-sheet"
-            className="w-full max-w-[210mm] bg-white rounded-lg p-6 shadow-xl dm-print-sheet-mount print-container"
-            style={{ border: 'none', outline: 'none' }}
+            className="w-full max-w-[210mm] bg-white rounded-none p-4 sm:p-6 shadow-none dm-print-sheet-mount print-container"
+            style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
           >
             <MarketingPrintDocument
               reportType={type || 'single'}

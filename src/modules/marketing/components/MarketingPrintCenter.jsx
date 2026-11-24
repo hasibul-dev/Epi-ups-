@@ -268,7 +268,7 @@ export default function MarketingPrintCenter() {
                 key={p.id}
                 type="button"
                 onClick={() => setPreset(p.id)}
-                className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white text-[11px] font-medium border border-white/5 transition-colors"
+                className="dm-preset-btn"
               >
                 {p.label}
               </button>
@@ -414,85 +414,12 @@ export default function MarketingPrintCenter() {
 
       {/* 4. Dual View: Inline A4 Document Print Preview OR Live Work History Table */}
       {previewMode ? (
-        <div className="panel print-page-container bg-white p-6 sm:p-8 rounded-lg shadow-xl max-w-[1050px] mx-auto text-slate-900">
-          <CompanyPrintHeader
-            title={activeDef.label}
-            department="DIGITAL MARKETING DEPARTMENT"
-            dateRange={`${fmt(from)} to ${fmt(to)}`}
-            subtitle={activeDef.desc}
-            badge="DIGITAL MARKETING"
-          />
-
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16, border: '1px solid #999999' }}>
-            <thead>
-              <tr style={{ background: '#f1f5f9', borderBottom: '2px solid #111827' }}>
-                <th style={{ padding: '8px 6px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999', width: '40px' }}>SL</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999', width: '75px' }}>Order ID</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999' }}>Work Title &amp; Deliverable Scope</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999', width: '110px' }}>Category</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999', width: '120px' }}>Specialist</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999', width: '90px' }}>Deadline</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999', width: '85px' }}>Status</th>
-                <th style={{ padding: '8px 8px', textAlign: 'left', fontSize: 11, color: '#111827', fontWeight: 800, border: '1px solid #999999', width: '140px' }}>Notes &amp; Assets</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTasks.length > 0 ? (
-                filteredTasks.map((t, idx) => (
-                  <tr key={t.id} style={{ borderBottom: '1px solid #999999', fontSize: 10.5 }}>
-                    <td style={{ padding: '6px 6px', color: '#111111', fontWeight: 700, border: '1px solid #999999', textAlign: 'center' }}>
-                      {idx + 1}
-                    </td>
-                    <td style={{ padding: '6px 8px', fontFamily: 'monospace', fontWeight: 800, color: '#000000', border: '1px solid #999999' }}>
-                      #{t.id}
-                    </td>
-                    <td style={{ padding: '6px 8px', color: '#111111', fontWeight: 600, border: '1px solid #999999' }}>
-                      <div style={{ fontWeight: 800, color: '#000000' }}>{t.title}</div>
-                      {t.desc && <div style={{ fontSize: 10, color: '#333333', marginTop: 2 }}>{t.desc}</div>}
-                    </td>
-                    <td style={{ padding: '6px 8px', color: '#111111', border: '1px solid #999999' }}>
-                      {t.category || 'General'}
-                    </td>
-                    <td style={{ padding: '6px 8px', fontWeight: 700, color: '#000000', border: '1px solid #999999' }}>
-                      {t.assignedTo || 'Unassigned'}
-                    </td>
-                    <td style={{ padding: '6px 8px', fontFamily: 'monospace', color: '#111111', border: '1px solid #999999' }}>
-                      {t.completedDate || t.dueDate || '—'}
-                    </td>
-                    <td style={{ padding: '6px 8px', border: '1px solid #999999', textAlign: 'center' }}>
-                      <span
-                        style={{
-                          padding: '2px 6px',
-                          borderRadius: 4,
-                          fontSize: 9.5,
-                          fontWeight: 700,
-                          background: t.status === 'Completed' ? '#ecfdf5' : '#f1f5f9',
-                          color: t.status === 'Completed' ? '#047857' : '#1e293b',
-                          border: '1px solid #cbd5e1',
-                        }}
-                      >
-                        {t.status || 'Assigned'}
-                      </span>
-                    </td>
-                    <td style={{ padding: '6px 8px', color: '#333333', border: '1px solid #999999', fontSize: 10 }}>
-                      {t.completionNotes || t.completionAttachment || t.attachment || '—'}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={8} style={{ padding: 24, textAlign: 'center', color: '#111111', fontWeight: 700, background: '#f9fafb', border: '1px solid #999999' }}>
-                    No work records found matching the active filters.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-          <PrintSignatures
-            firstTitle="Marketing Executive"
-            secondTitle="Lead Digital Strategist"
-            thirdTitle="Managing Director / Super Admin"
+        <div className="print-page-container bg-white p-4 sm:p-6 max-w-[1050px] mx-auto text-slate-900 border border-slate-200">
+          <MarketingPrintDocument
+            reportType={activeReport === 'completed' ? 'completion' : activeReport === 'employee' ? 'assignment' : 'history'}
+            tasks={filteredTasks}
+            orientation="landscape"
+            filters={{ startDate: from, endDate: to, employee: employeeFilter }}
           />
         </div>
       ) : (
@@ -586,7 +513,7 @@ export default function MarketingPrintCenter() {
                           <button
                             type="button"
                             onClick={() => openTaskPrintModal({ item: t, type: 'single' })}
-                            className="mkt-action-btn bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/30 transition-colors"
+                            className="mkt-action-btn btn-print-slip"
                             title="Directly Print Individual Work Order Slip"
                           >
                             <Printer size={12} />
@@ -596,7 +523,7 @@ export default function MarketingPrintCenter() {
                           <button
                             type="button"
                             onClick={() => openTaskDetailsModal(t)}
-                            className="mkt-action-btn bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-white/10 transition-colors"
+                            className="mkt-action-btn btn-view-details"
                             title="View Details"
                           >
                             <Eye size={12} />
@@ -613,15 +540,17 @@ export default function MarketingPrintCenter() {
         </div>
       )}
 
-      {/* Hidden print mount for browser printing */}
-      <div id="mkt-hidden-print-sheet" className="dm-print-sheet-mount">
-        <MarketingPrintDocument
-          reportType={activeReport === 'completed' ? 'completion' : activeReport === 'employee' ? 'assignment' : 'history'}
-          tasks={filteredTasks}
-          orientation="landscape"
-          filters={{ startDate: from, endDate: to, employee: employeeFilter }}
-        />
-      </div>
+      {/* Hidden print mount for browser printing when table view is active */}
+      {!previewMode && (
+        <div id="mkt-hidden-print-sheet" className="dm-print-sheet-mount">
+          <MarketingPrintDocument
+            reportType={activeReport === 'completed' ? 'completion' : activeReport === 'employee' ? 'assignment' : 'history'}
+            tasks={filteredTasks}
+            orientation="landscape"
+            filters={{ startDate: from, endDate: to, employee: employeeFilter }}
+          />
+        </div>
+      )}
     </div>
   );
 }

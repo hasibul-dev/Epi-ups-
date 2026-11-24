@@ -96,10 +96,10 @@ export function CompanyPrintHeader({
             <div
               style={{
                 fontSize: '9.5px',
-                color: '#333333',
+                color: '#111111',
                 marginTop: '2px',
                 lineHeight: 1.35,
-                fontWeight: 500,
+                fontWeight: 600,
               }}
             >
               {COMPANY_DETAILS.address}
@@ -107,9 +107,9 @@ export function CompanyPrintHeader({
             <div
               style={{
                 fontSize: '9.5px',
-                color: '#333333',
+                color: '#111111',
                 lineHeight: 1.35,
-                fontWeight: 500,
+                fontWeight: 600,
               }}
             >
               {COMPANY_DETAILS.phone} &nbsp;|&nbsp; Email: {COMPANY_DETAILS.email} &nbsp;|&nbsp; Web: {COMPANY_DETAILS.website}
@@ -122,7 +122,7 @@ export function CompanyPrintHeader({
           style={{
             textAlign: 'right',
             fontSize: '10px',
-            color: '#333333',
+            color: '#111111',
             lineHeight: 1.45,
             whiteSpace: 'nowrap',
             flexShrink: 0,

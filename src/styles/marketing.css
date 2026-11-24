@@ -10,6 +10,9 @@
   background-color: #ffffff !important;
   color: #111111 !important;
   box-sizing: border-box;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 /* Compact Table Row Buttons */
@@ -21,7 +24,7 @@
   height: 28px !important;
   min-height: 28px !important;
   max-height: 28px !important;
-  padding: 0 9px !important;
+  padding: 0 10px !important;
   border-radius: 6px !important;
   font-size: 11.5px !important;
   font-weight: 650 !important;
@@ -50,7 +53,46 @@
   transition: all 0.15s ease !important;
 }
 
+/* Table Row Action Button Color Variants */
+.mkt-action-btn.btn-print-slip,
+.btn-print-slip {
+  background: #2563eb !important;
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border: 1px solid #3b82f6 !important;
+  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.3) !important;
+}
+
+.mkt-action-btn.btn-print-slip:hover,
+.btn-print-slip:hover {
+  background: #1d4ed8 !important;
+  background-color: #1d4ed8 !important;
+  color: #ffffff !important;
+  border-color: #60a5fa !important;
+}
+
+.mkt-action-btn.btn-view-details,
+.btn-view-details {
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155 !important;
+}
+
+.mkt-action-btn.btn-view-details:hover,
+.btn-view-details:hover {
+  background: #334155 !important;
+  background-color: #334155 !important;
+  color: #ffffff !important;
+  border-color: #475569 !important;
+}
+
 @media print {
+  @page {
+    size: auto;
+    margin: 8mm 10mm;
+  }
+
   html,
   body {
     background: #ffffff !important;
@@ -60,18 +102,112 @@
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
+  /* Isolate modal print view */
   body:has(.marketing-modal-backdrop) .marketing-modal-backdrop,
-  body:has(.marketing-modal-backdrop) .mkt-print-sheet {
+  body:has(.marketing-modal-backdrop) .mkt-print-sheet,
+  body:has(.dm-modal-backdrop) .dm-modal-backdrop,
+  body:has(.dm-modal-backdrop) .mkt-print-sheet {
     visibility: visible !important;
+    display: block !important;
   }
 
-  .mkt-print-sheet {
+  .dm-modal-backdrop,
+  .marketing-modal-backdrop {
+    display: block !important;
+    position: static !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .dm-modal-card,
+  .marketing-modal-card,
+  .dm-modal-preview-wrapper {
+    display: block !important;
+    position: static !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .mkt-print-sheet,
+  #dm-modal-print-sheet,
+  .print-page-container,
+  .print-container {
+    display: block !important;
+    position: static !important;
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
+    border-radius: 0 !important;
     background: #ffffff !important;
     background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Solid Black Typography on all printed content */
+  .mkt-print-sheet,
+  .mkt-print-sheet *,
+  #dm-modal-print-sheet,
+  #dm-modal-print-sheet *,
+  .print-page-container,
+  .print-page-container * {
+    color: #111111 !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .mkt-print-sheet h1,
+  .mkt-print-sheet h2,
+  .mkt-print-sheet h3,
+  .mkt-print-sheet th,
+  .mkt-print-sheet strong,
+  .mkt-print-sheet b,
+  #dm-modal-print-sheet h1,
+  #dm-modal-print-sheet h2,
+  #dm-modal-print-sheet h3,
+  #dm-modal-print-sheet th,
+  #dm-modal-print-sheet strong,
+  #dm-modal-print-sheet b,
+  .print-page-container h1,
+  .print-page-container h2,
+  .print-page-container h3,
+  .print-page-container th,
+  .print-page-container strong,
+  .print-page-container b {
+    color: #000000 !important;
+    font-weight: 800 !important;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
   }
 }

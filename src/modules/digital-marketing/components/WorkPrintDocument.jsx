@@ -64,7 +64,7 @@ export default function WorkPrintDocument({
             {/* Document Title Banner */}
             <div
               style={{
-                border: '2px solid #000000',
+                border: '1px solid #111111',
                 padding: '8px 12px',
                 backgroundColor: '#f1f5f9',
                 textAlign: 'center',
@@ -233,7 +233,7 @@ export default function WorkPrintDocument({
             dateRange={dateRangeStr}
           />
 
-          <div style={{ border: '2px solid #000000', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
+          <div style={{ border: '1px solid #111111', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
             <h2 style={{ fontSize: '15px', fontWeight: 900, textTransform: 'uppercase', margin: 0, color: '#000000' }}>
               DIGITAL MARKETING WORK HISTORY & ARCHIVE REPORT
             </h2>
@@ -297,7 +297,7 @@ export default function WorkPrintDocument({
             dateRange={dateRangeStr}
           />
 
-          <div style={{ border: '2px solid #000000', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
+          <div style={{ border: '1px solid #111111', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
             <h2 style={{ fontSize: '15px', fontWeight: 900, textTransform: 'uppercase', margin: 0, color: '#000000' }}>
               DIGITAL MARKETING WORK COMPLETION & AUDIT REPORT
             </h2>
@@ -363,7 +363,7 @@ export default function WorkPrintDocument({
             dateRange={dateRangeStr}
           />
 
-          <div style={{ border: '2px solid #000000', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
+          <div style={{ border: '1px solid #111111', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
             <h2 style={{ fontSize: '15px', fontWeight: 900, textTransform: 'uppercase', margin: 0, color: '#000000' }}>
               DIGITAL MARKETING WORK ALLOCATION & ASSIGNMENT REPORT
             </h2>

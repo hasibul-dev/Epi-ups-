@@ -123,17 +123,22 @@
 /* Primary Corporate Blue */
 .dm-btn-primary,
 .btn-mkt-primary,
-.btn-mkt-add-work {
-  background: var(--dm-blue-primary) !important;
+.btn-mkt-add-work,
+.btn-print-slip {
+  background: #2563eb !important;
+  background-color: #2563eb !important;
   border: 1px solid #3b82f6 !important;
   color: #ffffff !important;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  font-weight: 700 !important;
 }
 
 .dm-btn-primary:hover,
 .btn-mkt-primary:hover,
-.btn-mkt-add-work:hover {
-  background: var(--dm-blue-hover) !important;
+.btn-mkt-add-work:hover,
+.btn-print-slip:hover {
+  background: #1d4ed8 !important;
+  background-color: #1d4ed8 !important;
   border-color: #60a5fa !important;
   color: #ffffff !important;
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5) !important;
@@ -143,31 +148,74 @@
 /* Secondary Corporate Navy */
 .dm-btn-secondary,
 .btn-mkt-secondary,
-.btn-mkt-navy {
+.btn-mkt-navy,
+.btn-view-details {
   background: #1e293b !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  color: #e2e8f0 !important;
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #f1f5f9 !important;
+  font-weight: 600 !important;
 }
 
 .dm-btn-secondary:hover,
 .btn-mkt-secondary:hover,
-.btn-mkt-navy:hover {
+.btn-mkt-navy:hover,
+.btn-view-details:hover {
   background: #334155 !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
+  background-color: #334155 !important;
+  border-color: #475569 !important;
   color: #ffffff !important;
   transform: translateY(-1px);
 }
 
+/* Preset Buttons: Solid Dark Navy #1e293b */
+.dm-preset-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+  color: #cbd5e1 !important;
+  border: 1px solid #334155 !important;
+  padding: 4px 9px !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  white-space: nowrap !important;
+}
+
+.dm-preset-btn:hover {
+  background: #334155 !important;
+  background-color: #334155 !important;
+  color: #ffffff !important;
+  border-color: #38bdf8 !important;
+}
+
+.dm-preset-btn.active {
+  background: #2563eb !important;
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #60a5fa !important;
+}
+
 /* Purple Accent Action */
-.dm-btn-purple {
-  background: var(--dm-purple-accent) !important;
+.dm-btn-purple,
+.btn-mkt-purple {
+  background: #7c3aed !important;
+  background-color: #7c3aed !important;
   border: 1px solid #8b5cf6 !important;
   color: #ffffff !important;
   box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+  font-weight: 700 !important;
 }
 
-.dm-btn-purple:hover {
-  background: var(--dm-purple-hover) !important;
+.dm-btn-purple:hover,
+.btn-mkt-purple:hover {
+  background: #6d28d9 !important;
+  background-color: #6d28d9 !important;
   border-color: #a78bfa !important;
   color: #ffffff !important;
   box-shadow: 0 4px 14px rgba(124, 58, 237, 0.5) !important;
@@ -177,18 +225,23 @@
 /* Red Destructive / Alert */
 .dm-btn-red,
 .btn-mkt-red,
-.btn-mkt-delete-red {
-  background: rgba(220, 38, 38, 0.18) !important;
-  border: 1px solid rgba(239, 68, 68, 0.45) !important;
-  color: #fca5a5 !important;
+.btn-mkt-delete-red,
+.btn-mkt-danger {
+  background: #dc2626 !important;
+  background-color: #dc2626 !important;
+  border: 1px solid #ef4444 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
 }
 
 .dm-btn-red:hover,
 .btn-mkt-red:hover,
-.btn-mkt-delete-red:hover {
-  background: var(--dm-red-alert) !important;
+.btn-mkt-delete-red:hover,
+.btn-mkt-danger:hover {
+  background: #b91c1c !important;
+  background-color: #b91c1c !important;
   color: #ffffff !important;
-  border-color: #ef4444 !important;
+  border-color: #f87171 !important;
 }
 
 /* Green Success */
@@ -621,10 +674,8 @@
   .dm-nav-bar,
   .mkt-topbar,
   .mkt-nav-bar,
-  .dm-card,
-  .mkt-card,
-  .dm-modal-card,
-  .marketing-modal-card,
+  .dm-card:not(.print-container):not(.print-page-container),
+  .mkt-card:not(.print-container):not(.print-page-container),
   .btn,
   button {
     display: none !important;
@@ -652,10 +703,33 @@
     inset: auto !important;
   }
 
-  /* 5. Print Sheet Mount & Containers */
+  /* 4b. Modal card and preview wrapper reset to clean unstyled white container */
+  .dm-modal-card,
+  .marketing-modal-card,
+  .dm-modal-preview-wrapper {
+    display: block !important;
+    position: static !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* 5. Print Sheet Mount & Containers: Zero Outer Borders, Pure White */
   .dm-print-sheet-mount,
   #dm-modal-print-sheet,
   #mkt-hidden-print-sheet,
+  .print-page-container,
   .print-container {
     display: block !important;
     position: static !important;
@@ -702,7 +776,43 @@
     visibility: visible !important;
   }
 
-  /* 8. Eliminate any lingering shadows or outer container borders */
+  /* 8. Solid Black High-Contrast Typography */
+  .mkt-print-sheet,
+  .mkt-print-sheet *,
+  #dm-modal-print-sheet,
+  #dm-modal-print-sheet *,
+  .print-page-container,
+  .print-page-container * {
+    color: #111111 !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .mkt-print-sheet h1,
+  .mkt-print-sheet h2,
+  .mkt-print-sheet h3,
+  .mkt-print-sheet th,
+  .mkt-print-sheet strong,
+  .mkt-print-sheet b,
+  #dm-modal-print-sheet h1,
+  #dm-modal-print-sheet h2,
+  #dm-modal-print-sheet h3,
+  #dm-modal-print-sheet th,
+  #dm-modal-print-sheet strong,
+  #dm-modal-print-sheet b,
+  .print-page-container h1,
+  .print-page-container h2,
+  .print-page-container h3,
+  .print-page-container th,
+  .print-page-container strong,
+  .print-page-container b {
+    color: #000000 !important;
+    font-weight: 800 !important;
+  }
+
+  /* 9. Eliminate all remaining container shadows & outlines */
   * {
     box-shadow: none !important;
     text-shadow: none !important;

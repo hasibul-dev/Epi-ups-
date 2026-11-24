@@ -2868,8 +2868,8 @@ table tr:hover td, .t tr:hover td {
   .log-entry-meta,
   .timestamp-text,
   small {
-    color: #333333 !important;
-    font-weight: 500 !important;
+    color: #111111 !important;
+    font-weight: 600 !important;
   }
 
   table {
