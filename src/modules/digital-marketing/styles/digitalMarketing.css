@@ -1,0 +1,615 @@
+/* ==========================================================================
+   EPI UPS BANGLADESH LIMITED — DIGITAL MARKETING WORK MANAGEMENT
+   Brand-New Corporate Design System (Deep Navy, Blue & Purple Accents, Red Alerts)
+   ========================================================================== */
+
+:root {
+  --dm-bg-canvas: #060b17;
+  --dm-bg-surface: #0a1224;
+  --dm-bg-card: #0d172e;
+  --dm-bg-hover: #132244;
+  --dm-border: rgba(255, 255, 255, 0.08);
+  --dm-border-blue: rgba(37, 99, 235, 0.35);
+  --dm-border-purple: rgba(124, 58, 237, 0.35);
+  --dm-border-red: rgba(239, 68, 68, 0.4);
+
+  --dm-blue-primary: #2563eb;
+  --dm-blue-hover: #1d4ed8;
+  --dm-blue-light: #60a5fa;
+
+  --dm-purple-accent: #7c3aed;
+  --dm-purple-hover: #6d28d9;
+  --dm-purple-light: #a78bfa;
+
+  --dm-red-alert: #dc2626;
+  --dm-red-light: #ef4444;
+
+  --dm-green-success: #10b981;
+  --dm-amber-warning: #f59e0b;
+
+  --dm-text-heading: #ffffff;
+  --dm-text-body: #e2e8f0;
+  --dm-text-muted: #94a3b8;
+}
+
+/* ==========================================================================
+   MODULE CONTAINER & TOPBAR
+   ========================================================================== */
+.dm-module-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  color: var(--dm-text-body);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.dm-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 18px;
+  background: linear-gradient(90deg, #0a1224 0%, #0d172e 100%);
+  border: 1px solid var(--dm-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.dm-brand-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dm-brand-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.4);
+}
+
+.dm-brand-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.dm-brand-subtitle {
+  font-size: 11px;
+  color: var(--dm-text-muted);
+  font-weight: 500;
+  margin: 2px 0 0 0;
+}
+
+.dm-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   BUTTON SYSTEM (Consistent 34px Toolbar / Header & 28px Row Action Buttons)
+   ========================================================================== */
+.dm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: all 0.16s ease;
+  text-decoration: none;
+}
+
+/* Primary Corporate Blue */
+.dm-btn-primary,
+.btn-mkt-primary,
+.btn-mkt-add-work {
+  background: var(--dm-blue-primary) !important;
+  border: 1px solid #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.dm-btn-primary:hover,
+.btn-mkt-primary:hover,
+.btn-mkt-add-work:hover {
+  background: var(--dm-blue-hover) !important;
+  border-color: #60a5fa !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5) !important;
+  transform: translateY(-1px);
+}
+
+/* Secondary Corporate Navy */
+.dm-btn-secondary,
+.btn-mkt-secondary,
+.btn-mkt-navy {
+  background: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #e2e8f0 !important;
+}
+
+.dm-btn-secondary:hover,
+.btn-mkt-secondary:hover,
+.btn-mkt-navy:hover {
+  background: #334155 !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+/* Purple Accent Action */
+.dm-btn-purple {
+  background: var(--dm-purple-accent) !important;
+  border: 1px solid #8b5cf6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+}
+
+.dm-btn-purple:hover {
+  background: var(--dm-purple-hover) !important;
+  border-color: #a78bfa !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.5) !important;
+  transform: translateY(-1px);
+}
+
+/* Red Destructive / Alert */
+.dm-btn-red,
+.btn-mkt-red,
+.btn-mkt-delete-red {
+  background: rgba(220, 38, 38, 0.18) !important;
+  border: 1px solid rgba(239, 68, 68, 0.45) !important;
+  color: #fca5a5 !important;
+}
+
+.dm-btn-red:hover,
+.btn-mkt-red:hover,
+.btn-mkt-delete-red:hover {
+  background: var(--dm-red-alert) !important;
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
+}
+
+/* Green Success */
+.dm-btn-green,
+.btn-mkt-green,
+.btn-mkt-completed {
+  background: rgba(16, 185, 129, 0.16) !important;
+  border: 1px solid rgba(52, 211, 153, 0.4) !important;
+  color: #34d399 !important;
+}
+
+.dm-btn-green:hover,
+.btn-mkt-green:hover,
+.btn-mkt-completed:hover {
+  background: var(--dm-green-success) !important;
+  color: #ffffff !important;
+  border-color: #34d399 !important;
+}
+
+/* Amber Warning */
+.dm-btn-amber,
+.btn-mkt-amber,
+.btn-mkt-pending {
+  background: rgba(245, 158, 11, 0.16) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  color: #fbbf24 !important;
+}
+
+.dm-btn-amber:hover,
+.btn-mkt-amber:hover,
+.btn-mkt-pending:hover {
+  background: var(--dm-amber-warning) !important;
+  color: #ffffff !important;
+  border-color: #fbbf24 !important;
+}
+
+/* Table Row Action Buttons: 28px height */
+.dm-row-btn,
+.mkt-action-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  padding: 0 9px !important;
+  border-radius: 6px !important;
+  font-size: 11.5px !important;
+  font-weight: 650 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+  line-height: 1 !important;
+  transition: all 0.15s ease !important;
+}
+
+.dm-row-btn-icon,
+.mkt-action-btn-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 28px !important;
+  width: 28px !important;
+  min-height: 28px !important;
+  min-width: 28px !important;
+  max-height: 28px !important;
+  max-width: 28px !important;
+  padding: 0 !important;
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  transition: all 0.15s ease !important;
+}
+
+/* ==========================================================================
+   NAVIGATION SUBNAV BAR (4 Sections)
+   ========================================================================== */
+.dm-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #0a1224;
+  border: 1px solid var(--dm-border);
+  border-radius: 10px;
+  padding: 6px 10px;
+}
+
+.dm-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.dm-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dm-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.16s ease;
+}
+
+.dm-nav-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dm-nav-btn.active {
+  background: var(--dm-blue-primary);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+/* ==========================================================================
+   CARDS & CONTAINERS
+   ========================================================================== */
+.dm-card,
+.mkt-card {
+  background: var(--dm-bg-card);
+  border: 1px solid var(--dm-border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* KPI Summary Cards */
+.dm-kpi-card,
+.mkt-kpi-card {
+  background: linear-gradient(180deg, #0e1933 0%, #0a1224 100%);
+  border: 1px solid var(--dm-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.18s ease;
+}
+
+.dm-kpi-card:hover,
+.mkt-kpi-card:hover {
+  border-color: var(--dm-border-blue);
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.dm-kpi-label,
+.mkt-kpi-label {
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--dm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dm-kpi-val,
+.mkt-kpi-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  font-family: monospace, system-ui;
+}
+
+.dm-kpi-sub,
+.mkt-kpi-subtext {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   TABLE SYSTEM
+   ========================================================================== */
+.dm-table,
+.mkt-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+}
+
+.dm-table thead,
+.mkt-table thead {
+  background: rgba(14, 25, 51, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dm-table th,
+.mkt-table th {
+  padding: 10px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--dm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.dm-table td,
+.mkt-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.dm-table tbody tr:hover,
+.mkt-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Badges */
+.dm-badge,
+.mkt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2.5px 8px;
+  border-radius: 9999px;
+  font-size: 10.5px;
+  font-weight: 650;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.dm-badge-blue,
+.mkt-badge-blue {
+  background: rgba(37, 99, 235, 0.15);
+  border: 1px solid rgba(37, 99, 235, 0.4);
+  color: #60a5fa;
+}
+
+.dm-badge-purple,
+.mkt-badge-purple {
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.4);
+  color: #c084fc;
+}
+
+.dm-badge-green,
+.mkt-badge-green {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}
+
+.dm-badge-red,
+.mkt-badge-red {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: #f87171;
+}
+
+.dm-badge-amber,
+.mkt-badge-amber {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+
+.dm-badge-neutral,
+.mkt-badge-neutral {
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #cbd5e1;
+}
+
+/* ==========================================================================
+   INPUTS & FORMS
+   ========================================================================== */
+.dm-input,
+.mkt-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  background: #060b17;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 12px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.dm-input:focus,
+.mkt-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
+}
+
+.dm-select,
+.mkt-select {
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  background: #060b17;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 12px;
+  box-sizing: border-box;
+  outline: none;
+  cursor: pointer;
+}
+
+.dm-select:focus,
+.mkt-select:focus {
+  border-color: #3b82f6;
+}
+
+/* ==========================================================================
+   MODALS
+   ========================================================================== */
+.dm-modal-backdrop,
+.marketing-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(4, 7, 15, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.dm-modal-card,
+.marketing-modal-card {
+  width: 100%;
+  background: #0a1224;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   PRINT ISOLATION & HIGH-CONTRAST CORPORATE A4 PREVIEW
+   ========================================================================== */
+.mkt-print-sheet {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  font-family: system-ui, -apple-system, sans-serif !important;
+  box-sizing: border-box;
+}
+
+.mkt-print-sheet.mkt-portrait {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+}
+
+.mkt-print-sheet.mkt-landscape {
+  width: 297mm;
+  min-height: 210mm;
+  margin: 0 auto;
+}
+
+@media print {
+  @page {
+    size: A4 auto;
+    margin: 10mm 12mm;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  body:has(.marketing-modal-backdrop) .marketing-modal-backdrop,
+  body:has(.marketing-modal-backdrop) .mkt-print-sheet,
+  .mkt-print-sheet,
+  .mkt-print-sheet * {
+    visibility: visible !important;
+  }
+
+  body:has(.marketing-modal-backdrop) .marketing-modal-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .marketing-modal-backdrop {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  .no-print,
+  .mkt-topbar,
+  .dm-topbar,
+  .dm-nav-bar,
+  .app-sidebar,
+  .topbar {
+    display: none !important;
+  }
+
+  .mkt-print-sheet {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+}
