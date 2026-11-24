@@ -75,7 +75,7 @@ export default function TaskDetailsModal() {
       case 'Completed':
         return <span className="mkt-badge mkt-badge-green font-bold">✓ Completed</span>;
       case 'In Progress':
-        return <span className="mkt-badge mkt-badge-purple font-bold">⏳ In Progress</span>;
+        return <span className="mkt-badge mkt-badge-blue font-bold">⏳ In Progress</span>;
       case 'On Hold':
         return <span className="mkt-badge mkt-badge-amber font-bold">⏸️ On Hold</span>;
       case 'Assigned':
@@ -92,15 +92,15 @@ export default function TaskDetailsModal() {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="marketing-modal-header border-b border-purple-500/20 pb-4">
+        <div className="marketing-modal-header border-b border-blue-500/20 pb-4">
           <div className="flex items-center justify-between gap-3 w-full">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-lg shadow-purple-900/20">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-lg shadow-blue-900/20">
                 <FileText size={20} />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-purple-950/60 border border-purple-500/30 text-purple-300">
+                  <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-blue-950/60 border border-blue-500/30 text-blue-300">
                     {item.id || 'N/A'}
                   </span>
                   <h3 className="text-base font-bold text-white tracking-wide">
@@ -132,7 +132,7 @@ export default function TaskDetailsModal() {
           {/* Main Title & Badges */}
           <div className="p-4 bg-slate-900/80 rounded-xl border border-white/10 space-y-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="mkt-badge mkt-badge-purple text-xs font-bold">
+              <span className="mkt-badge mkt-badge-blue text-xs font-bold">
                 {item.category || 'General Marketing'}
               </span>
               <div className="flex items-center gap-2">
@@ -153,10 +153,10 @@ export default function TaskDetailsModal() {
             <div className="space-y-1 pt-1">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-slate-400 font-semibold flex items-center gap-1">
-                  <TrendingUp size={12} className="text-purple-400" />
+                  <TrendingUp size={12} className="text-blue-400" />
                   <span>Execution Progress:</span>
                 </span>
-                <span className="font-mono font-bold text-purple-300">
+                <span className="font-mono font-bold text-blue-300">
                   {typeof item.progress === 'number' ? `${item.progress}%` : (isDone ? '100%' : '50%')}
                 </span>
               </div>
@@ -165,7 +165,7 @@ export default function TaskDetailsModal() {
                   className={`h-full transition-all duration-300 ${
                     isDone
                       ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
-                      : 'bg-gradient-to-r from-purple-500 to-sky-400'
+                      : 'bg-gradient-to-r from-blue-500 to-sky-400'
                   }`}
                   style={{
                     width: `${typeof item.progress === 'number' ? item.progress : (isDone ? 100 : 50)}%`,
@@ -179,7 +179,7 @@ export default function TaskDetailsModal() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div className="p-3 rounded-xl bg-slate-900/60 border border-white/5 space-y-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                <User size={12} className="text-purple-400" />
+                <User size={12} className="text-blue-400" />
                 Assigned Employee
               </span>
               <div className="font-semibold text-xs text-white truncate">
@@ -227,7 +227,7 @@ export default function TaskDetailsModal() {
           {/* Project Brief & Work Scope */}
           <div className="p-4 rounded-xl bg-slate-900/60 border border-white/10 space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider border-b border-white/5 pb-2">
-              <FileText size={14} className="text-purple-400" />
+              <FileText size={14} className="text-blue-400" />
               <span>Project Brief & Detailed Work Scope</span>
             </div>
             <p className="text-xs text-slate-200 leading-relaxed whitespace-pre-wrap word-break">
@@ -285,13 +285,13 @@ export default function TaskDetailsModal() {
           {Array.isArray(item.history) && item.history.length > 0 && (
             <div className="p-4 rounded-xl bg-slate-900/60 border border-white/5 space-y-2.5">
               <div className="flex items-center gap-2 text-xs font-bold text-slate-300 uppercase tracking-wider border-b border-white/5 pb-2">
-                <History size={14} className="text-purple-400" />
+                <History size={14} className="text-blue-400" />
                 <span>Audit & Activity Trail</span>
               </div>
               <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                 {item.history.map((h, idx) => (
                   <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1.5 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <strong className="text-white text-[11px]">{h.action}</strong>
@@ -310,7 +310,7 @@ export default function TaskDetailsModal() {
         </div>
 
         {/* Footer Actions */}
-        <div className="marketing-modal-footer border-t border-purple-500/20 pt-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="marketing-modal-footer border-t border-blue-500/20 pt-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             {/* Print Slip */}
             <button

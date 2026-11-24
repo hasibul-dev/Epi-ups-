@@ -78,7 +78,9 @@ export default function TaskModal() {
     dueTime: '18:00',
     priority: 'Normal',
     status: 'Assigned',
+    refInfo: '',
     desc: '',
+    instructions: '',
     attachment: '',
   });
 
@@ -98,7 +100,9 @@ export default function TaskModal() {
         dueTime: item.dueTime || '18:00',
         priority: item.priority || 'Normal',
         status: item.status || 'Assigned',
+        refInfo: item.refInfo || item.projectInfo || '',
         desc: item.desc || '',
+        instructions: item.instructions || '',
         attachment: item.attachment || '',
       });
       setIsCustomAssignee(!isKnown && Boolean(item.assignedTo));
@@ -113,7 +117,9 @@ export default function TaskModal() {
         dueTime: '18:00',
         priority: 'Normal',
         status: 'Assigned',
+        refInfo: '',
         desc: '',
+        instructions: '',
         attachment: '',
       });
       setIsCustomAssignee(false);
@@ -160,7 +166,9 @@ export default function TaskModal() {
       dueTime: form.dueTime || '18:00',
       priority: form.priority,
       status: form.status,
+      refInfo: form.refInfo.trim(),
       desc: form.desc.trim(),
+      instructions: form.instructions.trim(),
       attachment: form.attachment.trim(),
     });
     closeTaskModal();
@@ -169,9 +177,9 @@ export default function TaskModal() {
   return (
     <div className="marketing-modal-backdrop" onClick={closeTaskModal}>
       <div className="marketing-modal-card max-w-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="marketing-modal-header border-b border-purple-500/20 pb-4">
+        <div className="marketing-modal-header border-b border-blue-500/20 pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-[0_0_15px_rgba(37,99,235,0.25)]">
               <CheckSquare size={20} />
             </div>
             <div>
@@ -359,35 +367,68 @@ export default function TaskModal() {
             </div>
           </div>
 
-          {/* Optional Attachment */}
-          <div>
-            <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
-              <Paperclip size={13} className="text-sky-400" />
-              <span>Optional Attachment / Brief Link / Document Reference</span>
-            </label>
-            <input
-              type="text"
-              name="attachment"
-              value={form.attachment}
-              onChange={handleChange}
-              placeholder="e.g. brief_hospital_ups_seo.docx, drive.google.com/..., or specs_40kva.pdf"
-              className="mkt-input text-xs"
-            />
+          {/* Reference / Project Information & Optional Attachment */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
+                <FileText size={13} className="text-blue-400" />
+                <span>Reference / Project Information</span>
+              </label>
+              <input
+                type="text"
+                name="refInfo"
+                value={form.refInfo}
+                onChange={handleChange}
+                placeholder="e.g. 40kVA Online Industrial UPS / Hospital Bid"
+                className="mkt-input text-xs"
+              />
+            </div>
+
+            <div>
+              <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
+                <Paperclip size={13} className="text-sky-400" />
+                <span>Attachment / Document Link</span>
+              </label>
+              <input
+                type="text"
+                name="attachment"
+                value={form.attachment}
+                onChange={handleChange}
+                placeholder="e.g. brief_specs.pdf, drive.google.com/..."
+                className="mkt-input text-xs"
+              />
+            </div>
           </div>
 
-          {/* Work Description */}
+          {/* Detailed Work Description & Scope */}
           <div>
             <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
               <FileText size={13} className="text-slate-400" />
-              <span>Work Description & Scope</span>
+              <span>Detailed Work Description</span>
             </label>
             <textarea
               name="desc"
               rows={3}
               value={form.desc}
               onChange={handleChange}
-              placeholder="Outline specific objectives, technical specifications, links, or handoff criteria..."
+              placeholder="Outline specific deliverables, technical specifications, objectives, or targets..."
               className="mkt-input !py-2.5 resize-none text-xs"
+            />
+          </div>
+
+          {/* Additional Instructions */}
+          <div>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-300 mb-1.5">
+              <CheckSquare size={13} className="text-slate-400" />
+              <span>Additional Instructions</span>
+            </label>
+            <textarea
+              name="instructions"
+              rows={2}
+              value={form.instructions}
+              onChange={handleChange}
+              placeholder="Any special guidelines, testing requirements, collaboration notes or format criteria..."
+              className="mkt-input !py-2 resize-none text-xs"
             />
           </div>
 

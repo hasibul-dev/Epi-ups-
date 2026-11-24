@@ -440,7 +440,7 @@ export default function Layout() {
                 <Megaphone size={14} />
                 <span>Digital Marketing</span>
                 {mktPendingTasks > 0 && (
-                  <span className="sidebar-badge" style={{ background: '#7c3aed', fontSize: 10, padding: '1px 6px' }}>
+                  <span className="sidebar-badge" style={{ background: '#2563eb', fontSize: 10, padding: '1px 6px' }}>
                     {mktPendingTasks}
                   </span>
                 )}

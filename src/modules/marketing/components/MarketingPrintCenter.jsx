@@ -305,10 +305,10 @@ export default function MarketingPrintCenter() {
       {/* =================================================================== */}
       {/* 1. WORKSPACE HEADER & TITLE                                         */}
       {/* =================================================================== */}
-      <div className="mkt-card !p-4 bg-gradient-to-r from-slate-900/90 via-purple-950/20 to-slate-900/90 border border-purple-500/20 no-print">
+      <div className="mkt-card !p-4 bg-gradient-to-r from-slate-900/90 via-blue-950/20 to-slate-900/90 border border-blue-500/20 no-print">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-lg shadow-purple-900/20">
+            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-lg shadow-blue-900/20">
               <Printer size={20} />
             </div>
             <div>
@@ -316,7 +316,7 @@ export default function MarketingPrintCenter() {
                 <h2 className="text-base font-extrabold text-white tracking-wide">
                   Corporate Print & Reporting Center
                 </h2>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 uppercase tracking-wider">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 uppercase tracking-wider">
                   Digital Marketing ERP
                 </span>
               </div>
@@ -356,24 +356,24 @@ export default function MarketingPrintCenter() {
           }}
           className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden group ${
             activeReport === 'single'
-              ? 'bg-purple-950/40 border-purple-500/60 shadow-lg shadow-purple-950/50'
+              ? 'bg-blue-950/40 border-blue-500/60 shadow-lg shadow-blue-950/50'
               : 'bg-slate-900/60 border-white/10 hover:border-white/20 hover:bg-slate-900/90'
           }`}
         >
           {activeReport === 'single' && (
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
           )}
           <div className="flex items-center justify-between mb-1.5">
-            <div className={`p-1.5 rounded-lg ${activeReport === 'single' ? 'bg-purple-600 text-white' : 'bg-white/5 text-slate-300'}`}>
+            <div className={`p-1.5 rounded-lg ${activeReport === 'single' ? 'bg-blue-600 text-white' : 'bg-white/5 text-slate-300'}`}>
               <FileText size={16} />
             </div>
             <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
-              activeReport === 'single' ? 'bg-purple-500/20 text-purple-300' : 'text-slate-400 bg-white/5'
+              activeReport === 'single' ? 'bg-blue-500/20 text-blue-300' : 'text-slate-400 bg-white/5'
             }`}>
               A4 Portrait
             </span>
           </div>
-          <h4 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors">
+          <h4 className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">
             1. Individual Work Slip
           </h4>
           <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
@@ -390,24 +390,24 @@ export default function MarketingPrintCenter() {
           }}
           className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden group ${
             activeReport === 'history'
-              ? 'bg-purple-950/40 border-purple-500/60 shadow-lg shadow-purple-950/50'
+              ? 'bg-blue-950/40 border-blue-500/60 shadow-lg shadow-blue-950/50'
               : 'bg-slate-900/60 border-white/10 hover:border-white/20 hover:bg-slate-900/90'
           }`}
         >
           {activeReport === 'history' && (
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
           )}
           <div className="flex items-center justify-between mb-1.5">
-            <div className={`p-1.5 rounded-lg ${activeReport === 'history' ? 'bg-purple-600 text-white' : 'bg-white/5 text-slate-300'}`}>
+            <div className={`p-1.5 rounded-lg ${activeReport === 'history' ? 'bg-blue-600 text-white' : 'bg-white/5 text-slate-300'}`}>
               <Clock size={16} />
             </div>
             <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
-              activeReport === 'history' ? 'bg-purple-500/20 text-purple-300' : 'text-slate-400 bg-white/5'
+              activeReport === 'history' ? 'bg-blue-500/20 text-blue-300' : 'text-slate-400 bg-white/5'
             }`}>
               A4 Landscape
             </span>
           </div>
-          <h4 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors">
+          <h4 className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">
             2. Work History Report
           </h4>
           <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
@@ -424,24 +424,24 @@ export default function MarketingPrintCenter() {
           }}
           className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden group ${
             activeReport === 'completion'
-              ? 'bg-purple-950/40 border-purple-500/60 shadow-lg shadow-purple-950/50'
+              ? 'bg-blue-950/40 border-blue-500/60 shadow-lg shadow-blue-950/50'
               : 'bg-slate-900/60 border-white/10 hover:border-white/20 hover:bg-slate-900/90'
           }`}
         >
           {activeReport === 'completion' && (
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
           )}
           <div className="flex items-center justify-between mb-1.5">
-            <div className={`p-1.5 rounded-lg ${activeReport === 'completion' ? 'bg-purple-600 text-white' : 'bg-white/5 text-slate-300'}`}>
+            <div className={`p-1.5 rounded-lg ${activeReport === 'completion' ? 'bg-blue-600 text-white' : 'bg-white/5 text-slate-300'}`}>
               <CheckCircle2 size={16} />
             </div>
             <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
-              activeReport === 'completion' ? 'bg-purple-500/20 text-purple-300' : 'text-slate-400 bg-white/5'
+              activeReport === 'completion' ? 'bg-blue-500/20 text-blue-300' : 'text-slate-400 bg-white/5'
             }`}>
               Audit Verified
             </span>
           </div>
-          <h4 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors">
+          <h4 className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">
             3. Work Completion Report
           </h4>
           <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
@@ -458,24 +458,24 @@ export default function MarketingPrintCenter() {
           }}
           className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden group ${
             activeReport === 'assignment'
-              ? 'bg-purple-950/40 border-purple-500/60 shadow-lg shadow-purple-950/50'
+              ? 'bg-blue-950/40 border-blue-500/60 shadow-lg shadow-blue-950/50'
               : 'bg-slate-900/60 border-white/10 hover:border-white/20 hover:bg-slate-900/90'
           }`}
         >
           {activeReport === 'assignment' && (
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
           )}
           <div className="flex items-center justify-between mb-1.5">
-            <div className={`p-1.5 rounded-lg ${activeReport === 'assignment' ? 'bg-purple-600 text-white' : 'bg-white/5 text-slate-300'}`}>
+            <div className={`p-1.5 rounded-lg ${activeReport === 'assignment' ? 'bg-blue-600 text-white' : 'bg-white/5 text-slate-300'}`}>
               <CheckSquare size={16} />
             </div>
             <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
-              activeReport === 'assignment' ? 'bg-purple-500/20 text-purple-300' : 'text-slate-400 bg-white/5'
+              activeReport === 'assignment' ? 'bg-blue-500/20 text-blue-300' : 'text-slate-400 bg-white/5'
             }`}>
               Active Queue
             </span>
           </div>
-          <h4 className="text-xs font-bold text-white group-hover:text-purple-300 transition-colors">
+          <h4 className="text-xs font-bold text-white group-hover:text-blue-300 transition-colors">
             4. Work Assignment Report
           </h4>
           <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">
@@ -490,7 +490,7 @@ export default function MarketingPrintCenter() {
       <div className="mkt-card !p-4 bg-slate-900/80 border border-white/10 space-y-3 no-print">
         <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
           <div className="flex items-center gap-2">
-            <Filter size={14} className="text-purple-400" />
+            <Filter size={14} className="text-blue-400" />
             <h3 className="text-xs font-bold text-white uppercase tracking-wider">
               {activeReport === 'single' && 'Individual Slip Record Selector'}
               {activeReport === 'history' && 'Work History & Archive Search Filters'}
@@ -547,7 +547,7 @@ export default function MarketingPrintCenter() {
                 <select
                   value={singleTask?.id || ''}
                   onChange={(e) => setSelectedTaskId(e.target.value)}
-                  className="mkt-select !py-1.5 text-xs font-semibold text-white bg-slate-950 border border-purple-500/30"
+                  className="mkt-select !py-1.5 text-xs font-semibold text-white bg-slate-950 border border-blue-500/30"
                 >
                   {marketingTasks
                     .filter((t) => (employeeFilter === 'All' ? true : t.assignedTo === employeeFilter))
@@ -585,7 +585,7 @@ export default function MarketingPrintCenter() {
                   type="text"
                   readOnly
                   value={singleTask?.id || 'N/A'}
-                  className="mkt-input !py-1 text-xs font-mono font-bold text-purple-300 bg-purple-950/20 border-purple-500/20"
+                  className="mkt-input !py-1 text-xs font-mono font-bold text-blue-300 bg-blue-950/20 border-blue-500/20"
                 />
               </div>
 
@@ -755,7 +755,7 @@ export default function MarketingPrintCenter() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 text-xs text-slate-300">
             <span className="text-slate-400">Showing:</span>
-            <span className="px-2 py-0.5 rounded font-extrabold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+            <span className="px-2 py-0.5 rounded font-extrabold bg-blue-500/20 text-blue-300 border border-blue-500/30">
               {activeReport === 'single' ? (singleTask ? '1 Selected Task' : '0') : `${filteredTasks.length} Records`}
             </span>
           </div>
@@ -766,7 +766,7 @@ export default function MarketingPrintCenter() {
               type="button"
               onClick={() => setOrientation('portrait')}
               className={`px-2 py-1 rounded text-[11px] font-bold transition-all ${
-                orientation === 'portrait' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
+                orientation === 'portrait' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
               Portrait
@@ -775,7 +775,7 @@ export default function MarketingPrintCenter() {
               type="button"
               onClick={() => setOrientation('landscape')}
               className={`px-2 py-1 rounded text-[11px] font-bold transition-all ${
-                orientation === 'landscape' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
+                orientation === 'landscape' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
               Landscape
@@ -788,7 +788,7 @@ export default function MarketingPrintCenter() {
               type="button"
               onClick={() => setViewMode('preview')}
               className={`px-2 py-1 rounded text-[11px] font-bold transition-all flex items-center gap-1 ${
-                viewMode === 'preview' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
+                viewMode === 'preview' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
               }`}
             >
               <Eye size={12} />
@@ -799,7 +799,7 @@ export default function MarketingPrintCenter() {
                 type="button"
                 onClick={() => setViewMode('table')}
                 className={`px-2 py-1 rounded text-[11px] font-bold transition-all flex items-center gap-1 ${
-                  viewMode === 'table' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'
+                  viewMode === 'table' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 <Table size={12} />
@@ -815,7 +815,7 @@ export default function MarketingPrintCenter() {
             <button
               type="button"
               onClick={resetAllFilters}
-              className="btn-mkt-glass text-purple-300 hover:text-white flex items-center gap-1 text-xs"
+              className="btn-mkt-glass text-blue-300 hover:text-white flex items-center gap-1 text-xs"
               title="Reset All Applied Filters"
             >
               <RotateCcw size={12} />
@@ -838,7 +838,7 @@ export default function MarketingPrintCenter() {
           <button
             type="button"
             onClick={handlePrintDocument}
-            className="btn-mkt-primary !h-[34px] !min-h-[34px] !py-1 !px-4 text-xs flex items-center gap-1.5 shadow-lg shadow-purple-900/30 font-bold"
+            className="btn-mkt-primary !h-[34px] !min-h-[34px] !py-1 !px-4 text-xs flex items-center gap-1.5 shadow-lg shadow-blue-900/30 font-bold"
             title="Print Document or Save to PDF via Browser"
           >
             <Printer size={13} />
@@ -920,12 +920,12 @@ export default function MarketingPrintCenter() {
                 </tr>
               ) : (
                 filteredTasks.map((task) => (
-                  <tr key={task.id} className="hover:bg-purple-950/10">
-                    <td className="font-mono text-xs font-bold text-purple-300">{task.id}</td>
+                  <tr key={task.id} className="hover:bg-blue-950/10">
+                    <td className="font-mono text-xs font-bold text-blue-300">{task.id}</td>
                     <td className="font-semibold text-xs text-white">{task.title}</td>
                     <td className="text-xs text-slate-200">{task.assignedTo || 'Unassigned'}</td>
                     <td>
-                      <span className="mkt-badge mkt-badge-purple text-[10px]">{task.category}</span>
+                      <span className="mkt-badge mkt-badge-blue text-[10px]">{task.category}</span>
                     </td>
                     <td>
                       <span
@@ -947,7 +947,7 @@ export default function MarketingPrintCenter() {
                           task.status === 'Completed'
                             ? 'mkt-badge-green font-bold'
                             : task.status === 'In Progress'
-                            ? 'mkt-badge-purple'
+                            ? 'mkt-badge-blue'
                             : 'mkt-badge-blue'
                         }`}
                       >
