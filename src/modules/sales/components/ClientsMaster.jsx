@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { CLIENTS_PER_PAGE, fmt, today, CATEGORIES, RULES } from '../utils/helpers.js';
 import ExpandableText from './ExpandableText.jsx';
+import { CompanyPrintHeader } from '../../../components/CompanyPrintHeader.jsx';
 import {
   Printer,
   FileSpreadsheet,
@@ -382,11 +383,16 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
       <>
         {pages.map((part, p) => (
           <div className="client-print-page" key={p}>
-            <div className="client-print-header">
-              <h1>EPI UPS (Bangladesh) Limited</h1>
-              <h2>Client Master List</h2>
-              <div className="client-print-meta">MD Habibullah · Engineer, Business Development</div>
-            </div>
+            <CompanyPrintHeader
+              title="CLIENT MASTER DIRECTORY"
+              department="SALES DEPARTMENT"
+              subtitle={`Page ${p + 1} of ${Math.max(1, pages.length)} · MD Habibullah, Engineer Business Development`}
+              metaItems={[
+                { label: 'Total Records', value: total },
+                { label: 'Page', value: `${p + 1} of ${Math.max(1, pages.length)}` },
+              ]}
+              badge="SALES CLIENT DIRECTORY"
+            />
             <table className="client-print-table">
               <thead><tr>{EXPORT_HEADERS.map((h) => <th key={h}>{h}</th>)}</tr></thead>
               <tbody>

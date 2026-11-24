@@ -1501,6 +1501,16 @@
     display: none !important;
   }
 
+  /* Isolate modal print views: completely hide dashboard background */
+  body:has(.marketing-modal-backdrop) .marketing-page-content,
+  body:has(.marketing-modal-backdrop) .mkt-sidebar,
+  body:has(.marketing-modal-backdrop) .mkt-topbar,
+  body:has(.mkt-modal-backdrop) .marketing-page-content,
+  body:has(.mkt-modal-backdrop) .mkt-sidebar,
+  body:has(.mkt-modal-backdrop) .mkt-topbar {
+    display: none !important;
+  }
+
   /* Marketing Task Print Modal */
   .marketing-modal-backdrop {
     position: static !important;

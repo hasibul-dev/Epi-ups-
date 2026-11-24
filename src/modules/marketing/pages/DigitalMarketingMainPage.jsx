@@ -379,7 +379,19 @@ export default function DigitalMarketingMainPage() {
           {/* Print Report Button (Cyan / Blue Accent) */}
           <button
             type="button"
-            onClick={() => openTaskPrintModal(null, 'summary')}
+            onClick={() =>
+              openTaskPrintModal(
+                null,
+                'summary',
+                activeTab === 'reports' ? filteredHistory : activeTab === 'today' ? todayTasks : marketingTasks,
+                {
+                  employee: activeTab === 'reports' ? reportEmployee : employeeFilter,
+                  category: activeTab === 'reports' ? reportCategory : categoryFilter,
+                  startDate: activeTab === 'reports' ? reportStartDate : '',
+                  endDate: activeTab === 'reports' ? reportEndDate : '',
+                }
+              )
+            }
             className="btn-mkt-cyan mkt-header-action-btn"
             title="Print Official Work Performance Report"
           >
@@ -1364,9 +1376,27 @@ export default function DigitalMarketingMainPage() {
               </div>
 
               <div className="flex items-center justify-between text-xs pt-1 text-slate-400">
-                <span>
-                  Found <strong className="text-emerald-400">{filteredHistory.length}</strong> completed work records
-                </span>
+                <div className="flex items-center gap-3">
+                  <span>
+                    Found <strong className="text-emerald-400">{filteredHistory.length}</strong> completed work records
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openTaskPrintModal(null, 'summary', filteredHistory, {
+                        employee: reportEmployee,
+                        category: reportCategory,
+                        startDate: reportStartDate,
+                        endDate: reportEndDate,
+                      })
+                    }
+                    className="btn-mkt-secondary flex items-center gap-1.5 !py-1 !px-2.5 text-[11px] font-bold text-cyan-300 hover:text-white border border-cyan-500/30 rounded"
+                    title="Print Filtered Work History Report"
+                  >
+                    <Printer size={12} />
+                    <span>Print History Report ({filteredHistory.length})</span>
+                  </button>
+                </div>
                 {(reportEmployee !== 'All' || reportCategory !== 'All' || reportStartDate || reportEndDate || reportSearch) && (
                   <button
                     onClick={() => {

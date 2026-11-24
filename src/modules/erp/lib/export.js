@@ -1,5 +1,6 @@
 // Export helpers: CSV, Excel (exceljs), PDF (jsPDF) and print. Columns: [{ key, label, fmt?, align? }]
 import { printHtmlDocument } from '../../../services/reportExport.js';
+import { getCompanyPrintHeaderHtml } from '../../../components/CompanyPrintHeader.jsx';
 const cell = (c, row) => {
   const v = typeof c.key === 'function' ? c.key(row) : row[c.key];
   return v === undefined || v === null ? '' : v;
@@ -239,21 +240,16 @@ export function printTable({ title, subtitle, columns, rows, company }) {
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="brand">
-      <h1>${esc(company || 'EPI UPS Bangladesh Limited')}</h1>
-      <p>House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230 | Hotline: +88 01778-249416 | Email: accounts@epiups.com.bd</p>
-      <div class="dept-badge">Accounts &amp; Financial Management</div>
-    </div>
-    <div class="meta-box">
-      <div><strong>Date:</strong> ${esc(dateStr)} ${esc(timeStr)}</div>
-      <div><strong>Currency:</strong> BDT (৳)</div>
-      <div>Official Accounts Record</div>
-    </div>
-  </div>
-
-  <div class="report-title">${esc(title)}</div>
-  ${subtitle ? `<div class="report-sub">${esc(subtitle)}</div>` : ''}
+  ${getCompanyPrintHeaderHtml({
+    title,
+    department: 'ERP & ACCOUNTS',
+    subtitle,
+    metaItems: [
+      { label: 'Currency', value: 'BDT (৳)' },
+      { label: 'Classification', value: 'Audited Financial Record' },
+    ],
+    badge: 'ERP & ACCOUNTS',
+  })}
 
   <table>
     <thead>

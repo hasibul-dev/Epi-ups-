@@ -19,7 +19,9 @@ import {
   Wrench,
   Landmark,
   ShieldAlert,
+  Printer,
 } from 'lucide-react';
+import { printFormattedReport } from '../../../services/reportExport.js';
 import UserManagementModal from './UserManagementModal.jsx';
 import ResetPasswordModal from './ResetPasswordModal.jsx';
 import LoginHistoryModal from './LoginHistoryModal.jsx';
@@ -157,6 +159,33 @@ export default function UserManagement() {
   const accountsCount = usersList.filter((u) => u.role === 'superadmin' || u.departments?.includes('accounts')).length;
   const marketingCount = usersList.filter((u) => u.role === 'superadmin' || u.departments?.includes('marketing')).length;
 
+  const handlePrintDirectory = () => {
+    printFormattedReport({
+      title: 'ENTERPRISE EMPLOYEE DIRECTORY & RBAC ACCESS AUDIT',
+      department: 'CENTRAL ADMINISTRATION',
+      dateRange: 'Active Directory State',
+      summary: {
+        'Total Users': totalCount,
+        'Active Accounts': activeCount,
+        'Sales Team': salesCount,
+        'Service Team': serviceCount,
+        'Accounts Team': accountsCount,
+        'Marketing Team': marketingCount,
+      },
+      headers: ['User ID', 'Full Name', 'Email', 'Role', 'Departments', 'Status', 'Last Login'],
+      rows: filteredUsers.map((u) => [
+        u.userId,
+        u.name,
+        u.email || '—',
+        u.role === 'superadmin' ? 'Super Administrator' : u.role || 'Staff',
+        Array.isArray(u.departments) ? u.departments.join(', ').toUpperCase() : 'ALL',
+        u.status === 'active' ? 'Active' : 'Inactive',
+        u.lastLogin ? new Date(u.lastLogin).toLocaleString('en-GB') : 'Never',
+      ]),
+      orientation: 'landscape',
+    });
+  };
+
   return (
     <div className="central-admin-content user-management-page">
       {/* Alert Notice Banner */}
@@ -180,6 +209,16 @@ export default function UserManagement() {
           </p>
         </div>
         <div className="admin-hero-actions">
+          <button
+            type="button"
+            className="btn-action-secondary"
+            onClick={handlePrintDirectory}
+            title="Print Official Employee Directory & Access Audit"
+          >
+            <Printer size={14} />
+            <span>Print Staff Directory</span>
+          </button>
+
           <button
             type="button"
             className="btn-action-secondary"

@@ -1,102 +1,29 @@
 import React from 'react';
+import { CompanyPrintHeader, PrintSignatures as BasePrintSignatures } from '../../../components/CompanyPrintHeader.jsx';
 
-// Shared pieces of the A4 print layouts matching EPI Corporate Standards (High-Contrast Print System)
+// Centralized Unified EPI UPS Company Header wrapper for Sales & Existing Modules
 export function PrintHeader({
   title,
   department = 'SALES DEPARTMENT',
   dateRange = '',
   subtitle = '',
   metaItems = [],
+  badge = '',
 }) {
-  const now = new Date();
-  const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
   return (
-    <div className="print-header-banner" style={{ borderBottom: '2px solid #111827', paddingBottom: '12px', marginBottom: '16px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <img
-            src="/logo.png"
-            alt="EPI UPS Logo"
-            style={{ width: '48px', height: '48px', objectFit: 'contain' }}
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
-          <div>
-            <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 800, color: '#000000', letterSpacing: '-0.02em' }}>
-              EPI UPS BANGLADESH LIMITED
-            </h1>
-            <div style={{ fontSize: '11px', fontWeight: 800, color: '#111827', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {department} · CENTRAL MANAGEMENT SYSTEM
-            </div>
-          </div>
-        </div>
-
-        <div style={{ textAlign: 'right', fontSize: '10.5px', color: '#333333', lineHeight: 1.4 }}>
-          <div><b style={{ color: '#000000' }}>Generated:</b> {dateStr} at {timeStr}</div>
-          {dateRange && <div><b style={{ color: '#000000' }}>Period:</b> {dateRange}</div>}
-          <div style={{ color: '#111827', fontWeight: 700 }}>Official Commercial Record</div>
-        </div>
-      </div>
-
-      {metaItems && metaItems.length > 0 && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '8px', padding: '6px 10px', background: '#f8fafc', border: '1px solid #999999', borderRadius: '4px', fontSize: '10.5px', color: '#111111' }}>
-          {metaItems.map((meta, i) => (
-            <div key={i}>
-              <span style={{ color: '#333333', fontWeight: 700 }}>{meta.label}: </span>
-              <span style={{ fontWeight: 800, color: '#000000' }}>{meta.value}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid #999999', paddingTop: '8px' }}>
-        <div>
-          <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#000000' }}>{title}</h2>
-          {subtitle && <div style={{ fontSize: '11px', color: '#333333', fontWeight: 500 }}>{subtitle}</div>}
-        </div>
-        <div style={{ fontSize: '10px', color: '#333333', fontWeight: 600 }}>
-          Confidential · Internal Company Document
-        </div>
-      </div>
-    </div>
+    <CompanyPrintHeader
+      title={title}
+      department={department}
+      dateRange={dateRange}
+      subtitle={subtitle}
+      metaItems={metaItems}
+      badge={badge}
+    />
   );
 }
 
-export function PrintSignatures({ roles, signatories }) {
-  const items = signatories || roles || [
-    'Prepared By',
-    'Verified By (Manager)',
-    'Authorized Signatory',
-  ];
-
-  return (
-    <div
-      className="print-signatures"
-      style={{
-        marginTop: '36px',
-        paddingTop: '16px',
-        display: 'grid',
-        gridTemplateColumns: `repeat(${items.length}, 1fr)`,
-        gap: '20px',
-        pageBreakInside: 'avoid',
-      }}
-    >
-      {items.map((item, idx) => {
-        const title = typeof item === 'object' && item !== null ? item.title || item.role : item;
-        const note =
-          typeof item === 'object' && item !== null
-            ? item.note || 'Signature & Date'
-            : 'Signature & Date';
-
-        return (
-          <div key={idx} style={{ textAlign: 'center' }}>
-            <div style={{ borderTop: '1.5px solid #111111', width: '80%', margin: '0 auto 6px' }}></div>
-            <b style={{ fontSize: '11.5px', color: '#000000', fontWeight: 800 }}>{title}</b>
-            <div style={{ fontSize: '10px', color: '#333333', marginTop: '2px', fontWeight: 600 }}>{note}</div>
-          </div>
-        );
-      })}
-    </div>
-  );
+export function PrintSignatures(props) {
+  return <BasePrintSignatures {...props} />;
 }
+
+export { CompanyPrintHeader };

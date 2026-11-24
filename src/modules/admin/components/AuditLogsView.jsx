@@ -12,7 +12,9 @@ import {
   Activity,
   KeyRound,
   UserPlus,
+  Printer,
 } from 'lucide-react';
+import { printFormattedReport } from '../../../services/reportExport.js';
 
 export default function AuditLogsView() {
   const { token } = useCentralAuth();
@@ -94,6 +96,37 @@ export default function AuditLogsView() {
   const credentialEvents = logs.filter((l) => l.action?.includes('PASSWORD') || l.action?.includes('RESET')).length;
   const userLifecycleEvents = logs.filter((l) => l.action?.includes('USER') || l.action?.includes('STATUS')).length;
 
+  const handlePrintAuditReport = () => {
+    printFormattedReport({
+      title: 'SECURITY & SYSTEM AUDIT TRAIL REPORT',
+      department: 'CENTRAL ADMINISTRATION',
+      dateRange:
+        dateFilter === 'today'
+          ? 'Today'
+          : dateFilter === '7days'
+          ? 'Last 7 Days'
+          : dateFilter === '30days'
+          ? 'Last 30 Days'
+          : 'All Historical Logs',
+      summary: {
+        'Total Events': totalEvents,
+        'Login Records': loginEvents,
+        'Credential Mod': credentialEvents,
+        'Account Lifecycle': userLifecycleEvents,
+      },
+      headers: ['Timestamp', 'Action Type', 'Performed By', 'Target User', 'Client IP', 'Event Details'],
+      rows: filteredLogs.map((l) => [
+        l.timestamp ? new Date(l.timestamp).toLocaleString('en-GB') : '—',
+        l.action || '—',
+        l.performedBy || l.userName || l.userId || '—',
+        l.targetUserId || '—',
+        l.ip || '—',
+        l.details || '—',
+      ]),
+      orientation: 'landscape',
+    });
+  };
+
   return (
     <div className="central-admin-content audit-logs-page">
       {/* Hero Banner */}
@@ -109,6 +142,15 @@ export default function AuditLogsView() {
           </p>
         </div>
         <div className="admin-hero-actions">
+          <button
+            type="button"
+            className="btn-action-secondary"
+            onClick={handlePrintAuditReport}
+            title="Print Official Audit Trail Report"
+          >
+            <Printer size={14} />
+            <span>Print Audit Report</span>
+          </button>
           <button
             type="button"
             className="btn-action-secondary"

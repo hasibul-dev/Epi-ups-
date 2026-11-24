@@ -4,6 +4,7 @@ import { StatusBadge, PriorityBadge } from './Badges.jsx'
 import { clientTitle, clientContact, clientProduct, status } from '../services/domain.js'
 import { fmt, TODAY } from '../services/dates.js'
 import { printHtmlDocument } from '../../../services/reportExport.js'
+import { getCompanyPrintHeaderHtml } from '../../../components/CompanyPrintHeader.jsx'
 import {
   Printer,
   Edit2,
@@ -200,11 +201,17 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
         </style>
       </head>
       <body>
-        <div class="header">
-          <h1>EPI UPS (BANGLADESH) LIMITED</h1>
-          <p>House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230 · Hotline: +88 01778-249416 · Web: www.epiups.com.bd</p>
-          <div class="ticket-badge">SERVICE WORK ORDER / JOB SHEET</div>
-        </div>
+        ${getCompanyPrintHeaderHtml({
+          title: 'SERVICE WORK ORDER & JOB SHEET',
+          department: 'SERVICE & MAINTENANCE',
+          subtitle: `Work Order: WO-${esc((work.id || '').slice(-6).toUpperCase())} · Status: ${work.status === 'done' ? 'COMPLETED' : 'PENDING'}`,
+          metaItems: [
+            { label: 'Technician', value: work.engineer || 'Unassigned' },
+            { label: 'Priority', value: work.priority || 'Normal' },
+            { label: 'Scheduled', value: fmt(work.date) },
+          ],
+          badge: 'SERVICE & MAINTENANCE',
+        })}
 
         <div class="section">
           <div class="section-title">1. Work Order Information</div>

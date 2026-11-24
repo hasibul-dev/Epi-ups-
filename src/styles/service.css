@@ -1629,30 +1629,41 @@ select option {
 
 @media print {
   body {
-    background: #fff;
-    color: #000;
+    background: #ffffff !important;
+    color: #111111 !important;
   }
+  .app-sidebar,
+  .topbar,
+  .dept-subnav-bar,
   .side,
   .no-print,
   .top,
+  .preview-bar,
   .print-hide {
     display: none !important;
   }
-  .main {
-    padding: 0;
+  .main,
+  .service-module-root,
+  .service-content-body {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
   }
   .reports-stack {
-    display: block;
-    gap: 0;
+    display: block !important;
+    gap: 0 !important;
+    width: 100% !important;
   }
   .sheet {
-    margin: 0;
-    width: 100%;
-    min-height: auto;
-    padding: 6mm;
-    box-shadow: none;
-    background: #fff !important;
+    margin: 0 !important;
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 6mm !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
     color: #111111 !important;
+    border: none !important;
   }
   .sheet table {
     border-collapse: collapse !important;

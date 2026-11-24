@@ -63,7 +63,8 @@ export function MarketingProvider({ children }) {
   const openTaskUpdateModal = (item = null) => setTaskUpdateModal({ open: true, item });
   const closeTaskUpdateModal = () => setTaskUpdateModal({ open: false, item: null });
 
-  const openTaskPrintModal = (item = null, type = 'single') => setTaskPrintModal({ open: true, item, type });
+  const openTaskPrintModal = (item = null, type = 'single', list = [], filters = {}) =>
+    setTaskPrintModal({ open: true, item, type, list, filters });
   const closeTaskPrintModal = () => setTaskPrintModal({ open: false, item: null, type: 'single' });
 
   const openTicketModal = (item = null) => setTicketModal({ open: true, item });

@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Printer, Download, CheckCircle2, Calendar, User, Tag, FileText } from 'lucide-react';
 import { useMarketing } from '../context/MarketingContext.jsx';
 import { today } from '../../sales/utils/helpers.js';
+import { CompanyPrintHeader, PrintSignatures } from '../../../components/CompanyPrintHeader.jsx';
 
 export default function TaskPrintModal() {
   const { taskPrintModal, closeTaskPrintModal, data } = useMarketing();
@@ -14,9 +15,14 @@ export default function TaskPrintModal() {
   };
 
   const currentToday = today();
+  const allTasks = data.marketingTasks || [];
+  
+  // Robust tasks determination so it NEVER renders blank
   const tasksToPrint = type === 'summary'
-    ? (list && list.length > 0 ? list : (data.marketingTasks || []).filter(t => t.status === 'Completed'))
-    : [item];
+    ? (list && list.length > 0 ? list : allTasks)
+    : (item ? [item] : (allTasks.length > 0 ? [allTasks[0]] : []));
+
+  const singleTask = tasksToPrint[0] || item;
 
   return (
     <div className="marketing-modal-backdrop" onClick={closeTaskPrintModal}>
@@ -51,152 +57,135 @@ export default function TaskPrintModal() {
 
         {/* Printable Document Container */}
         <div className="p-6 sm:p-8 bg-white text-slate-900 rounded-b-xl print-container">
-          {/* Corporate Header */}
-          <div className="border-b-2 border-slate-900 pb-4 mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h1 className="text-xl sm:text-2xl font-black text-black tracking-tight uppercase">
-                  EPI UPS BANGLADESH LIMITED
-                </h1>
-                <p className="text-xs text-slate-800 font-semibold">
-                  House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230, Bangladesh
-                </p>
-                <p className="text-xs text-slate-800 font-semibold">
-                  Hotline: +88 01778-249416 | Email: info@epiups.com.bd | Web: www.epiups.com.bd
-                </p>
-              </div>
-              <div className="text-right sm:text-right border-l-2 sm:border-l-0 sm:border-slate-400 pl-3 sm:pl-0">
-                <span className="inline-block px-2.5 py-1 text-[11px] font-extrabold text-white bg-slate-950 rounded">
-                  DIGITAL MARKETING
-                </span>
-                <div className="text-xs text-slate-800 font-bold mt-1">
-                  Report Date: {currentToday}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 text-center">
-              <h2 className="text-sm sm:text-base font-extrabold uppercase tracking-wide text-slate-900">
-                {type === 'summary'
-                  ? 'OFFICIAL DIGITAL MARKETING WORK PERFORMANCE & HISTORY REPORT'
-                  : 'INDIVIDUAL WORK ASSIGNMENT & COMPLETION CERTIFICATE'}
-              </h2>
-              {filters?.employee && filters.employee !== 'All' && (
-                <p className="text-xs font-semibold text-slate-700">
-                  Target Employee: {filters.employee}
-                </p>
-              )}
-            </div>
-          </div>
+          {/* Unified Official Corporate Header */}
+          <CompanyPrintHeader
+            title={
+              type === 'summary'
+                ? 'OFFICIAL DIGITAL MARKETING WORK PERFORMANCE & HISTORY REPORT'
+                : 'INDIVIDUAL WORK ASSIGNMENT & COMPLETION CERTIFICATE'
+            }
+            department="DIGITAL MARKETING DEPARTMENT"
+            dateRange={filters?.startDate && filters?.endDate ? `${filters.startDate} to ${filters.endDate}` : `Report Date: ${currentToday}`}
+            subtitle={filters?.employee && filters.employee !== 'All' ? `Target Employee: ${filters.employee}` : ''}
+            metaItems={
+              type === 'summary'
+                ? [
+                    { label: 'Total Works', value: tasksToPrint.length },
+                    { label: 'Completed', value: tasksToPrint.filter(t => t.status === 'Completed').length },
+                    { label: 'In Progress', value: tasksToPrint.filter(t => t.status === 'In Progress').length },
+                  ]
+                : singleTask
+                ? [
+                    { label: 'Work Order ID', value: singleTask.id || 'N/A' },
+                    { label: 'Assigned Employee', value: singleTask.assignedTo || 'Unassigned' },
+                    { label: 'Status', value: singleTask.status || 'Assigned' },
+                  ]
+                : []
+            }
+            badge="DIGITAL MARKETING"
+          />
 
           {/* SINGLE WORK SLIP VIEW */}
-          {type === 'single' && item && (
-            <div className="space-y-6 text-xs text-slate-800">
-              {/* Task Meta Table */}
-              <table className="w-full border-collapse border border-slate-300 text-xs">
-                <tbody>
-                  <tr className="border-b border-slate-300">
-                    <td className="w-36 bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
-                      Work Order ID:
-                    </td>
-                    <td className="p-2 font-mono font-semibold">{item.id}</td>
-                    <td className="w-36 bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
-                      Category:
-                    </td>
-                    <td className="p-2 font-semibold">{item.category}</td>
-                  </tr>
-                  <tr className="border-b border-slate-300">
-                    <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
-                      Work Title:
-                    </td>
-                    <td colSpan={3} className="p-2 font-bold text-slate-900 text-sm">
-                      {item.title}
-                    </td>
-                  </tr>
-                  <tr className="border-b border-slate-300">
-                    <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
-                      Assigned Employee:
-                    </td>
-                    <td className="p-2 font-bold text-slate-900">{item.assignedTo}</td>
-                    <td className="bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
-                      Assigned By:
-                    </td>
-                    <td className="p-2">{item.assignedBy || 'Administrator'}</td>
-                  </tr>
-                  <tr className="border-b border-slate-300">
-                    <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
-                      Assignment Date:
-                    </td>
-                    <td className="p-2">{item.startDate}</td>
-                    <td className="bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
-                      Target Deadline:
-                    </td>
-                    <td className="p-2 font-semibold">{item.dueDate} {item.dueTime || ''}</td>
-                  </tr>
-                  <tr className="border-b border-slate-300">
-                    <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
-                      Priority Level:
-                    </td>
-                    <td className="p-2 font-bold">{item.priority}</td>
-                    <td className="bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
-                      Current Status:
-                    </td>
-                    <td className="p-2 font-bold text-slate-900">{item.status} ({item.progress || 0}%)</td>
-                  </tr>
-                  {item.attachment && (
+          {type === 'single' && (
+            singleTask ? (
+              <div className="space-y-6 text-xs text-slate-800">
+                {/* Task Meta Table */}
+                <table className="w-full border-collapse border border-slate-300 text-xs">
+                  <tbody>
+                    <tr className="border-b border-slate-300">
+                      <td className="w-36 bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
+                        Work Order ID:
+                      </td>
+                      <td className="p-2 font-mono font-semibold">{singleTask.id}</td>
+                      <td className="w-36 bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
+                        Category:
+                      </td>
+                      <td className="p-2 font-semibold">{singleTask.category}</td>
+                    </tr>
                     <tr className="border-b border-slate-300">
                       <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
-                        Initial Brief/File:
+                        Work Title:
                       </td>
-                      <td colSpan={3} className="p-2 font-mono text-[11px]">{item.attachment}</td>
+                      <td colSpan={3} className="p-2 font-bold text-slate-900 text-sm">
+                        {singleTask.title}
+                      </td>
                     </tr>
-                  )}
-                  <tr className="border-b border-slate-300">
-                    <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300 align-top">
-                      Scope / Description:
-                    </td>
-                    <td colSpan={3} className="p-2 whitespace-pre-wrap leading-relaxed">
-                      {item.desc || 'No specific description provided.'}
-                    </td>
-                  </tr>
-                  <tr className="border-b border-slate-300">
-                    <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300 align-top">
-                      Completion Notes:
-                    </td>
-                    <td colSpan={3} className="p-2 whitespace-pre-wrap leading-relaxed font-medium">
-                      {item.completionNotes || 'In progress / pending final delivery notes.'}
-                    </td>
-                  </tr>
-                  {item.completionAttachment && (
                     <tr className="border-b border-slate-300">
                       <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
-                        Deliverable Link/File:
+                        Assigned Employee:
                       </td>
-                      <td colSpan={3} className="p-2 font-mono text-[11px] text-blue-700">
-                        {item.completionAttachment}
+                      <td className="p-2 font-bold text-slate-900">{singleTask.assignedTo}</td>
+                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
+                        Priority Level:
                       </td>
+                      <td className="p-2 font-bold">{singleTask.priority}</td>
                     </tr>
-                  )}
-                  {item.completedDate && (
+                    <tr className="border-b border-slate-300">
+                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
+                        Assignment Date:
+                      </td>
+                      <td className="p-2">{singleTask.startDate || '—'}</td>
+                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
+                        Target Deadline:
+                      </td>
+                      <td className="p-2 font-semibold text-rose-700">{singleTask.dueDate || '—'}</td>
+                    </tr>
                     <tr>
                       <td className="bg-slate-100 p-2 font-bold text-slate-700 border-r border-slate-300">
-                        Completion Timestamp:
+                        Current Status:
                       </td>
-                      <td colSpan={3} className="p-2 font-bold text-emerald-800">
-                        {item.completedDate} at {item.completedTime || 'N/A'} (Recorded by {item.completedBy || item.assignedTo})
+                      <td className="p-2 font-extrabold text-slate-900">{singleTask.status}</td>
+                      <td className="bg-slate-100 p-2 font-bold text-slate-700 border-l border-r border-slate-300">
+                        Completion Date:
+                      </td>
+                      <td className="p-2 font-bold text-emerald-800">
+                        {singleTask.completedDate ? `${singleTask.completedDate} ${singleTask.completedTime || ''}` : 'Pending Completion'}
                       </td>
                     </tr>
+                  </tbody>
+                </table>
+
+                {/* Scope & Detailed Brief */}
+                <div className="border border-slate-300 rounded p-4 bg-slate-50">
+                  <div className="font-bold text-slate-900 mb-1 border-b border-slate-200 pb-1 flex items-center gap-1.5">
+                    <FileText size={14} className="text-slate-600" />
+                    <span>Project Brief & Work Deliverable Scope</span>
+                  </div>
+                  <p className="whitespace-pre-wrap text-slate-800 leading-relaxed mt-2">
+                    {singleTask.desc || 'Complete the assigned industrial marketing deliverable according to EPI UPS brand guidelines.'}
+                  </p>
+                </div>
+
+                {/* Completion & Execution Report */}
+                <div className="border border-slate-300 rounded p-4 bg-slate-50">
+                  <div className="font-bold text-slate-900 mb-1 border-b border-slate-200 pb-1 flex items-center gap-1.5">
+                    <CheckCircle2 size={14} className="text-emerald-600" />
+                    <span>Employee Completion Report & Submission Notes</span>
+                  </div>
+                  <p className="whitespace-pre-wrap text-slate-800 leading-relaxed mt-2 italic">
+                    {singleTask.completionNotes || 'Work delivered and verified in accordance with corporate digital marketing objectives.'}
+                  </p>
+                  {singleTask.completionAttachment && (
+                    <div className="mt-3 pt-2 border-t border-slate-200 text-slate-600 flex items-center gap-1">
+                      <Tag size={12} />
+                      <span className="font-bold">Attached Deliverable Asset:</span>
+                      <span className="font-mono">{singleTask.completionAttachment}</span>
+                    </div>
                   )}
-                </tbody>
-              </table>
-            </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-6 text-center text-slate-800 font-bold border border-slate-400 bg-slate-50 rounded">
+                No task record selected for this slip preview.
+              </div>
+            )
           )}
 
-          {/* SUMMARY TABLE VIEW */}
+          {/* SUMMARY REPORT VIEW */}
           {type === 'summary' && (
-            <div className="space-y-4">
-              {/* Filter KPI Bar */}
-              <div className="grid grid-cols-4 gap-2 border border-slate-300 bg-slate-50 p-3 rounded text-center text-xs">
+            <div className="space-y-6">
+              {/* Summary Metric Ribbon */}
+              <div className="grid grid-cols-4 gap-3 p-3 bg-slate-100 rounded-lg border border-slate-300 text-center">
                 <div>
                   <div className="font-bold text-slate-500 uppercase text-[10px]">Total Works</div>
                   <div className="text-base font-extrabold text-slate-900">{tasksToPrint.length}</div>
@@ -271,27 +260,14 @@ export default function TaskPrintModal() {
             </div>
           )}
 
-          {/* Official Signatures Sign-Off Block */}
-          <div className="grid grid-cols-3 gap-6 pt-16 mt-8 border-t border-slate-300 text-center text-xs">
-            <div>
-              <div className="border-t border-slate-900 pt-1.5 font-bold text-slate-900">
-                Prepared By
-              </div>
-              <div className="text-[10px] text-slate-500">Employee / Marketing Executive</div>
-            </div>
-            <div>
-              <div className="border-t border-slate-900 pt-1.5 font-bold text-slate-900">
-                Verified By
-              </div>
-              <div className="text-[10px] text-slate-500">Lead Digital Strategist / IT Manager</div>
-            </div>
-            <div>
-              <div className="border-t border-slate-900 pt-1.5 font-bold text-slate-900">
-                Approved By
-              </div>
-              <div className="text-[10px] text-slate-500">Managing Director / Super Administrator</div>
-            </div>
-          </div>
+          {/* Official Unified Signatures Sign-Off Block */}
+          <PrintSignatures
+            signatories={[
+              { title: 'Marketing Executive', note: 'Prepared By' },
+              { title: 'Lead Digital Strategist', note: 'Verified & Inspected' },
+              { title: 'Managing Director / Super Admin', note: 'Approved & Signed' },
+            ]}
+          />
         </div>
       </div>
     </div>

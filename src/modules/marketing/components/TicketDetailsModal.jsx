@@ -1,6 +1,7 @@
 import React from 'react';
 import { useMarketing } from '../context/MarketingContext.jsx';
 import { printHtmlDocument } from '../../../services/reportExport.js';
+import { getCompanyPrintHeaderHtml } from '../../../components/CompanyPrintHeader.jsx';
 import {
   X,
   Printer,
@@ -51,18 +52,18 @@ export default function TicketDetailsModal() {
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="brand">
-      <h2>EPI UPS BANGLADESH LIMITED</h2>
-      <div style="font-size: 11px; font-weight: 700; color: #4338ca; margin-top: 2px;">IT SUPPORT &amp; INFRASTRUCTURE SERVICES</div>
-      <p>Corporate Headquarters: House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230 | Hotline: +88 01778-249416</p>
-    </div>
-    <div class="ticket-meta">
-      <div class="ticket-badge">IT SERVICE SLIP</div>
-      <div style="font-size: 12px; font-weight: 700; color: #1e293b;">${esc(ticket.id)}</div>
-      <div style="font-size: 10px; color: #64748b;">Logged: ${esc(ticket.createdDate || ticket.createdAt)}</div>
-    </div>
-  </div>
+  ${getCompanyPrintHeaderHtml({
+    title: 'IT SUPPORT JOB & SERVICE SLIP',
+    department: 'IT SUPPORT & INFRASTRUCTURE',
+    subtitle: `Ticket ID: ${esc(ticket.id)} · Logged: ${esc(ticket.createdDate || ticket.createdAt)} · Category: ${esc(ticket.issueCategory)}`,
+    metaItems: [
+      { label: 'Priority', value: ticket.priority },
+      { label: 'Requesting User', value: ticket.requestingEmployee },
+      { label: 'Department', value: ticket.department },
+      { label: 'Assigned Tech', value: ticket.assignedTechnician },
+    ],
+    badge: 'IT SUPPORT & HELPDESK',
+  })}
 
   <table>
     <tbody>

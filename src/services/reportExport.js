@@ -6,6 +6,7 @@
 
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { getCompanyPrintHeaderHtml, COMPANY_DETAILS } from '../components/CompanyPrintHeader.jsx';
 
 const DEPT_COLORS = {
   Sales: [0, 82, 204], // Royal Blue
@@ -297,10 +298,33 @@ export function printHtmlDocument(html, title = 'EPI Document') {
       }
     };
 
+    const checkReadyAndPrint = () => {
+      try {
+        const imgs = Array.from(doc.images || []);
+        const pending = imgs.filter(img => !img.complete);
+        if (pending.length > 0) {
+          let loaded = 0;
+          const onDone = () => {
+            loaded++;
+            if (loaded >= pending.length) setTimeout(doPrint, 100);
+          };
+          pending.forEach(img => {
+            img.onload = onDone;
+            img.onerror = onDone;
+          });
+          setTimeout(doPrint, 800);
+        } else {
+          setTimeout(doPrint, 200);
+        }
+      } catch (e) {
+        setTimeout(doPrint, 250);
+      }
+    };
+
     if (doc.readyState === 'complete') {
-      setTimeout(doPrint, 250);
+      checkReadyAndPrint();
     } else {
-      iframe.contentWindow.onload = () => setTimeout(doPrint, 250);
+      iframe.contentWindow.onload = checkReadyAndPrint;
     }
   } catch (e) {
     console.error('[printHtmlDocument] Failed to print:', e);
@@ -509,23 +533,12 @@ export function printFormattedReport({
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="brand">
-      <h1>EPI UPS Bangladesh Limited</h1>
-      <p>House # 03, Road # 15, Sector # 03, Uttara, Dhaka-1230 | Hotline: +88 01778-249416 | Web: www.epiups.com.bd</p>
-      <div class="dept-badge">${esc(department)}</div>
-    </div>
-    <div class="meta-box">
-      <div><strong>Date:</strong> ${esc(generatedStr)}</div>
-      ${dateRange ? `<div><strong>Period:</strong> ${esc(dateRange)}</div>` : ''}
-      <div><strong>Classification:</strong> Official Management Record</div>
-    </div>
-  </div>
-
-  <div class="report-title-bar">
-    <h2>${esc(title)}</h2>
-    ${subtitle ? `<p>${esc(subtitle)}</p>` : ''}
-  </div>
+  ${getCompanyPrintHeaderHtml({
+    title,
+    department,
+    dateRange,
+    subtitle,
+  })}
 
   ${
     summaryEntries.length > 0

@@ -14,6 +14,7 @@ import {
 } from '../services/domain.js'
 import { TODAY, addD, fmt } from '../services/dates.js'
 import { exportToPdf, exportToCsv, triggerPrint } from '../../../services/reportExport.js'
+import { CompanyPrintHeader, PrintSignatures } from '../../../components/CompanyPrintHeader.jsx'
 import {
   Printer,
   Download,
@@ -656,9 +657,14 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
 
       {/* Generated A4 Reports */}
       {!activeSheets.length ? (
-        <div className="card">
-          <div className="empty">
-            No report selected. Please select one or more report types above to preview and print.
+        <div className="card sheet">
+          <CompanyPrintHeader
+            title="SERVICE DEPARTMENT REPORT SUMMARY"
+            department="SERVICE & MAINTENANCE DEPARTMENT"
+            badge="SERVICE & MAINTENANCE"
+          />
+          <div className="empty print-empty-state" style={{ color: '#111111', fontWeight: 700, border: '1px solid #999999', padding: '24px', background: '#f9fafb', textAlign: 'center' }}>
+            No report categories currently selected. Please select one or more report categories above to view and print records.
           </div>
         </div>
       ) : (
@@ -708,28 +714,20 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
                   </button>
                 </div>
 
-                {/* Official A4 Header */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    borderBottom: '2px solid #111',
-                    paddingBottom: 8,
-                    marginBottom: 10,
-                  }}
-                >
-                  <div>
-                    <h2>{s.settings.company}</h2>
-                    <div style={{ fontWeight: 700, fontSize: 14, marginTop: 2 }}>{rt.title}</div>
-                  </div>
-                  <div style={{ textAlign: 'right', lineHeight: 1.5 }}>
-                    Generated: {fmt(TODAY())}
-                    <br />
-                    Period: {fmt(from)} – {fmt(to)}
-                    <br />
-                    Work Type: {workType || rt.category || 'All'} · Status: {statusFilter || 'All'}
-                  </div>
-                </div>
+                {/* Unified Official EPI UPS Corporate Print Header */}
+                <CompanyPrintHeader
+                  title={rt.title}
+                  department="SERVICE & MAINTENANCE DEPARTMENT"
+                  dateRange={`${fmt(from)} – ${fmt(to)}`}
+                  subtitle={`Work Type: ${workType || rt.category || 'All'} · Status: ${statusFilter || 'All'}${selectedTechnician ? ` · Technician: ${selectedTechnician}` : ''}`}
+                  metaItems={[
+                    { label: 'Work Type', value: workType || rt.category || 'All' },
+                    { label: 'Status', value: statusFilter || 'All' },
+                    { label: 'Technician', value: selectedTechnician || 'All Staff' },
+                    { label: 'Total Records', value: rows.length },
+                  ]}
+                  badge="SERVICE & MAINTENANCE"
+                />
 
                 {/* Client & Warranty Summary (Sales Report or Specific Client Selection) */}
                 {clientsForSheet.length > 0 && (
@@ -843,19 +841,32 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
                     })}
                     {!rows.length && (
                       <tr>
-                        <td colSpan="10" style={{ textAlign: 'center' }}>
-                          No work records match the selected filters for this report.
+                        <td
+                          colSpan="10"
+                          className="print-empty-state"
+                          style={{
+                            textAlign: 'center',
+                            padding: '16px',
+                            color: '#111111',
+                            fontWeight: 700,
+                            background: '#f9fafb',
+                            border: '1px solid #999999',
+                          }}
+                        >
+                          No work records match the selected filters for this {rt.title} report.
                         </td>
                       </tr>
                     )}
                   </tbody>
                 </table>
 
-                <div className="sig">
-                  <div>Prepared by</div>
-                  <div>Checked by</div>
-                  <div>Client / Approved</div>
-                </div>
+                <PrintSignatures
+                  signatories={[
+                    { title: 'Service Engineer', note: 'Prepared By' },
+                    { title: 'Service Manager', note: 'Verified & Approved' },
+                    { title: 'Authorized Client', note: 'Sign & Stamp' },
+                  ]}
+                />
               </div>
             )
           })}
