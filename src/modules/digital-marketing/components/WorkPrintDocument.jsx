@@ -39,10 +39,13 @@ export default function WorkPrintDocument({
         color: '#000000',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif',
         lineHeight: 1.45,
-        padding: '24px 28px',
+        padding: '16px 20px',
         boxSizing: 'border-box',
         width: '100%',
         margin: '0 auto',
+        border: 'none',
+        outline: 'none',
+        boxShadow: 'none',
       }}
     >
       {/* =================================================================== */}

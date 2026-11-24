@@ -542,23 +542,28 @@
 
 /* ==========================================================================
    PRINT ISOLATION & HIGH-CONTRAST CORPORATE A4 PREVIEW
+   Clean white A4 layout, zero outer borders, zero dark side strips, zero shadows
    ========================================================================== */
 .mkt-print-sheet {
   background-color: #ffffff !important;
-  color: #111111 !important;
+  background: #ffffff !important;
+  color: #000000 !important;
   font-family: system-ui, -apple-system, sans-serif !important;
   box-sizing: border-box;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .mkt-print-sheet.mkt-portrait {
-  width: 210mm;
-  min-height: 297mm;
+  width: 100%;
+  max-width: 210mm;
   margin: 0 auto;
 }
 
 .mkt-print-sheet.mkt-landscape {
-  width: 297mm;
-  min-height: 210mm;
+  width: 100%;
+  max-width: 297mm;
   margin: 0 auto;
 }
 
@@ -568,19 +573,124 @@
 }
 
 @media print {
+  /* 1. Page Dimension & Margin Setup */
   @page {
-    size: A4 auto;
-    margin: 10mm 12mm;
+    size: auto;
+    margin: 8mm 10mm;
   }
 
-  body * {
-    visibility: hidden;
+  /* 2. Pure White Canvas for HTML, Body & System Wrappers */
+  html,
+  body,
+  #root,
+  .app-layout,
+  .app-shell,
+  .app-body-container,
+  .app-main-viewport,
+  .main-viewport,
+  .main-content,
+  .dm-module-container,
+  .marketing-page-content {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
+    overflow: visible !important;
+    position: static !important;
   }
 
-  .dm-print-sheet-mount {
+  /* 3. Hide all non-printable UI, headers, cards, navigation & buttons */
+  .no-print,
+  .topbar,
+  .app-header,
+  .app-sidebar,
+  .sidebar-backdrop,
+  .dept-subnav-bar,
+  .dm-topbar,
+  .dm-nav-bar,
+  .mkt-topbar,
+  .mkt-nav-bar,
+  .dm-card,
+  .mkt-card,
+  .dm-modal-card,
+  .marketing-modal-card,
+  .btn,
+  button {
+    display: none !important;
+  }
+
+  /* 4. Reset modal backdrop to transparent/white static container */
+  .dm-modal-backdrop,
+  .marketing-modal-backdrop {
     display: block !important;
+    position: static !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    inset: auto !important;
   }
 
+  /* 5. Print Sheet Mount & Containers */
+  .dm-print-sheet-mount,
+  #dm-modal-print-sheet,
+  #mkt-hidden-print-sheet,
+  .print-container {
+    display: block !important;
+    position: static !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 6. A4 Document Sheet: Fit Naturally with Zero Outer Border or Shadows */
+  .mkt-print-sheet,
+  .mkt-print-sheet.mkt-portrait,
+  .mkt-print-sheet.mkt-landscape {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* 7. Ensure print sheet elements are fully visible */
   body:has(.marketing-modal-backdrop) .marketing-modal-backdrop,
   body:has(.marketing-modal-backdrop) .mkt-print-sheet,
   body:has(.dm-modal-backdrop) .dm-modal-backdrop,
@@ -590,35 +700,9 @@
     visibility: visible !important;
   }
 
-  body:has(.marketing-modal-backdrop) .marketing-modal-card,
-  body:has(.dm-modal-backdrop) .dm-modal-card {
-    display: none !important;
-  }
-
-  .marketing-modal-backdrop,
-  .dm-modal-backdrop {
-    position: static !important;
-    background: transparent !important;
-    padding: 0 !important;
-  }
-
-  .no-print,
-  .mkt-topbar,
-  .dm-topbar,
-  .dm-nav-bar,
-  .app-sidebar,
-  .topbar {
-    display: none !important;
-  }
-
-  .mkt-print-sheet {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #ffffff !important;
-    color: #000000 !important;
+  /* 8. Eliminate any lingering shadows or outer container borders */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
   }
 }

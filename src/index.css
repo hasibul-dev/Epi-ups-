@@ -2827,10 +2827,19 @@ table tr:hover td, .t tr:hover td {
   .mkt-card,
   .print-table-wrap,
   .sales-print-container,
-  .print-page-container {
+  .print-page-container,
+  .mkt-print-sheet,
+  .dm-print-sheet-mount,
+  #dm-modal-print-sheet,
+  #mkt-hidden-print-sheet,
+  .dm-modal-backdrop,
+  .marketing-modal-backdrop {
     background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
     color: #111111 !important;
     border: none !important;
+    outline: none !important;
     box-shadow: none !important;
     padding: 0 !important;
     margin: 0 !important;

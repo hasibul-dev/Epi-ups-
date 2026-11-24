@@ -51,8 +51,27 @@
 }
 
 @media print {
+  html,
+  body {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
   body:has(.marketing-modal-backdrop) .marketing-modal-backdrop,
   body:has(.marketing-modal-backdrop) .mkt-print-sheet {
     visibility: visible !important;
+  }
+
+  .mkt-print-sheet {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
   }
 }

@@ -370,7 +370,11 @@ export default function TaskPrintModal() {
       {/* Signatories: Marketing Executive, Lead Digital Strategist,          */}
       {/* Managing Director / Super Admin                                     */}
       {/* =================================================================== */}
-      <div id="dm-modal-print-sheet" className="dm-print-sheet-mount print-container">
+      <div
+        id="dm-modal-print-sheet"
+        className="dm-print-sheet-mount print-container"
+        style={{ border: 'none', outline: 'none', boxShadow: 'none', background: '#ffffff' }}
+      >
         <MarketingPrintDocument
           reportType={reportType}
           task={singleTask}

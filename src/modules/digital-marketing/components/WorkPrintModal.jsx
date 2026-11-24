@@ -360,7 +360,11 @@ export default function WorkPrintModal() {
       {/* HIDDEN-ON-SCREEN PRINT MOUNT CONTAINER                              */}
       {/* Rendered only during @media print to produce exact crisp white A4   */}
       {/* =================================================================== */}
-      <div id="dm-modal-print-sheet" className="dm-print-sheet-mount">
+      <div
+        id="dm-modal-print-sheet"
+        className="dm-print-sheet-mount"
+        style={{ border: 'none', outline: 'none', boxShadow: 'none', background: '#ffffff' }}
+      >
         <WorkPrintDocument
           reportType={reportType}
           task={singleTask}

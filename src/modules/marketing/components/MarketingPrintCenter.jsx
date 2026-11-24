@@ -399,7 +399,11 @@ export default function MarketingPrintCenter() {
       </div>
 
       {/* Hidden print mount to satisfy test assertion and print system integration */}
-      <div id="mkt-hidden-print-sheet" className="dm-print-sheet-mount">
+      <div
+        id="mkt-hidden-print-sheet"
+        className="dm-print-sheet-mount"
+        style={{ border: 'none', outline: 'none', boxShadow: 'none', background: '#ffffff' }}
+      >
         <MarketingPrintDocument
           reportType="history"
           tasks={filteredTasks}
