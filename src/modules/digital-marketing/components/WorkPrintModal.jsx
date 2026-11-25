@@ -8,12 +8,13 @@ import {
 import { useMarketing } from '../../marketing/context/MarketingContext.jsx';
 import { today } from '../../sales/utils/helpers.js';
 import { exportToPdf } from '../../../services/reportExport.js';
+import { printIsolatedElement } from '../services/marketingPrintService.js';
 import WorkPrintDocument from './WorkPrintDocument.jsx';
 
 /**
  * Individual Work Record Print & Export Modal
- * Directly previews and prints the selected work order slip without redundant popups or selection fields.
- * Matches Sales Department interaction pattern.
+ * Directly previews and prints the selected work order slip via an isolated print document.
+ * The app shell, modal backdrop, card, and wrappers NEVER enter the print output.
  */
 export default function WorkPrintModal() {
   const { taskPrintModal, closeTaskPrintModal, data } = useMarketing();
@@ -26,7 +27,10 @@ export default function WorkPrintModal() {
   const singleTask = item || list[0] || allTasks[0];
 
   const handlePrint = () => {
-    window.print();
+    printIsolatedElement('dm-modal-print-sheet', {
+      title: `Work Order Slip #${singleTask?.id || 'Doc'}`,
+      orientation: 'portrait',
+    });
   };
 
   const handleDownloadPdf = async () => {
@@ -63,7 +67,7 @@ export default function WorkPrintModal() {
         className="dm-modal-card max-w-4xl max-h-[92vh] flex flex-col bg-slate-900 border border-slate-700/60 rounded-xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Action Toolbar (Hidden during print) */}
+        {/* Top Action Toolbar (On-Screen Controls) */}
         <div className="flex items-center justify-between p-3.5 px-5 border-b border-white/10 bg-slate-900 no-print">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
@@ -94,7 +98,7 @@ export default function WorkPrintModal() {
               type="button"
               onClick={handlePrint}
               className="dm-btn dm-btn-primary !h-8 !px-4 text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-900/30"
-              title="Print to Paper or Save PDF via Browser"
+              title="Print Clean White Slip via Isolated Document"
             >
               <Printer size={13} />
               <span>Print Slip</span>
@@ -111,11 +115,11 @@ export default function WorkPrintModal() {
           </div>
         </div>
 
-        {/* Clean A4 Document Canvas Preview */}
+        {/* Clean On-Screen Document Preview */}
         <div className="dm-modal-preview-wrapper p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-950/80 flex justify-center">
           <div
             id="dm-modal-print-sheet"
-            className="w-full max-w-[210mm] bg-white rounded-none p-4 sm:p-6 shadow-none dm-print-sheet-mount print-container"
+            className="w-full max-w-[210mm] bg-white rounded-none p-4 sm:p-6 shadow-md border-0 outline-none"
             style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
           >
             <WorkPrintDocument

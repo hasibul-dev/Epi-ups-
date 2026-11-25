@@ -18,6 +18,7 @@ import { centralStore } from '../../admin/services/centralStorage.js';
 import { today, addDays, fmt, inRange } from '../../sales/utils/helpers.js';
 import { exportToPdf, exportToCsv, printFormattedReport } from '../../../services/reportExport.js';
 import { CompanyPrintHeader, PrintSignatures } from '../../../components/CompanyPrintHeader.jsx';
+import { printIsolatedElement } from '../services/marketingPrintService.js';
 import WorkPrintDocument from './WorkPrintDocument.jsx';
 
 const REPORT_TABS = [
@@ -206,9 +207,16 @@ export default function WorkReportingCenter() {
     });
   };
 
-  // Native Browser Print (Matching Sales)
+  // Isolated Print Dispatcher (Bypasses dark app theme and parent wrappers)
   const handleTriggerPrint = () => {
-    window.print();
+    const targetId = previewMode ? 'dm-reporting-preview-sheet' : 'mkt-hidden-print-sheet';
+    const success = printIsolatedElement(targetId, {
+      title: activeDef.label,
+      orientation: 'portrait',
+    });
+    if (!success) {
+      window.print();
+    }
   };
 
   return (
@@ -419,7 +427,7 @@ export default function WorkReportingCenter() {
 
       {/* 4. Dual View: Inline A4 Document Print Preview OR Live Work History Table */}
       {previewMode ? (
-        <div className="print-page-container bg-white p-4 sm:p-6 max-w-[210mm] mx-auto text-slate-900 border-0 outline-none shadow-sm">
+        <div id="dm-reporting-preview-sheet" className="print-page-container bg-white p-4 sm:p-6 max-w-[210mm] mx-auto text-slate-900 border-0 outline-none shadow-sm">
           <WorkPrintDocument
             reportType={activeReport === 'completed' ? 'completion' : activeReport === 'employee' ? 'assignment' : 'history'}
             tasks={filteredTasks}

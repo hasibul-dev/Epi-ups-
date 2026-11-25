@@ -9,6 +9,7 @@ import { useMarketing } from '../context/MarketingContext.jsx';
 import { today } from '../../sales/utils/helpers.js';
 import { CompanyPrintHeader, PrintSignatures } from '../../../components/CompanyPrintHeader.jsx';
 import { exportToPdf } from '../../../services/reportExport.js';
+import { printIsolatedElement } from '../../digital-marketing/services/marketingPrintService.js';
 import MarketingPrintDocument from './MarketingPrintDocument.jsx';
 
 /**
@@ -42,7 +43,13 @@ export default function TaskPrintModal() {
   const singleTask = item || list[0] || allTasks[0];
 
   const handlePrint = () => {
-    window.print();
+    const success = printIsolatedElement('dm-modal-print-sheet', {
+      title: `Work Order Slip #${singleTask?.id || 'Doc'}`,
+      orientation: 'portrait',
+    });
+    if (!success) {
+      window.print();
+    }
   };
 
   const handleDownloadPdf = () => {
