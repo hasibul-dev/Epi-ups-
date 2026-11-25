@@ -377,7 +377,7 @@ export default function Layout() {
   const navGroups = getSidebarNav();
 
   return (
-    <div className="app-layout">
+    <div className={`app-layout ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Universal Top Navigation Bar */}
       <header className="topbar">
         <div className="topbar-left">
@@ -634,7 +634,7 @@ export default function Layout() {
         </div>
       </header>
 
-      <div className="app-body-container">
+      <div className={`app-body-container ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
         {/* Universal Modular Sidebar with Expand/Collapse & Grouped Navigation */}
         <aside
           className={`app-sidebar ${mobileMenuOpen ? 'sidebar-open' : ''} ${
