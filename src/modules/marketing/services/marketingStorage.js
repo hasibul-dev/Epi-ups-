@@ -15,6 +15,7 @@
  */
 
 import { today, addDays, uid } from '../../sales/utils/helpers.js';
+import { assertAuthorizedAdmin } from '../../../utils/backupAuth.js';
 
 export const MARKETING_STORAGE_KEY = 'epi_marketing_it_store_v1';
 
@@ -1688,7 +1689,8 @@ class MarketingItStoreEngine {
   }
 
   // --- BACKUP & RESTORE ---
-  exportBackup() {
+  exportBackup(user) {
+    assertAuthorizedAdmin(user);
     const backup = {
       system: 'EPI Digital Marketing & IT Support',
       version: '1.0.0',
@@ -1696,19 +1698,22 @@ class MarketingItStoreEngine {
       data: this.memory,
     };
     const str = JSON.stringify(backup, null, 2);
-    const blob = new Blob([str], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `EPI-Marketing-IT-Backup-${today()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    return true;
+    if (typeof document !== 'undefined') {
+      const blob = new Blob([str], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `EPI-Marketing-IT-Backup-${today()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    return backup;
   }
 
-  importBackup(parsedOrJson) {
+  importBackup(parsedOrJson, user) {
+    assertAuthorizedAdmin(user);
     try {
       const data = typeof parsedOrJson === 'string' ? JSON.parse(parsedOrJson) : parsedOrJson;
       const target = data.data || data;

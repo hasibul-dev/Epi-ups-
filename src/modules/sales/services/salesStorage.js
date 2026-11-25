@@ -3,7 +3,7 @@
  * Backed by the Central Unified IndexedDB & LocalStorage Engine
  */
 
-import { unifiedStore } from '../../../services/unifiedStorage.js';
+import { unifiedStore, assertAuthorizedAdmin } from '../../../services/unifiedStorage.js';
 
 class SalesStorageEngine {
   constructor() {
@@ -150,11 +150,13 @@ class SalesStorageEngine {
   }
 
   // --- JSON Backup Export & Import ---
-  exportDatabase() {
-    return this.store.exportFullBackup();
+  exportDatabase(user) {
+    assertAuthorizedAdmin(user);
+    return this.store.exportFullBackup(user);
   }
 
-  exportJsonBackup() {
+  exportJsonBackup(user) {
+    assertAuthorizedAdmin(user);
     return JSON.stringify(
       {
         schema: 'epi_sales_backup_v2',
@@ -166,7 +168,8 @@ class SalesStorageEngine {
     );
   }
 
-  importJsonBackup(jsonStr) {
+  importJsonBackup(jsonStr, user) {
+    assertAuthorizedAdmin(user);
     const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
     const incomingData = parsed.data || parsed;
     if (!this.store.memory) this.store.memory = {};

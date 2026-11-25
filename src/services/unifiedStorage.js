@@ -26,6 +26,9 @@ const STORAGE_KEYS = {
   MARKETING: MARKETING_STORAGE_KEY,
 };
 
+import { isAuthorizedAdmin, assertAuthorizedAdmin } from '../utils/backupAuth.js';
+export { isAuthorizedAdmin, assertAuthorizedAdmin };
+
 // --- INITIAL REALISTIC DEMO DATA SEED FACTORY ---
 export function createRealisticSeedData() {
   const T = today();
@@ -1404,7 +1407,8 @@ class UnifiedDataStoreEngine {
     return seed;
   }
 
-  exportFullBackup() {
+  exportFullBackup(user) {
+    assertAuthorizedAdmin(user);
     const backup = {
       system: 'EPI Centralized Management System',
       version: '2.0.0-unified',
@@ -1413,19 +1417,22 @@ class UnifiedDataStoreEngine {
       data: { ...this.memory },
     };
     const jsonStr = JSON.stringify(backup, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `EPI-Unified-FullBackup-${today()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    return true;
+    if (typeof document !== 'undefined') {
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `EPI-Unified-FullBackup-${today()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    return backup;
   }
 
-  async importFullBackup(jsonString) {
+  async importFullBackup(jsonString, user) {
+    assertAuthorizedAdmin(user);
     try {
       const parsed = typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString;
       const data = parsed.data || parsed;

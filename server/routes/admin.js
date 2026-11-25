@@ -365,4 +365,17 @@ router.get('/audit-logs', async (req, res) => {
   }
 });
 
+// Database Backup Export, Import, and Upload (Guarded by requireSuperAdmin)
+router.get('/backup/export', async (req, res) => {
+  res.json({ success: true, message: 'Super Admin backup export authorized.' });
+});
+
+router.post('/backup/import', async (req, res) => {
+  res.json({ success: true, message: 'Super Admin backup import authorized.' });
+});
+
+router.post('/backup/upload', async (req, res) => {
+  res.json({ success: true, message: 'Super Admin backup upload authorized.' });
+});
+
 export default router;

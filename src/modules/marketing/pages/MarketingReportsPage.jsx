@@ -356,18 +356,6 @@ export default function MarketingReportsPage() {
             Formal company audit of marketing campaigns, B2B lead generation, social media reach &amp; team activity
           </p>
         </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <button onClick={() => exportBackup()} className="btn-mkt-secondary" title="Download JSON Backup">
-            <Database size={14} className="text-sky-400" />
-            <span>Backup</span>
-          </button>
-          <label className="btn-mkt-secondary cursor-pointer" title="Restore from JSON Backup">
-            <Upload size={14} className="text-cyan-400" />
-            <span>Import</span>
-            <input type="file" accept=".json" onChange={handleImportFile} className="hidden" />
-          </label>
-        </div>
       </div>
 
       {/* 2. Report Selector Pill Bar */}

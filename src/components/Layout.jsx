@@ -115,6 +115,10 @@ export default function Layout() {
   };
 
   const handleResetDemo = async () => {
+    if (!isAdmin) {
+      alert('Access Denied: Only administrators can reset system demo data.');
+      return;
+    }
     if (
       window.confirm(
         '⚠️ WARNING: OVERWRITE WITH DEMO DATA\n\n' +
@@ -129,10 +133,18 @@ export default function Layout() {
   };
 
   const handleExportBackup = () => {
+    if (!isAdmin) {
+      alert('Access Denied: Only users with the Admin/Super Administrator role can export data/backups.');
+      return;
+    }
     unifiedStore.exportFullBackup();
   };
 
   const handleImportBackup = () => {
+    if (!isAdmin) {
+      alert('Access Denied: Only users with the Admin/Super Administrator role can import or upload data/backups.');
+      return;
+    }
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.json,application/json';
@@ -164,6 +176,10 @@ export default function Layout() {
   };
 
   const handleClearData = () => {
+    if (!isAdmin) {
+      alert('Access Denied: Only administrators can clear local storage.');
+      return;
+    }
     if (
       window.confirm(
         'WARNING: Are you sure you want to clear local records? This removes clients, sales work, service orders, and ERP books from this browser.'
@@ -177,6 +193,7 @@ export default function Layout() {
 
   const pathname = location.pathname;
   const isSuperAdmin = user?.role === 'superadmin';
+  const isAdmin = Boolean(user && (user.role === 'superadmin' || user.role === 'admin' || user.isAdmin === true));
 
   // Determine active department based on URL path
   let activeDept = 'admin';
@@ -471,52 +488,6 @@ export default function Layout() {
             <span>ERP Live</span>
           </div>
 
-          <button
-            type="button"
-            onClick={handleResetDemo}
-            className="btn btn-secondary topbar-data-btn"
-            title="Reset and reload realistic Bangladesh commercial UPS demo data"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '6px 11px',
-              borderRadius: 8,
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: 'pointer',
-              border: '1px solid rgba(251, 191, 36, 0.35)',
-              background: 'rgba(251, 191, 36, 0.1)',
-              color: '#fbbf24',
-            }}
-          >
-            <RotateCcw size={13} />
-            <span>Reset Demo</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleExportBackup}
-            className="btn btn-secondary topbar-data-btn"
-            title="Download full JSON backup of all 4 departments"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '6px 11px',
-              borderRadius: 8,
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: 'pointer',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
-              background: 'rgba(56, 189, 248, 0.08)',
-              color: '#38bdf8',
-            }}
-          >
-            <Download size={13} />
-            <span>Backup</span>
-          </button>
-
           <div className="user-profile-badge" onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}>
             <div className="user-avatar-circle">
               {getInitials(user?.name)}
@@ -552,86 +523,108 @@ export default function Layout() {
                   )}
                 </div>
               </div>
-              <div className="dropdown-divider" />
-              <div style={{ padding: '8px 12px' }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                  Database & Backup
-                </span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginTop: 8 }}>
-                  <button
-                    onClick={handleResetDemo}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      background: 'none',
-                      border: 'none',
-                      color: '#fbbf24',
-                      fontSize: 12.5,
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      padding: '4px 0',
-                    }}
-                  >
-                    <RotateCcw size={14} /> Reset Demo Seed Data
-                  </button>
-                  <button
-                    onClick={handleExportBackup}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      background: 'none',
-                      border: 'none',
-                      color: '#38bdf8',
-                      fontSize: 12.5,
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      padding: '4px 0',
-                    }}
-                  >
-                    <Download size={14} /> Export System Backup (.json)
-                  </button>
-                  <button
-                    onClick={handleImportBackup}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      background: 'none',
-                      border: 'none',
-                      color: '#34d399',
-                      fontSize: 12.5,
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      padding: '4px 0',
-                    }}
-                  >
-                    <Upload size={14} /> Import Backup (.json)
-                  </button>
-                  <button
-                    onClick={handleClearData}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      background: 'none',
-                      border: 'none',
-                      color: '#f87171',
-                      fontSize: 12.5,
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      textAlign: 'left',
-                      padding: '4px 0',
-                    }}
-                  >
-                    <Trash2 size={14} /> Clear Local Storage
-                  </button>
-                </div>
-              </div>
+              {isAdmin && (
+                <>
+                  <div className="dropdown-divider" />
+                  <div style={{ padding: '8px 12px' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Database & Backup (Admin Only)
+                    </span>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginTop: 8 }}>
+                      <button
+                        onClick={handleResetDemo}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          background: 'none',
+                          border: 'none',
+                          color: '#fbbf24',
+                          fontSize: 12.5,
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: '4px 0',
+                        }}
+                      >
+                        <RotateCcw size={14} /> Reset Demo Seed Data
+                      </button>
+                      <button
+                        onClick={handleExportBackup}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          background: 'none',
+                          border: 'none',
+                          color: '#38bdf8',
+                          fontSize: 12.5,
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: '4px 0',
+                        }}
+                      >
+                        <Download size={14} /> Export Backup (.json)
+                      </button>
+                      <button
+                        onClick={handleImportBackup}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          background: 'none',
+                          border: 'none',
+                          color: '#34d399',
+                          fontSize: 12.5,
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: '4px 0',
+                        }}
+                      >
+                        <Upload size={14} /> Import Backup (.json)
+                      </button>
+                      <button
+                        onClick={handleImportBackup}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          background: 'none',
+                          border: 'none',
+                          color: '#a78bfa',
+                          fontSize: 12.5,
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: '4px 0',
+                        }}
+                      >
+                        <Upload size={14} /> Upload Backup (.json)
+                      </button>
+                      <button
+                        onClick={handleClearData}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          background: 'none',
+                          border: 'none',
+                          color: '#f87171',
+                          fontSize: 12.5,
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          padding: '4px 0',
+                        }}
+                      >
+                        <Trash2 size={14} /> Clear Local Storage
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="dropdown-divider" />
               <button className="dropdown-logout-btn" onClick={handleLogout}>
                 <LogOut size={15} /> Sign Out

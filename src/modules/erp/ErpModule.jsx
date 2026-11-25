@@ -105,19 +105,6 @@ function ErpContent() {
             );
           })}
         </div>
-
-        <div className="dept-subnav-actions">
-          <button
-            type="button"
-            onClick={() => erpStore.exportDatabase()}
-            className="btn btn-secondary sm"
-            title="Download Accounts & Ledger JSON Backup"
-            style={{ padding: '5px 11px', fontSize: 11.5 }}
-          >
-            <Download size={13} />
-            <span>ERP Backup</span>
-          </button>
-        </div>
       </div>
 
       {/* ERP Sub-Routes */}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { salesStorage } from '../services/salesStorage.js';
+import { isAuthorizedAdmin } from '../../../services/unifiedStorage.js';
 import { RULES, today, addDays, clockTime, uid, formatTime12h, now12h } from '../utils/helpers.js';
 
 export default function useDb() {
@@ -381,6 +382,10 @@ export default function useDb() {
   const importJson = (str) => salesStorage.importJsonBackup(str);
 
   const downloadBackup = () => {
+    if (!isAuthorizedAdmin()) {
+      alert('Unauthorized: Only users with the Admin/Super Administrator role can export data/backups.');
+      return;
+    }
     try {
       const jsonStr = salesStorage.exportJsonBackup();
       const blob = new Blob([jsonStr], { type: 'application/json' });
@@ -398,6 +403,10 @@ export default function useDb() {
   };
 
   const importBackup = (fileOrJson) => {
+    if (!isAuthorizedAdmin()) {
+      alert('Unauthorized: Only users with the Admin/Super Administrator role can import or upload data/backups.');
+      return false;
+    }
     const currentCounts = {
       clients: (db.clients || []).length,
       work: (db.work || []).length,

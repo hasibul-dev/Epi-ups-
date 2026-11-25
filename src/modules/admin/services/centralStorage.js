@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { assertAuthorizedAdmin } from '../../../utils/backupAuth.js';
 
 /**
  * EPI CENTRALIZED MANAGEMENT SYSTEM — Browser-Local Storage Engine
@@ -734,7 +735,8 @@ class CentralStorageEngine {
   }
 
   // --- Database Export & Import for Browser Persistence ---
-  exportDatabase() {
+  exportDatabase(user) {
+    assertAuthorizedAdmin(user);
     const data = {
       version: 1,
       exportedAt: new Date().toISOString(),
@@ -744,17 +746,20 @@ class CentralStorageEngine {
       config: this.getConfig(),
     };
     const jsonStr = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `epi_central_backup_${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    return true;
+    if (typeof document !== 'undefined') {
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `epi_central_backup_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    return data;
   }
 
-  importDatabase(jsonStr) {
+  importDatabase(jsonStr, user) {
+    assertAuthorizedAdmin(user);
     try {
       const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
       if (!parsed || !Array.isArray(parsed.users)) {
@@ -792,8 +797,8 @@ export function installCentralFetchInterceptor() {
   window.fetch = async function (resource, options = {}) {
     const urlStr = typeof resource === 'string' ? resource : resource?.url || '';
     
-    // Check if this is an API call for Central Admin
-    if (urlStr.startsWith('/api/auth') || urlStr.startsWith('/api/admin')) {
+    // Check if this is an API call for Central Admin or Backup
+    if (urlStr.startsWith('/api/auth') || urlStr.startsWith('/api/admin') || urlStr.startsWith('/api/backup')) {
       try {
         const method = (options.method || 'GET').toUpperCase();
         const headers = options.headers || {};
@@ -811,6 +816,38 @@ export function installCentralFetchInterceptor() {
         const urlObj = new URL(urlStr, window.location.origin);
         const path = urlObj.pathname;
         const searchParams = urlObj.searchParams;
+
+        // --- BACKUP & RESTORE API ROUTES (Admin/Super Admin only) ---
+        if (
+          path === '/api/backup/export' ||
+          path === '/api/admin/backup/export' ||
+          path === '/api/backup/import' ||
+          path === '/api/backup/upload' ||
+          path === '/api/admin/backup/import' ||
+          path === '/api/admin/backup/upload'
+        ) {
+          const isAdminUser = Boolean(
+            currentUser && (currentUser.role === 'superadmin' || currentUser.role === 'admin' || currentUser.isAdmin === true)
+          );
+          if (!isAdminUser) {
+            return createJsonResponse(
+              { error: 'Forbidden: Only users with the Admin/Super Administrator role can export, import, or upload data/backups.' },
+              403
+            );
+          }
+
+          if (path === '/api/backup/export' || path === '/api/admin/backup/export') {
+            return createJsonResponse({
+              success: true,
+              data: centralStore.exportDatabase(currentUser),
+            });
+          }
+
+          if (method === 'POST') {
+            const result = centralStore.importDatabase(body.data || body, currentUser);
+            return createJsonResponse({ success: true, ...result });
+          }
+        }
 
         // --- AUTH ROUTES ---
         if (path === '/api/auth/setup-status') {

@@ -645,27 +645,6 @@ export default function ItReportsPage() {
 
         <div className="flex flex-wrap items-center gap-2">
           <button
-            onClick={() => exportBackup()}
-            className="btn-mkt-secondary"
-            title="Download JSON Backup"
-          >
-            <Database size={14} className="text-amber-400" />
-            <span>Backup JSON</span>
-          </button>
-          <label
-            className="btn-mkt-secondary cursor-pointer"
-            title="Restore from JSON Backup"
-          >
-            <Upload size={14} className="text-cyan-400" />
-            <span>Import Backup</span>
-            <input
-              type="file"
-              accept=".json"
-              onChange={handleImportFile}
-              className="hidden"
-            />
-          </label>
-          <button
             onClick={() => setPreviewMode(!previewMode)}
             className="btn-mkt-secondary"
             title="Toggle Print Preview"

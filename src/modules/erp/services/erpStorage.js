@@ -6,6 +6,8 @@
  * Complete Double-Entry Ledger, Mushak-9.1 VAT, Invoicing, Payroll, Assets & Financial Reports.
  */
 
+import { assertAuthorizedAdmin } from '../../../utils/backupAuth.js';
+
 export const DEFAULT_COA = [
   ['1000', 'Cash in Hand', 'asset', 'cash', 'CASH', 'operating'],
   ['1010', 'Cash at Bank - Main', 'asset', 'bank', 'BANK', 'operating'],
@@ -1755,7 +1757,8 @@ class BrowserErpEngine {
   }
 
   // --- Export and Import JSON Backup ---
-  exportDatabase() {
+  exportDatabase(user) {
+    assertAuthorizedAdmin(user);
     const data = {
       version: 1,
       exportedAt: new Date().toISOString(),
@@ -1763,17 +1766,22 @@ class BrowserErpEngine {
       ...this.data,
     };
     const jsonStr = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `epi_accounts_erp_backup_${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    return true;
+    if (typeof document !== 'undefined') {
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `epi_accounts_erp_backup_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    return data;
   }
 
-  importDatabase(jsonStr) {
+  importDatabase(jsonStr, user) {
+    assertAuthorizedAdmin(user);
     try {
       const parsed = typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr;
       if (!parsed || !Array.isArray(parsed.accounts)) {

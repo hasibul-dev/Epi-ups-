@@ -141,8 +141,8 @@ export function MarketingProvider({ children }) {
   const deleteMaintenance = (id) => marketingStore.deleteMaintenance(id);
 
   const updateSettings = (s) => marketingStore.updateSettings(s);
-  const exportBackup = () => marketingStore.exportBackup();
-  const importBackup = (content) => marketingStore.importBackup(content);
+  const exportBackup = () => marketingStore.exportBackup(user);
+  const importBackup = (content) => marketingStore.importBackup(content, user);
   const resetDemo = () => marketingStore.resetDemo();
 
   return (

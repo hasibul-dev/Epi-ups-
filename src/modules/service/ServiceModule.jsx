@@ -171,26 +171,6 @@ function ServiceShell({ initialPage }) {
     return 'Sales';
   };
 
-  const exportServiceBackup = () => {
-    const backup = {
-      system: 'EPI Service Department',
-      exportedAt: new Date().toISOString(),
-      clients: s.clients || [],
-      works: s.works || [],
-      settings: s.settings || {},
-    };
-    const jsonStr = JSON.stringify(backup, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `EPI-Service-Backup-${TODAY()}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="service-module-root">
       {/* Sub-Header Navigation Tabs & Actions */}
@@ -226,19 +206,6 @@ function ServiceShell({ initialPage }) {
               </button>
             );
           })}
-        </div>
-
-        <div className="dept-subnav-actions">
-          <button
-            type="button"
-            onClick={exportServiceBackup}
-            className="btn btn-secondary"
-            title="Download Service Database Backup (JSON)"
-            style={{ padding: '8px 16px', fontSize: 13, minHeight: 38, display: 'inline-flex', alignItems: 'center', gap: 6, borderRadius: 8, color: '#cbd5e1' }}
-          >
-            <Download size={14} />
-            <span>Backup</span>
-          </button>
         </div>
       </div>
 

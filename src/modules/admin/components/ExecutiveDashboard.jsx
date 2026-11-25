@@ -98,56 +98,6 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
           <>
             <ActionButton
               variant="secondary"
-              icon={Download}
-              size="md"
-              onClick={() => {
-                try {
-                  centralStore.exportDatabase();
-                  setAlertNotice({ type: 'success', msg: 'System database exported successfully.' });
-                } catch (e) {
-                  alert('Export failed: ' + e.message);
-                }
-              }}
-              title="Download JSON backup of all accounts and audit logs"
-            >
-              Export Backup
-            </ActionButton>
-
-            <label
-              className="enterprise-btn btn-secondary size-md"
-              style={{ cursor: 'pointer', margin: 0 }}
-              title="Restore database from JSON backup file"
-            >
-              <Upload size={14} />
-              <span>Import Backup</span>
-              <input
-                type="file"
-                accept=".json"
-                style={{ display: 'none' }}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  const reader = new FileReader();
-                  reader.onload = (evt) => {
-                    try {
-                      const res = centralStore.importDatabase(evt.target.result);
-                      setAlertNotice({
-                        type: 'success',
-                        msg: `Backup restored! Loaded ${res.userCount} accounts.`,
-                      });
-                      loadData();
-                    } catch (err) {
-                      alert('Import error: ' + err.message);
-                    }
-                  };
-                  reader.readAsText(file);
-                  e.target.value = '';
-                }}
-              />
-            </label>
-
-            <ActionButton
-              variant="secondary"
               icon={RefreshCw}
               size="md"
               onClick={loadData}
