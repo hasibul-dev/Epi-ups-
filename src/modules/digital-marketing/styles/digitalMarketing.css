@@ -1113,3 +1113,174 @@ textarea.mkt-input {
   margin: 4px !important;
   padding: 9px 16px !important;
 }
+
+/* =====================================================
+   EPI UPS — ULTRA PREMIUM GLASSMORPHISM UI
+   Midnight Navy | Sapphire | Frosted Glass
+   ===================================================== */
+
+.dm-module-container {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* MAIN GLASS CARDS */
+.dm-module-container .dm-card,
+.dm-module-container .mkt-card {
+  background: linear-gradient(135deg,
+      rgba(45, 80, 125, 0.30),
+      rgba(17, 37, 64, 0.38)) !important;
+
+  backdrop-filter: blur(24px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+
+  border: 1px solid rgba(145, 190, 245, 0.20) !important;
+  border-radius: 16px !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 10px 30px rgba(0, 0, 0, 0.12) !important;
+
+  padding: 20px !important;
+  margin-bottom: 16px !important;
+
+  transition: all 0.3s ease !important;
+}
+
+.dm-module-container .dm-card:hover,
+.dm-module-container .mkt-card:hover {
+  background: linear-gradient(135deg,
+      rgba(55, 105, 165, 0.38),
+      rgba(20, 45, 78, 0.48)) !important;
+
+  border-color: rgba(105, 170, 255, 0.42) !important;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.16),
+    0 0 18px rgba(52, 120, 229, 0.08) !important;
+}
+
+/* GLASS BUTTONS */
+.dm-module-container button {
+  background: linear-gradient(135deg,
+      rgba(57, 111, 177, 0.32),
+      rgba(32, 67, 111, 0.35)) !important;
+
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+
+  border: 1px solid rgba(139, 185, 240, 0.24) !important;
+  border-radius: 10px !important;
+
+  color: #ffffff !important;
+  padding: 10px 17px !important;
+  margin: 4px !important;
+
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+
+  transition: all 0.25s ease !important;
+}
+
+.dm-module-container button:hover {
+  background: rgba(62, 125, 200, 0.48) !important;
+  border-color: rgba(125, 185, 255, 0.55) !important;
+  box-shadow: 0 4px 18px rgba(52, 120, 229, 0.16) !important;
+}
+
+/* BUTTON ICONS */
+.dm-module-container button svg {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  flex-shrink: 0 !important;
+  stroke: currentColor !important;
+}
+
+/* SECTION SPACING */
+.dm-module-container .grid {
+  gap: 18px !important;
+}
+
+.dm-module-container section {
+  margin-bottom: 24px !important;
+}
+
+/* INPUT GLASS */
+.dm-module-container input,
+.dm-module-container select,
+.dm-module-container textarea {
+  background: rgba(9, 25, 47, 0.65) !important;
+  border: 1px solid rgba(130, 175, 230, 0.23) !important;
+  border-radius: 9px !important;
+  color: #ffffff !important;
+  padding: 10px 13px !important;
+}
+
+.dm-module-container input:focus,
+.dm-module-container select:focus,
+.dm-module-container textarea:focus {
+  border-color: #5a9df5 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(52, 120, 229, 0.15) !important;
+}
+
+/* TABLE GLASS */
+.dm-module-container table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.dm-module-container thead {
+  background: rgba(60, 100, 150, 0.25) !important;
+}
+
+.dm-module-container th {
+  color: #d7e8ff !important;
+}
+
+.dm-module-container td {
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(145, 190, 245, 0.10) !important;
+}
+
+.dm-module-container tbody tr:hover {
+  background: rgba(70, 130, 200, 0.09) !important;
+}
+
+/* TYPOGRAPHY */
+.dm-module-container h1,
+.dm-module-container h2,
+.dm-module-container h3,
+.dm-module-container p,
+.dm-module-container span,
+.dm-module-container label,
+.dm-module-container th,
+.dm-module-container td {
+  color: #ffffff !important;
+}
+
+/* SMOOTH SCROLLBAR */
+.dm-module-container * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 150, 210, 0.45) transparent;
+}
+
+/* PRINT PROTECTION */
+@media print {
+
+  .dm-module-container .dm-card,
+  .dm-module-container .mkt-card {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  #dm-modal-print-sheet,
+  #dm-modal-print-sheet * {
+    color: #111111 !important;
+  }
+}
