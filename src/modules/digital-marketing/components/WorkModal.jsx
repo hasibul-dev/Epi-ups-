@@ -174,9 +174,9 @@ export default function WorkModal() {
     <div className="dm-modal-backdrop" onClick={closeTaskModal}>
       <div className="dm-modal-card max-w-2xl" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10 bg-slate-900/90">
+        <div className="flex items-center justify-between p-4 border-b border-[#25364B] bg-[#08111F]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-cyan-400">
               <CheckSquare size={20} />
             </div>
             <div>
@@ -191,7 +191,7 @@ export default function WorkModal() {
           <button
             type="button"
             onClick={closeTaskModal}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#132238] transition-colors"
           >
             <X size={18} />
           </button>
@@ -431,7 +431,7 @@ export default function WorkModal() {
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-white/10">
+          <div className="flex items-center justify-between pt-4 border-t border-[#25364B]">
             <span className="text-[11px] text-slate-400">
               Assigned by: <strong className="text-slate-200">{item?.assignedBy || user?.name || 'Super Administrator'}</strong>
             </span>

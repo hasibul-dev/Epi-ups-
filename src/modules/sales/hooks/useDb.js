@@ -1,41 +1,100 @@
-import { useState, useEffect, useCallback } from 'react';
-import { salesStorage } from '../services/salesStorage.js';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { salesStorage, isSalesAdmin } from '../services/salesStorage.js';
 import { isAuthorizedAdmin } from '../../../services/unifiedStorage.js';
 import { RULES, today, addDays, clockTime, uid, formatTime12h, now12h } from '../utils/helpers.js';
 
-export default function useDb() {
-  const [db, setDb] = useState(() => salesStorage.getData());
+function getFallbackUser() {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem('epi_central_user') || sessionStorage.getItem('epi_central_user');
+      if (raw) return JSON.parse(raw);
+    }
+  } catch {}
+  return null;
+}
+
+export default function useDb(userProp) {
+  const activeUser = useMemo(() => userProp || getFallbackUser(), [userProp]);
+  const isAdmin = useMemo(() => isSalesAdmin(activeUser), [activeUser]);
+
+  // Admin filter state: 'all' or specific sales user ID
+  const [selectedUserFilter, setSelectedUserFilter] = useState('all');
+
+  const getScopedData = useCallback(() => {
+    return salesStorage.getData(activeUser, {
+      userId: isAdmin ? selectedUserFilter : activeUser?.userId,
+    });
+  }, [activeUser, isAdmin, selectedUserFilter]);
+
+  const [db, setDb] = useState(() => getScopedData());
   const [loading, setLoading] = useState(true);
+
+  // Dynamic list of sales users (available to Admin for filtering)
+  const [salesUsers, setSalesUsers] = useState([]);
+  useEffect(() => {
+    try {
+      if (typeof localStorage !== 'undefined') {
+        const raw = localStorage.getItem('epi_central_users_v1');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            setSalesUsers(
+              parsed.filter(
+                (u) =>
+                  u.role === 'superadmin' ||
+                  (Array.isArray(u.departments) && u.departments.includes('sales'))
+              )
+            );
+          }
+        }
+      }
+    } catch {}
+  }, []);
 
   // Initialize storage engine on mount and subscribe to unified store updates
   useEffect(() => {
     let mounted = true;
-    salesStorage.init().then((data) => {
+    salesStorage.init(activeUser).then(() => {
       if (mounted) {
-        setDb({ ...data });
+        setDb(getScopedData());
         setLoading(false);
       }
     });
+
     const unsubscribe = salesStorage.store.subscribe(() => {
       if (mounted) {
-        setDb({ ...salesStorage.getData() });
+        setDb(getScopedData());
       }
     });
+
     return () => {
       mounted = false;
       unsubscribe();
     };
-  }, []);
+  }, [activeUser, getScopedData]);
+
+  // Update data whenever activeUser or admin filter changes
+  useEffect(() => {
+    setDb(getScopedData());
+  }, [activeUser, selectedUserFilter, getScopedData]);
 
   const refreshDb = useCallback(async () => {
     setLoading(true);
-    const data = await salesStorage.init();
-    setDb({ ...data });
+    await salesStorage.init(activeUser);
+    setDb(getScopedData());
     setLoading(false);
-  }, []);
+  }, [activeUser, getScopedData]);
 
-  const openLog = (d) => [...(db.office || [])].reverse().find((x) => x.date === d && !x.out);
-  const todayLog = (d) => [...(db.office || [])].reverse().find((x) => x.date === d);
+  // Attendance user scoping
+  const openLog = (d) =>
+    [...(db.office || [])]
+      .reverse()
+      .find((x) => x.date === d && !x.out && (isAdmin || x.userId === activeUser?.userId || !x.userId));
+
+  const todayLog = (d) =>
+    [...(db.office || [])]
+      .reverse()
+      .find((x) => x.date === d && (isAdmin || x.userId === activeUser?.userId || !x.userId));
 
   /* ---------- Office Attendance ---------- */
   const officeIn = async () => {
@@ -49,8 +108,8 @@ export default function useDb() {
       date: d,
       in: new Date().toISOString(),
     };
-    salesStorage.recordOfficeIn(entry);
-    setDb({ ...salesStorage.getData() });
+    salesStorage.recordOfficeIn(entry, activeUser);
+    setDb(getScopedData());
     alert('✓ Office IN saved locally at ' + clockTime(entry.in));
     return true;
   };
@@ -64,8 +123,8 @@ export default function useDb() {
     }
 
     const outTime = new Date().toISOString();
-    salesStorage.recordOfficeOut(d, outTime);
-    setDb({ ...salesStorage.getData() });
+    salesStorage.recordOfficeOut(d, outTime, activeUser);
+    setDb(getScopedData());
     alert('✓ Office OUT saved locally at ' + clockTime(outTime));
     return true;
   };
@@ -75,8 +134,9 @@ export default function useDb() {
     const formattedOut = outTime ? (String(outTime).includes('T') ? outTime : formatTime12h(outTime)) : '';
     const targetDate = newDate || date;
 
-    const officeRecords = (db.office || []).map((o) => {
-      if (o.date === date) {
+    const officeRecords = (salesStorage.store.memory?.salesOffice || []).map((o) => {
+      const matchUser = !activeUser?.userId || o.userId === activeUser.userId || isAdmin;
+      if (o.date === date && matchUser) {
         return {
           ...o,
           date: targetDate,
@@ -87,9 +147,10 @@ export default function useDb() {
       return o;
     });
 
-    salesStorage.memoryDb.office = officeRecords;
+    if (!salesStorage.store.memory) salesStorage.store.memory = {};
+    salesStorage.store.memory.salesOffice = officeRecords;
     salesStorage.persist();
-    setDb({ ...salesStorage.getData() });
+    setDb(getScopedData());
     alert('✓ Office attendance times saved permanently in local storage!');
     return true;
   };
@@ -116,38 +177,58 @@ export default function useDb() {
       createdAt: new Date().toISOString(),
     };
 
-    salesStorage.addClient(clientPayload);
-    setDb({ ...salesStorage.getData() });
+    salesStorage.addClient(clientPayload, activeUser);
+    setDb(getScopedData());
     alert('✓ Client saved to local storage successfully!');
     return true;
   };
 
   const deleteClient = async (id) => {
-    salesStorage.deleteClient(id);
-    setDb({ ...salesStorage.getData() });
-    alert('✓ Client deleted from local storage.');
-    return true;
+    try {
+      salesStorage.deleteClient(id, activeUser);
+      setDb(getScopedData());
+      alert('✓ Client deleted from local storage.');
+      return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
+    }
   };
 
   const deleteClients = async (ids) => {
-    salesStorage.deleteClients(ids);
-    setDb({ ...salesStorage.getData() });
-    alert(`✓ ${ids.length} client(s) deleted from local storage.`);
-    return true;
+    try {
+      salesStorage.deleteClients(ids, activeUser);
+      setDb(getScopedData());
+      alert(`✓ ${ids.length} client(s) deleted from local storage.`);
+      return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
+    }
   };
 
   const updateClient = async (id, updates) => {
-    salesStorage.updateClient(id, updates);
-    setDb({ ...salesStorage.getData() });
-    alert('✓ Client information updated and saved successfully!');
-    return true;
+    try {
+      salesStorage.updateClient(id, updates, activeUser);
+      setDb(getScopedData());
+      alert('✓ Client information updated and saved successfully!');
+      return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
+    }
   };
 
   const updateClientNotes = async (id, notes) => {
-    salesStorage.updateClient(id, { notes });
-    setDb({ ...salesStorage.getData() });
-    alert('✓ Remarks/notes saved to local storage!');
-    return true;
+    try {
+      salesStorage.updateClient(id, { notes }, activeUser);
+      setDb(getScopedData());
+      alert('✓ Remarks/notes saved to local storage!');
+      return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
+    }
   };
 
   const updateClientNextDate = async (id, nextDate) => {
@@ -155,10 +236,15 @@ export default function useDb() {
       alert('Please select a valid follow-up date.');
       return false;
     }
-    salesStorage.updateClient(id, { nextDate });
-    setDb({ ...salesStorage.getData() });
-    alert('✓ Next follow-up date updated and saved locally!');
-    return true;
+    try {
+      salesStorage.updateClient(id, { nextDate }, activeUser);
+      setDb(getScopedData());
+      alert('✓ Next follow-up date updated and saved locally!');
+      return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
+    }
   };
 
   /* Complete client follow-up */
@@ -170,34 +256,46 @@ export default function useDb() {
     const client = (db.clients || []).find((c) => c.id === id);
     const clientName = client ? client.name : 'Client Follow-up';
 
-    // Update client record
-    salesStorage.updateClient(id, {
-      lastDate: completed,
-      nextDate: next,
-      category: cat,
-      previousStatus: client ? client.category : cat,
-      lastMethod: method,
-      notes: notes || (client ? client.notes : ''),
-    });
+    try {
+      // Update client record
+      salesStorage.updateClient(
+        id,
+        {
+          lastDate: completed,
+          nextDate: next,
+          category: cat,
+          previousStatus: client ? client.category : cat,
+          lastMethod: method,
+          notes: notes || (client ? client.notes : ''),
+        },
+        activeUser
+      );
 
-    // Add to history
-    salesStorage.addHistory({
-      id: uid(),
-      clientId: id,
-      clientName: clientName,
-      date: completed,
-      time: now12h(),
-      type: 'Follow-up',
-      cat: cat,
-      method: method,
-      notes: notes,
-      nextDate: next,
-      status: 'Completed',
-    });
+      // Add to history
+      salesStorage.addHistory(
+        {
+          id: uid(),
+          clientId: id,
+          clientName: clientName,
+          date: completed,
+          time: now12h(),
+          type: 'Follow-up',
+          cat: cat,
+          method: method,
+          notes: notes,
+          nextDate: next,
+          status: 'Completed',
+        },
+        activeUser
+      );
 
-    setDb({ ...salesStorage.getData() });
-    alert('✓ Follow-up completed and saved to local storage!');
-    return true;
+      setDb(getScopedData());
+      alert('✓ Follow-up completed and saved to local storage!');
+      return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
+    }
   };
 
   /* ---------- Planned Work ---------- */
@@ -213,8 +311,8 @@ export default function useDb() {
       status: 'Pending',
     };
 
-    salesStorage.addWork(workPayload);
-    setDb({ ...salesStorage.getData() });
+    salesStorage.addWork(workPayload, activeUser);
+    setDb(getScopedData());
     alert('✓ Planned work saved to local storage successfully!');
     return true;
   };
@@ -230,8 +328,8 @@ export default function useDb() {
       status: 'Pending',
     };
 
-    salesStorage.addWork(newWorkPayload);
-    setDb({ ...salesStorage.getData() });
+    salesStorage.addWork(newWorkPayload, activeUser);
+    setDb(getScopedData());
     alert('✓ Scheduled work saved to local storage successfully!');
     return true;
   };
@@ -242,60 +340,84 @@ export default function useDb() {
 
     const targetWork = (db.work || []).find((w) => w.id === id);
 
-    salesStorage.updateWork(id, {
-      status: 'Completed',
-      completedDate: today(),
-    });
+    try {
+      salesStorage.updateWork(
+        id,
+        {
+          status: 'Completed',
+          completedDate: today(),
+        },
+        activeUser
+      );
 
-    salesStorage.addHistory({
-      id: uid(),
-      workId: id,
-      clientId: clientId || targetWork?.clientId || '',
-      date: today(),
-      time: now12h(),
-      type: 'Activity',
-      cat: cat,
-      method: method,
-      text: targetWork?.text || '',
-      notes: notes || targetWork?.notes || '',
-      nextDate: nextFollowUpDate,
-      status: 'Completed',
-    });
+      salesStorage.addHistory(
+        {
+          id: uid(),
+          workId: id,
+          clientId: clientId || targetWork?.clientId || '',
+          date: today(),
+          time: now12h(),
+          type: 'Activity',
+          cat: cat,
+          method: method,
+          text: targetWork?.text || '',
+          notes: notes || targetWork?.notes || '',
+          nextDate: nextFollowUpDate,
+          status: 'Completed',
+        },
+        activeUser
+      );
 
-    if (clientId && nextFollowUpDate) {
-      salesStorage.updateClient(clientId, { nextDate: nextFollowUpDate });
+      if (clientId && nextFollowUpDate) {
+        salesStorage.updateClient(clientId, { nextDate: nextFollowUpDate }, activeUser);
+      }
+
+      setDb(getScopedData());
+      alert('✓ Activity completed and saved to local storage!');
+      return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
     }
-
-    setDb({ ...salesStorage.getData() });
-    alert('✓ Activity completed and saved to local storage!');
-    return true;
   };
 
   const doneNew = async (id) => {
     const targetItem = (db.work || []).find((nw) => String(nw.id) === String(id));
     const todayDate = today();
 
-    salesStorage.updateWork(id, {
-      status: 'Completed',
-      completedAt: new Date().toISOString(),
-    });
+    try {
+      salesStorage.updateWork(
+        id,
+        {
+          status: 'Completed',
+          completedAt: new Date().toISOString(),
+        },
+        activeUser
+      );
 
-    if (targetItem) {
-      salesStorage.addHistory({
-        id: uid(),
-        workId: String(id),
-        date: todayDate,
-        time: formatTime12h(targetItem.time || new Date()),
-        type: 'New Work',
-        text: targetItem.text,
-        notes: targetItem.notes || '',
-        status: 'Completed',
-      });
+      if (targetItem) {
+        salesStorage.addHistory(
+          {
+            id: uid(),
+            workId: String(id),
+            date: todayDate,
+            time: formatTime12h(targetItem.time || new Date()),
+            type: 'New Work',
+            text: targetItem.text,
+            notes: targetItem.notes || '',
+            status: 'Completed',
+          },
+          activeUser
+        );
+      }
+
+      setDb(getScopedData());
+      alert('✓ Work completed and saved to local storage!');
+      return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
     }
-
-    setDb({ ...salesStorage.getData() });
-    alert('✓ Work completed and saved to local storage!');
-    return true;
   };
 
   /* ---------- Edit & Delete Row ---------- */
@@ -305,58 +427,85 @@ export default function useDb() {
     }
 
     if (source === 'manual') {
-      return await addHistoricalWork(payload.date, payload.time, payload.text, payload.notes || '', payload.status || 'Completed');
+      return await addHistoricalWork(
+        payload.date,
+        payload.time,
+        payload.text,
+        payload.notes || '',
+        payload.status || 'Completed'
+      );
     }
 
-    if (source === 'client' || source === 'clients') {
-      salesStorage.updateClient(id, payload);
-      setDb({ ...salesStorage.getData() });
-      alert('✓ Client record saved permanently in local storage!');
+    try {
+      if (source === 'client' || source === 'clients') {
+        salesStorage.updateClient(id, payload, activeUser);
+        setDb(getScopedData());
+        alert('✓ Client record saved permanently in local storage!');
+        return true;
+      }
+
+      if (source.startsWith('history')) {
+        salesStorage.updateHistory(
+          id,
+          {
+            ...payload,
+            time: payload.time ? formatTime12h(payload.time) : '',
+          },
+          activeUser
+        );
+      } else {
+        salesStorage.updateWork(
+          id,
+          {
+            ...payload,
+            time: payload.time ? formatTime12h(payload.time) : '',
+          },
+          activeUser
+        );
+      }
+
+      setDb(getScopedData());
+      alert('✓ Record saved permanently in local storage!');
       return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
     }
-
-    if (source.startsWith('history')) {
-      salesStorage.updateHistory(id, {
-        ...payload,
-        time: payload.time ? formatTime12h(payload.time) : '',
-      });
-    } else {
-      salesStorage.updateWork(id, {
-        ...payload,
-        time: payload.time ? formatTime12h(payload.time) : '',
-      });
-    }
-
-    setDb({ ...salesStorage.getData() });
-    alert('✓ Record saved permanently in local storage!');
-    return true;
   };
 
   const deleteEditRow = async (source, id) => {
-    if (source === 'office') {
-      salesStorage.memoryDb.office = (salesStorage.memoryDb.office || []).filter((o) => o.date !== id && o.id !== id);
-      salesStorage.persist();
-      setDb({ ...salesStorage.getData() });
-      alert('✓ Office attendance removed from local storage.');
+    try {
+      if (source === 'office') {
+        if (!salesStorage.store.memory) salesStorage.store.memory = {};
+        salesStorage.store.memory.salesOffice = (salesStorage.store.memory.salesOffice || []).filter(
+          (o) => o.date !== id && o.id !== id
+        );
+        salesStorage.persist();
+        setDb(getScopedData());
+        alert('✓ Office attendance removed from local storage.');
+        return true;
+      }
+
+      if (source === 'client' || source === 'clients') {
+        salesStorage.deleteClient(id, activeUser);
+        setDb(getScopedData());
+        alert('✓ Client record permanently deleted from local storage.');
+        return true;
+      }
+
+      if (source.startsWith('history')) {
+        salesStorage.deleteHistory(id, activeUser);
+      } else {
+        salesStorage.deleteWork(id, activeUser);
+      }
+
+      setDb(getScopedData());
+      alert('✓ Record permanently deleted from local storage.');
       return true;
+    } catch (err) {
+      alert(err.message);
+      return false;
     }
-
-    if (source === 'client' || source === 'clients') {
-      salesStorage.deleteClient(id);
-      setDb({ ...salesStorage.getData() });
-      alert('✓ Client record permanently deleted from local storage.');
-      return true;
-    }
-
-    if (source.startsWith('history')) {
-      salesStorage.deleteHistory(id);
-    } else {
-      salesStorage.deleteWork(id);
-    }
-
-    setDb({ ...salesStorage.getData() });
-    alert('✓ Record permanently deleted from local storage.');
-    return true;
   };
 
   const addHistoricalWork = async (date, time, text, notes = '', status = 'Completed') => {
@@ -371,23 +520,23 @@ export default function useDb() {
       status: status || 'Completed',
     };
 
-    salesStorage.addHistory(doc);
-    setDb({ ...salesStorage.getData() });
+    salesStorage.addHistory(doc, activeUser);
+    setDb(getScopedData());
     alert('✓ Record saved to local history storage!');
     return doc;
   };
 
   // Export & Import helpers
-  const exportJson = () => salesStorage.exportJsonBackup();
-  const importJson = (str) => salesStorage.importJsonBackup(str);
+  const exportJson = () => salesStorage.exportJsonBackup(activeUser);
+  const importJson = (str) => salesStorage.importJsonBackup(str, activeUser);
 
   const downloadBackup = () => {
-    if (!isAuthorizedAdmin()) {
+    if (!isAuthorizedAdmin(activeUser)) {
       alert('Unauthorized: Only users with the Admin/Super Administrator role can export data/backups.');
       return;
     }
     try {
-      const jsonStr = salesStorage.exportJsonBackup();
+      const jsonStr = salesStorage.exportJsonBackup(activeUser);
       const blob = new Blob([jsonStr], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -403,7 +552,7 @@ export default function useDb() {
   };
 
   const importBackup = (fileOrJson) => {
-    if (!isAuthorizedAdmin()) {
+    if (!isAuthorizedAdmin(activeUser)) {
       alert('Unauthorized: Only users with the Admin/Super Administrator role can import or upload data/backups.');
       return false;
     }
@@ -424,8 +573,8 @@ export default function useDb() {
     if (!confirmed) return false;
 
     try {
-      salesStorage.importJsonBackup(fileOrJson);
-      setDb({ ...salesStorage.getData() });
+      salesStorage.importJsonBackup(fileOrJson, activeUser);
+      setDb(getScopedData());
       alert('✓ Sales data successfully imported and updated in local storage!');
       return true;
     } catch (err) {
@@ -437,6 +586,11 @@ export default function useDb() {
   return {
     db,
     loading,
+    user: activeUser,
+    isAdmin,
+    salesUsers,
+    selectedUserFilter,
+    setSelectedUserFilter,
     dbConnected: true,
     dbStatus: {
       connected: true,

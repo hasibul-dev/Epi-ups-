@@ -220,9 +220,20 @@ export default function Layout() {
 
   // Dynamic notification counters for navigation badges
   const tDate = new Date().toISOString().slice(0, 10);
+  const isSalesAdmin = isAdmin || user?.departmentRoles?.sales === 'admin';
   const salesTodayCount =
-    (snapshot?.salesWork || []).filter((w) => w.date === tDate && w.status !== 'Completed').length +
-    (snapshot?.clients || []).filter((c) => c.nextDate && c.nextDate <= tDate && c.status !== 'Completed').length;
+    (snapshot?.salesWork || []).filter((w) => {
+      if (!isSalesAdmin && user?.userId && w.userId && w.userId !== user.userId && w.createdBy !== user.userId && w.created_by !== user.userId) {
+        return false;
+      }
+      return w.date === tDate && w.status !== 'Completed';
+    }).length +
+    (snapshot?.clients || []).filter((c) => {
+      if (!isSalesAdmin && user?.userId && c.userId && c.userId !== user.userId && c.createdBy !== user.userId && c.created_by !== user.userId) {
+        return false;
+      }
+      return c.nextDate && c.nextDate <= tDate && c.status !== 'Completed';
+    }).length;
 
   const serviceTodayCount = (snapshot?.serviceWorks || []).filter(
     (w) => w.date === tDate && w.status !== 'done'
@@ -786,7 +797,7 @@ export default function Layout() {
                                     : activeDept === 'service'
                                     ? { background: '#059669' }
                                     : activeDept === 'marketing'
-                                    ? { background: '#7c3aed' }
+                                    ? { background: '#2563eb' }
                                     : undefined
                                 }
                                 title={`${item.badge} pending / scheduled`}

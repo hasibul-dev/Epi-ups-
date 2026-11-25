@@ -346,7 +346,8 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
 
   const exportCSV = () => {
     if (!total) return alert('No clients to export.');
-    const lines = [EXPORT_HEADERS.join(',')];
+    const headers = store?.isAdmin ? [...EXPORT_HEADERS, 'Created By'] : EXPORT_HEADERS;
+    const lines = [headers.join(',')];
     filteredClients.forEach((c, i) => {
       const row = [
         i + 1,
@@ -360,8 +361,11 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
         c.previousStatus || '—',
         c.category,
         c.nextDate,
-      ].map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`);
-      lines.push(row.join(','));
+      ];
+      if (store?.isAdmin) {
+        row.push(c.createdByName || c.createdBy || c.userId || 'Admin');
+      }
+      lines.push(row.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','));
     });
     const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a');
@@ -515,6 +519,7 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
                 <th>Previous Status</th>
                 <th>Current Status</th>
                 <th>Next Follow-up</th>
+                {store?.isAdmin && <th style={{ whiteSpace: 'nowrap' }}>Created By</th>}
                 <th style={{ textAlign: 'center', minWidth: 155 }}>Action</th>
               </tr>
             </thead>
@@ -708,6 +713,7 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
                           style={{ fontSize: 11, padding: '4px 6px', width: '100%', borderRadius: 6 }}
                         />
                       </td>
+                      {store?.isAdmin && <td style={{ fontSize: 11, color: '#94a3b8', textAlign: 'center' }}>—</td>}
                       <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                           <button
@@ -872,6 +878,21 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
                         </div>
                       )}
                     </td>
+                    {store?.isAdmin && (
+                      <td style={{ fontSize: 11, color: '#38bdf8', whiteSpace: 'nowrap' }}>
+                        <span
+                          style={{
+                            padding: '2px 8px',
+                            borderRadius: 6,
+                            background: 'rgba(56, 189, 248, 0.1)',
+                            border: '1px solid rgba(56, 189, 248, 0.25)',
+                            fontWeight: 600,
+                          }}
+                        >
+                          {c.createdByName || c.createdBy || c.userId || 'Admin'}
+                        </span>
+                      </td>
+                    )}
                     <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
                         <button

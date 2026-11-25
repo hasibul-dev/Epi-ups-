@@ -1,0 +1,54 @@
+[
+  {
+    "userId": "sales1",
+    "user_id": "sales1",
+    "createdBy": "sales1",
+    "created_by": "sales1",
+    "createdByName": "Shanto Mia (Sales Lead)",
+    "date": "2026-11-25",
+    "in": "2026-11-25T07:59:56.871Z",
+    "out": ""
+  },
+  {
+    "userId": "sales1",
+    "user_id": "sales1",
+    "createdBy": "sales1",
+    "created_by": "sales1",
+    "createdByName": "Shanto Mia (Sales Lead)",
+    "date": "2026-11-24",
+    "in": "2026-11-24T09:15:00.000Z",
+    "out": "2026-11-24T18:30:00.000Z"
+  },
+  {
+    "userId": "sales1",
+    "user_id": "sales1",
+    "createdBy": "sales1",
+    "created_by": "sales1",
+    "createdByName": "Shanto Mia (Sales Lead)",
+    "date": "2026-11-23",
+    "in": "2026-11-23T09:20:00.000Z",
+    "out": "2026-11-23T18:15:00.000Z"
+  },
+  {
+    "date": "2026-12-14",
+    "in": "2026-11-25T11:02:41.467Z",
+    "userId": "sales1",
+    "user_id": "sales1",
+    "createdBy": "sales1",
+    "created_by": "sales1",
+    "createdByName": "Sales Manager",
+    "id": "off_1795604561467",
+    "out": "2026-11-25T11:02:41.484Z"
+  },
+  {
+    "date": "2026-12-14",
+    "in": "2026-11-25T11:02:41.472Z",
+    "userId": "sales2",
+    "user_id": "sales2",
+    "createdBy": "sales2",
+    "created_by": "sales2",
+    "createdByName": "Sales Executive 2",
+    "id": "off_1795604561473",
+    "out": "2026-11-25T11:02:41.488Z"
+  }
+]

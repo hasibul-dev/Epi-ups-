@@ -3,23 +3,121 @@
     "id": "emp_1794806856236_574ux",
     "userId": "shanto",
     "name": "shantomia",
-    "email": "",
+    "email": "shanto@epiups.com.bd",
     "passwordHash": "$2b$12$5dz/a9rRgk6p1cYPCmnZ/eU3AN9cY5HUy7WXDBx2qQG.fxRXvzTEW",
     "role": "employee",
     "departments": [
       "sales"
     ],
-    "departmentRoles": {},
+    "departmentRoles": {
+      "sales": "sales"
+    },
     "status": "active",
     "createdAt": "2026-11-16T05:27:36.236Z",
     "updatedAt": "2026-11-16T05:27:36.236Z",
     "createdBy": "admin",
     "lastLogin": "2026-11-16T05:27:51.192Z",
+    "loginHistory": []
+  },
+  {
+    "id": "usr-sales-01",
+    "userId": "sales1",
+    "name": "Sales Manager",
+    "email": "sales@epiups.com.bd",
+    "passwordHash": "$2b$10$KalKOUb5ySkL5cNzchRM0OlFkdSGnCkkgzjgTcScWQxxViI0sXknK",
+    "role": "manager",
+    "departments": [
+      "sales"
+    ],
+    "departmentRoles": {
+      "sales": "manager"
+    },
+    "status": "active",
+    "createdAt": "2026-11-16T05:22:55.099Z",
+    "updatedAt": "2026-11-16T05:22:55.099Z",
+    "createdBy": "admin",
+    "lastLogin": "2026-11-25T11:02:41.302Z",
     "loginHistory": [
       {
-        "timestamp": "2026-11-16T05:27:51.192Z",
-        "ip": "127.0.0.1",
-        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
+        "timestamp": "2026-11-25T11:02:41.302Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:57:54.408Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:56:25.248Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:51:31.470Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:50:57.073Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:50:17.408Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      }
+    ]
+  },
+  {
+    "id": "usr-sales-02",
+    "userId": "sales2",
+    "name": "Sales Executive 2",
+    "email": "sales2@epiups.com.bd",
+    "passwordHash": "$2b$10$KalKOUb5ySkL5cNzchRM0OlFkdSGnCkkgzjgTcScWQxxViI0sXknK",
+    "role": "employee",
+    "departments": [
+      "sales"
+    ],
+    "departmentRoles": {
+      "sales": "employee"
+    },
+    "status": "active",
+    "createdAt": "2026-11-16T05:22:55.099Z",
+    "updatedAt": "2026-11-16T05:22:55.099Z",
+    "createdBy": "admin",
+    "lastLogin": "2026-11-25T11:02:41.380Z",
+    "loginHistory": [
+      {
+        "timestamp": "2026-11-25T11:02:41.380Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:57:54.486Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:56:25.323Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:51:31.545Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:50:57.149Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:50:17.485Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
       }
     ]
   },
@@ -28,33 +126,55 @@
     "userId": "admin",
     "name": "shanto",
     "email": "shanto@epi-ups.com",
-    "passwordHash": "$2b$12$p82a1PUsoU2ThT8whg8cS.yvW.dxwzCeGRng9wPDJEmtxctnVc6vm",
+    "passwordHash": "$2b$10$KalKOUb5ySkL5cNzchRM0OlFkdSGnCkkgzjgTcScWQxxViI0sXknK",
     "role": "superadmin",
     "departments": [
       "service",
       "sales",
-      "accounts"
+      "accounts",
+      "marketing"
     ],
     "departmentRoles": {
       "sales": "admin",
       "service": "admin",
-      "accounts": "admin"
+      "accounts": "admin",
+      "marketing": "admin"
     },
     "status": "active",
     "createdAt": "2026-11-16T05:22:55.099Z",
     "updatedAt": "2026-11-16T05:22:55.099Z",
     "createdBy": "initial-setup",
-    "lastLogin": "2026-11-16T06:11:52.781Z",
+    "lastLogin": "2026-11-25T11:02:41.216Z",
     "loginHistory": [
       {
-        "timestamp": "2026-11-16T06:11:52.781Z",
-        "ip": "127.0.0.1",
-        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
+        "timestamp": "2026-11-25T11:02:41.216Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
       },
       {
-        "timestamp": "2026-11-16T05:25:20.605Z",
-        "ip": "127.0.0.1",
-        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Safari/537.36"
+        "timestamp": "2026-11-25T10:57:54.313Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:56:25.160Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:51:31.384Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:50:56.981Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
+      },
+      {
+        "timestamp": "2026-11-25T10:50:17.321Z",
+        "ip": "::ffff:127.0.0.1",
+        "userAgent": "node"
       }
     ]
   }

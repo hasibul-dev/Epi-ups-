@@ -1,5 +1,176 @@
 [
   {
+    "id": "audit_1795604561381_wpu8",
+    "timestamp": "2026-11-25T11:02:41.381Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales2",
+    "targetUserId": "sales2",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795604561303_7o4q",
+    "timestamp": "2026-11-25T11:02:41.304Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales1",
+    "targetUserId": "sales1",
+    "details": "Successful login to EPI Central Management System (manager).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795604561218_87xc",
+    "timestamp": "2026-11-25T11:02:41.218Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795604274487_x34n",
+    "timestamp": "2026-11-25T10:57:54.487Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales2",
+    "targetUserId": "sales2",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795604274410_ly9a",
+    "timestamp": "2026-11-25T10:57:54.410Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales1",
+    "targetUserId": "sales1",
+    "details": "Successful login to EPI Central Management System (manager).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795604274315_aufa",
+    "timestamp": "2026-11-25T10:57:54.315Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795604185324_ubna",
+    "timestamp": "2026-11-25T10:56:25.324Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales2",
+    "targetUserId": "sales2",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795604185250_gu37",
+    "timestamp": "2026-11-25T10:56:25.250Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales1",
+    "targetUserId": "sales1",
+    "details": "Successful login to EPI Central Management System (manager).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795604185162_77es",
+    "timestamp": "2026-11-25T10:56:25.162Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603891547_5pol",
+    "timestamp": "2026-11-25T10:51:31.547Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales2",
+    "targetUserId": "sales2",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603891471_azct",
+    "timestamp": "2026-11-25T10:51:31.471Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales1",
+    "targetUserId": "sales1",
+    "details": "Successful login to EPI Central Management System (manager).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603891386_pk3y",
+    "timestamp": "2026-11-25T10:51:31.386Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603857150_w910",
+    "timestamp": "2026-11-25T10:50:57.150Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales2",
+    "targetUserId": "sales2",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603857074_uc80",
+    "timestamp": "2026-11-25T10:50:57.074Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales1",
+    "targetUserId": "sales1",
+    "details": "Successful login to EPI Central Management System (manager).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603856983_f94t",
+    "timestamp": "2026-11-25T10:50:56.983Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603817486_oq20",
+    "timestamp": "2026-11-25T10:50:17.486Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales2",
+    "targetUserId": "sales2",
+    "details": "Successful login to EPI Central Management System (employee).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603817410_s151",
+    "timestamp": "2026-11-25T10:50:17.410Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "sales1",
+    "targetUserId": "sales1",
+    "details": "Successful login to EPI Central Management System (manager).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603817323_nyv2",
+    "timestamp": "2026-11-25T10:50:17.323Z",
+    "action": "LOGIN_SUCCESS",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Successful login to EPI Central Management System (superadmin).",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
+    "id": "audit_1795603779381_5xp5",
+    "timestamp": "2026-11-25T10:49:39.381Z",
+    "action": "LOGIN_FAILED",
+    "performedBy": "admin",
+    "targetUserId": "admin",
+    "details": "Failed login attempt: Incorrect password.",
+    "ip": "::ffff:127.0.0.1"
+  },
+  {
     "id": "audit_1794830161306_3llp",
     "timestamp": "2026-11-16T11:56:01.306Z",
     "action": "LOGIN_SUCCESS",

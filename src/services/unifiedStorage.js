@@ -1037,6 +1037,19 @@ export function createRealisticSeedData() {
       loginHistory: [],
     },
     {
+      id: 'usr-sales-02',
+      userId: 'sales2',
+      name: 'Sales Executive 2',
+      email: 'sales2@epiups.com.bd',
+      passwordHash: defaultPwHash,
+      role: 'employee',
+      departments: ['sales'],
+      departmentRoles: { sales: 'sales' },
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      loginHistory: [],
+    },
+    {
       id: 'usr-service-01',
       userId: 'service1',
       name: 'Engr. Sabbir Rahman (Service)',
@@ -1090,11 +1103,53 @@ export function createRealisticSeedData() {
     },
   ];
 
+  // Explicit user-based ownership stamps on initial Sales seed records
+  const userStampedClients = clients.map((c) => {
+    if (c.clientType === 'Sales' && !c.userId) {
+      return {
+        ...c,
+        userId: 'sales1',
+        user_id: 'sales1',
+        createdBy: 'sales1',
+        created_by: 'sales1',
+        createdByName: 'Shanto Mia (Sales Lead)',
+      };
+    }
+    return c;
+  });
+
+  const userStampedSalesWork = salesWork.map((w) => ({
+    userId: 'sales1',
+    user_id: 'sales1',
+    createdBy: 'sales1',
+    created_by: 'sales1',
+    createdByName: 'Shanto Mia (Sales Lead)',
+    ...w,
+  }));
+
+  const userStampedSalesHistory = salesHistory.map((h) => ({
+    userId: 'sales1',
+    user_id: 'sales1',
+    createdBy: 'sales1',
+    created_by: 'sales1',
+    createdByName: 'Shanto Mia (Sales Lead)',
+    ...h,
+  }));
+
+  const userStampedSalesOffice = salesOffice.map((o) => ({
+    userId: 'sales1',
+    user_id: 'sales1',
+    createdBy: 'sales1',
+    created_by: 'sales1',
+    createdByName: 'Shanto Mia (Sales Lead)',
+    ...o,
+  }));
+
   return {
-    clients,
-    salesWork,
-    salesHistory,
-    salesOffice,
+    clients: userStampedClients,
+    salesWork: userStampedSalesWork,
+    salesHistory: userStampedSalesHistory,
+    salesOffice: userStampedSalesOffice,
     serviceWorks: syncServiceWorks({ clients, works: serviceWorks }).works,
     serviceSettings,
     marketingData: createInitialMarketingItData(),

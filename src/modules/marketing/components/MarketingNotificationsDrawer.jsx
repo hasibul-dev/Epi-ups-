@@ -46,23 +46,23 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
   const getIcon = (type) => {
     switch (type) {
       case 'assignment':
-        return <UserCheck size={16} className="text-purple-400" />;
+        return <UserCheck size={16} className="text-cyan-400" />;
       case 'completed':
         return <CheckCircle2 size={16} className="text-emerald-400" />;
       case 'overdue':
         return <AlertTriangle size={16} className="text-rose-400" />;
       case 'update':
       default:
-        return <Clock size={16} className="text-sky-400" />;
+        return <Clock size={16} className="text-cyan-400" />;
     }
   };
 
   const getTypeBadge = (type) => {
     switch (type) {
       case 'assignment':
-        return <span className="mkt-badge mkt-badge-purple">Assignment</span>;
+        return <span className="mkt-badge mkt-badge-teal">Assignment</span>;
       case 'completed':
-        return <span className="mkt-badge mkt-badge-emerald">Completed</span>;
+        return <span className="mkt-badge mkt-badge-green">Completed</span>;
       case 'overdue':
         return <span className="mkt-badge mkt-badge-red">Overdue Alert</span>;
       case 'update':
@@ -94,13 +94,13 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl bg-[#0a0f1d] border border-purple-500/30 shadow-[0_12px_40px_rgba(0,0,0,0.8),0_0_25px_rgba(168,85,247,0.2)] flex flex-col max-h-[85vh] overflow-hidden"
+        className="w-full max-w-md rounded-2xl bg-[#0F1B2D] border border-[#25364B] shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_25px_rgba(6,182,212,0.15)] flex flex-col max-h-[85vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-purple-900/30 via-slate-900 to-sky-950/20">
+        <div className="p-4 border-b border-[#25364B] flex items-center justify-between bg-gradient-to-r from-[#132238] via-[#0F1B2D] to-[#08111F]">
           <div className="flex items-center gap-2.5">
-            <div className="relative p-2 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-300">
+            <div className="relative p-2 rounded-xl bg-blue-600/20 border border-blue-500/40 text-cyan-400">
               <Bell size={18} />
               {unreadNotificationsCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-[10px] font-bold text-white flex items-center justify-center animate-pulse">
@@ -117,20 +117,20 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#132238] transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Filter & Actions Bar */}
-        <div className="px-4 py-2.5 bg-slate-900/50 border-b border-white/5 flex items-center justify-between text-xs">
+        <div className="px-4 py-2.5 bg-[#08111F] border-b border-[#25364B] flex items-center justify-between text-xs">
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setFilter('all')}
               className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
                 filter === 'all'
-                  ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
+                  ? 'bg-blue-600 text-white font-bold border border-blue-500'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -140,7 +140,7 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
               onClick={() => setFilter('unread')}
               className={`px-2.5 py-1 rounded-lg font-medium transition-colors ${
                 filter === 'unread'
-                  ? 'bg-purple-600/30 text-purple-200 border border-purple-500/40'
+                  ? 'bg-blue-600 text-white font-bold border border-blue-500'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -152,7 +152,7 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
             {unreadNotificationsCount > 0 && (
               <button
                 onClick={() => markAllNotificationsAsRead()}
-                className="text-[11px] font-semibold text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors"
+                className="text-[11px] font-semibold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors"
               >
                 <Check size={12} />
                 <span>Mark all read</span>
@@ -183,11 +183,11 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
                 key={n.id}
                 className={`p-3 rounded-xl transition-all flex items-start gap-3 ${
                   n.read
-                    ? 'bg-slate-900/30 hover:bg-slate-900/60 opacity-80'
-                    : 'bg-purple-950/25 border border-purple-500/20 hover:border-purple-500/40'
+                    ? 'bg-[#0F1B2D]/70 hover:bg-[#132238] opacity-80 border border-[#25364B]/60'
+                    : 'bg-[#132238] border border-[#25364B] hover:border-cyan-500/40 border-l-4 border-l-cyan-400 shadow-lg shadow-black/40'
                 }`}
               >
-                <div className="mt-1 p-2 rounded-lg bg-slate-800/80 border border-white/5">
+                <div className="mt-1 p-2 rounded-lg bg-[#08111F] border border-[#25364B]">
                   {getIcon(n.type)}
                 </div>
 
@@ -196,19 +196,19 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
                     <div className="flex items-center gap-2">
                       {getTypeBadge(n.type)}
                       {!n.read && (
-                        <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
+                        <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
                       )}
                     </div>
-                    <span className="text-[10px] text-slate-500 font-medium">
+                    <span className="text-[10px] text-slate-400 font-medium">
                       {formatTime(n.createdAt)}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-200 font-medium leading-relaxed mb-1.5">
+                  <p className="text-xs text-slate-100 font-medium leading-relaxed mb-1.5">
                     {n.message}
                   </p>
 
-                  <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 pt-1 border-t border-white/5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 pt-1 border-t border-[#25364B]/60">
                     <div className="flex items-center gap-2">
                       {n.sender && (
                         <span>From: <strong className="text-slate-300">{n.sender}</strong></span>
@@ -225,7 +225,7 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
                       {n.taskId && (
                         <button
                           onClick={() => handleOpenTask(n.taskId)}
-                          className="px-2 py-0.5 rounded text-[10px] font-semibold bg-sky-500/15 border border-sky-500/30 text-sky-300 hover:bg-sky-500/25 flex items-center gap-1"
+                          className="px-2 py-0.5 rounded text-[10px] font-semibold bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/25 flex items-center gap-1"
                         >
                           <span>Open Task</span>
                           <ExternalLink size={10} />
@@ -234,7 +234,7 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
                       {!n.read && (
                         <button
                           onClick={() => markNotificationAsRead(n.id)}
-                          className="p-1 text-slate-400 hover:text-purple-300"
+                          className="p-1 text-slate-400 hover:text-cyan-300"
                           title="Mark as read"
                         >
                           <Check size={12} />
@@ -256,7 +256,7 @@ export default function MarketingNotificationsDrawer({ isOpen, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-slate-900/60 border-t border-white/5 text-center text-[11px] text-slate-500">
+        <div className="p-3 bg-[#08111F] border-t border-[#25364B] text-center text-[11px] text-slate-400">
           EPI Unified Notification Engine • Synchronized with Storage
         </div>
       </div>

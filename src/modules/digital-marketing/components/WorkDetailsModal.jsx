@@ -87,14 +87,14 @@ export default function WorkDetailsModal() {
     <div className="dm-modal-backdrop" onClick={closeTaskDetailsModal}>
       <div className="dm-modal-card max-w-2xl" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10 bg-slate-900/90">
+        <div className="flex items-center justify-between p-4 border-b border-[#25364B] bg-[#08111F]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-cyan-400">
               <FileText size={20} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-xs text-blue-400 font-bold">#{item.id}</span>
+                <span className="font-mono text-xs text-cyan-400 font-bold">#{item.id}</span>
                 <span className="text-slate-400">•</span>
                 <span className="text-xs text-slate-300 font-semibold">{item.category || 'General'}</span>
               </div>
@@ -106,7 +106,7 @@ export default function WorkDetailsModal() {
           <button
             type="button"
             onClick={closeTaskDetailsModal}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#132238] transition-colors"
           >
             <X size={18} />
           </button>
@@ -115,7 +115,7 @@ export default function WorkDetailsModal() {
         {/* Content Body */}
         <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
           {/* Status & Priority Row */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-950/60 rounded-xl border border-white/5">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#08111F] rounded-xl border border-[#25364B]">
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-400 font-semibold">Status:</span>
               {getStatusBadge(item.status)}
@@ -128,7 +128,7 @@ export default function WorkDetailsModal() {
 
           {/* Key Operational Metadata */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="p-3 bg-slate-900/60 rounded-xl border border-white/5 space-y-1.5">
+            <div className="p-3 bg-[#132238] rounded-xl border border-[#25364B] space-y-1.5">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                 Assignment Details
               </span>
@@ -146,7 +146,7 @@ export default function WorkDetailsModal() {
               </div>
             </div>
 
-            <div className="p-3 bg-slate-900/60 rounded-xl border border-white/5 space-y-1.5">
+            <div className="p-3 bg-[#132238] rounded-xl border border-[#25364B] space-y-1.5">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                 Deadlines & Schedule
               </span>
@@ -170,7 +170,7 @@ export default function WorkDetailsModal() {
           </div>
 
           {/* Description & Scope */}
-          <div className="p-4 bg-slate-900/60 rounded-xl border border-white/5 space-y-2">
+          <div className="p-4 bg-[#132238] rounded-xl border border-[#25364B] space-y-2">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
               Detailed Work Description & Objectives
             </span>
@@ -225,7 +225,7 @@ export default function WorkDetailsModal() {
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-between p-4 border-t border-white/10 bg-slate-900/90">
+        <div className="flex items-center justify-between p-4 border-t border-[#25364B] bg-[#08111F]">
           <button
             type="button"
             onClick={() => {

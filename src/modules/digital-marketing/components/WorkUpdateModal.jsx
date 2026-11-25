@@ -79,9 +79,9 @@ export default function WorkUpdateModal() {
     <div className="dm-modal-backdrop" onClick={closeTaskUpdateModal}>
       <div className="dm-modal-card max-w-xl" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10 bg-slate-900/90">
+        <div className="flex items-center justify-between p-4 border-b border-[#25364B] bg-[#08111F]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+            <div className="w-10 h-10 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-cyan-400">
               <FileText size={20} />
             </div>
             <div>
@@ -96,14 +96,14 @@ export default function WorkUpdateModal() {
           <button
             type="button"
             onClick={closeTaskUpdateModal}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#132238] transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Work Overview Card */}
-        <div className="p-4 bg-slate-950/60 border-b border-white/5 space-y-2">
+        <div className="p-4 bg-[#132238] border-b border-[#25364B] space-y-2">
           <div className="flex items-center justify-between gap-2">
             <span className="dm-badge dm-badge-blue text-[10.5px]">
               {item.category || 'General'}
@@ -117,7 +117,7 @@ export default function WorkUpdateModal() {
           <h4 className="text-sm font-bold text-white">{item.title}</h4>
 
           {item.desc && (
-            <p className="text-xs text-slate-300 bg-black/40 p-2.5 rounded-lg border border-white/5">
+            <p className="text-xs text-slate-300 bg-[#08111F] p-2.5 rounded-lg border border-[#25364B]">
               {item.desc}
             </p>
           )}
@@ -268,7 +268,7 @@ export default function WorkUpdateModal() {
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-white/10">
+          <div className="flex items-center justify-between pt-4 border-t border-[#25364B]">
             <span className="text-[11px] text-slate-400">
               Updating as: <strong className="text-slate-200">{user?.name || item.assignedTo}</strong>
             </span>

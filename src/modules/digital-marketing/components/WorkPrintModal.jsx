@@ -64,13 +64,13 @@ export default function WorkPrintModal() {
   return (
     <div className="dm-modal-backdrop" onClick={closeTaskPrintModal}>
       <div
-        className="dm-modal-card max-w-4xl max-h-[92vh] flex flex-col bg-slate-900 border border-slate-700/60 rounded-xl shadow-2xl overflow-hidden"
+        className="dm-modal-card max-w-4xl max-h-[92vh] flex flex-col bg-[#0F1B2D] border border-[#25364B] rounded-xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Action Toolbar (On-Screen Controls) */}
-        <div className="flex items-center justify-between p-3.5 px-5 border-b border-white/10 bg-slate-900 no-print">
+        <div className="flex items-center justify-between p-3.5 px-5 border-b border-[#25364B] bg-[#08111F] no-print">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+            <div className="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-cyan-400">
               <Printer size={16} />
             </div>
             <div>
@@ -90,14 +90,14 @@ export default function WorkPrintModal() {
               className="dm-btn dm-btn-secondary !h-8 !px-3 text-xs flex items-center gap-1.5"
               title="Save as PDF"
             >
-              <Download size={13} className="text-sky-400" />
+              <Download size={13} className="text-cyan-400" />
               <span>Download PDF</span>
             </button>
 
             <button
               type="button"
               onClick={handlePrint}
-              className="dm-btn dm-btn-primary !h-8 !px-4 text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-900/30"
+              className="dm-btn dm-btn-primary !h-8 !px-4 text-xs font-bold flex items-center gap-1.5 shadow-md shadow-blue-900/40"
               title="Print Clean White Slip via Isolated Document"
             >
               <Printer size={13} />
@@ -107,7 +107,7 @@ export default function WorkPrintModal() {
             <button
               type="button"
               onClick={closeTaskPrintModal}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors ml-1"
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#132238] transition-colors ml-1"
               title="Close"
             >
               <X size={17} />
@@ -116,7 +116,7 @@ export default function WorkPrintModal() {
         </div>
 
         {/* Clean On-Screen Document Preview */}
-        <div className="dm-modal-preview-wrapper p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-950/80 flex justify-center">
+        <div className="dm-modal-preview-wrapper p-4 sm:p-6 overflow-y-auto flex-1 bg-[#08111F] flex justify-center">
           <div
             id="dm-modal-print-sheet"
             className="w-full max-w-[210mm] bg-white rounded-none p-4 sm:p-6 shadow-md border-0 outline-none"

@@ -22,10 +22,10 @@ export default function TodayWorkView({
   return (
     <div className="space-y-4">
       {/* Header Banner with Today's Date */}
-      <div className="dm-card bg-gradient-to-r from-blue-950/40 via-slate-900 to-slate-900 border border-blue-500/20 flex flex-wrap items-center justify-between gap-3">
+      <div className="dm-card bg-gradient-to-r from-[#132238] via-[#0F1B2D] to-[#08111F] border border-[#25364B] flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
-            <CalendarCheck size={18} className="text-blue-400" />
+            <CalendarCheck size={18} className="text-cyan-400" />
             <h3 className="text-sm font-bold text-white">
               Today's Execution Workspace
             </h3>
@@ -53,8 +53,8 @@ export default function TodayWorkView({
                 onClick={() => setTodayQuickFilter(pill.key)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   active
-                    ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-900/30'
-                    : 'bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-900/40'
+                    : 'bg-[#0F1B2D] text-slate-300 hover:bg-[#182A44] hover:text-white border border-[#25364B]'
                 }`}
               >
                 {pill.label}

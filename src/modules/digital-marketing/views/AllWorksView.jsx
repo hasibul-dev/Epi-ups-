@@ -42,9 +42,9 @@ export default function AllWorksView({
     <div className="space-y-4">
       {/* Smart Filter Toolbar */}
       <div className="dm-card space-y-3 no-print">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-3">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#25364B] pb-3">
           <div className="flex items-center gap-2">
-            <Filter size={15} className="text-blue-400" />
+            <Filter size={15} className="text-cyan-400" />
             <h3 className="text-xs font-bold text-white uppercase tracking-wider">
               Work Search & Filter Controls
             </h3>
@@ -57,7 +57,7 @@ export default function AllWorksView({
               <button
                 type="button"
                 onClick={resetAllFilters}
-                className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 font-semibold"
+                className="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 font-semibold"
               >
                 <RotateCcw size={12} />
                 <span>Reset</span>

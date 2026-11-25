@@ -244,8 +244,8 @@ export default function WorkReportingCenter() {
                 onClick={() => setActiveReport(tab.id)}
                 className={`px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all ${
                   active
-                    ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-900/30'
-                    : 'bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white border border-white/5'
+                    ? 'bg-blue-600 text-white font-bold shadow-md shadow-blue-900/40'
+                    : 'bg-[#0F1B2D] text-slate-300 hover:bg-[#182A44] hover:text-white border border-[#25364B]'
                 }`}
               >
                 <Icon size={14} />
@@ -407,19 +407,19 @@ export default function WorkReportingCenter() {
 
       {/* 3. Summary Metrics Bar (Matches Sales Reports.jsx) */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 no-print">
-        <div className="dm-card !p-3 border-slate-800">
+        <div className="dm-card !p-3 border-[#25364B]">
           <div className="text-lg font-bold text-white">{totalCount}</div>
           <span className="text-[11px] font-semibold text-slate-400">Total Filtered Records</span>
         </div>
-        <div className="dm-card !p-3 border-slate-800">
+        <div className="dm-card !p-3 border-[#25364B]">
           <div className="text-lg font-bold text-emerald-400">{completedCount}</div>
           <span className="text-[11px] font-semibold text-slate-400">Completed Deliverables</span>
         </div>
-        <div className="dm-card !p-3 border-slate-800">
-          <div className="text-lg font-bold text-sky-400">{pendingCount}</div>
+        <div className="dm-card !p-3 border-[#25364B]">
+          <div className="text-lg font-bold text-cyan-400">{pendingCount}</div>
           <span className="text-[11px] font-semibold text-slate-400">Pending / In Progress</span>
         </div>
-        <div className="dm-card !p-3 border-slate-800">
+        <div className="dm-card !p-3 border-[#25364B]">
           <div className="text-lg font-bold text-rose-400">{overdueCount}</div>
           <span className="text-[11px] font-semibold text-slate-400">Overdue Action Items</span>
         </div>

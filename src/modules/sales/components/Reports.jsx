@@ -919,6 +919,7 @@ export default function Reports({ db, store, onPrint, initialReport = 'daily' })
                   <th style={{ width: 130 }}>Date</th>
                   <th style={{ width: 100 }}>Time</th>
                   <th>Activity / Client Details</th>
+                  {store?.isAdmin && <th style={{ width: 110, whiteSpace: 'nowrap' }}>Created By</th>}
                   <th style={{ width: 130 }}>Status</th>
                   <th style={{ width: 110 }}>Actions</th>
                 </tr>
@@ -992,6 +993,13 @@ export default function Reports({ db, store, onPrint, initialReport = 'daily' })
                           </div>
                         )}
                       </td>
+                      {store?.isAdmin && (
+                        <td style={{ fontSize: 11, color: '#38bdf8', whiteSpace: 'nowrap' }}>
+                          <span style={{ padding: '2px 7px', borderRadius: 6, background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.25)', fontWeight: 600 }}>
+                            {r.createdByName || r.createdBy || r.userId || 'Admin'}
+                          </span>
+                        </td>
+                      )}
                       <td>
                         {r.source === 'manual' || r.source === 'work' || r.source === 'history' ? (
                           <select

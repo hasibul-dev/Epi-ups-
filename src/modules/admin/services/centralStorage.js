@@ -81,6 +81,20 @@ const DEFAULT_INITIAL_USERS = [
     lastLogin: null,
   },
   {
+    id: 'usr-sales-02',
+    userId: 'sales2',
+    passwordHash: '$2b$10$KalKOUb5ySkL5cNzchRM0OlFkdSGnCkkgzjgTcScWQxxViI0sXknK',
+    name: 'Sales Executive 2',
+    email: 'sales2@epiups.com.bd',
+    role: 'employee',
+    departments: ['sales'],
+    departmentRoles: { sales: 'employee' },
+    status: 'active',
+    loginHistory: [],
+    createdAt: new Date().toISOString(),
+    lastLogin: null,
+  },
+  {
     id: 'usr-service-01',
     userId: 'service1',
     passwordHash: '$2b$10$KalKOUb5ySkL5cNzchRM0OlFkdSGnCkkgzjgTcScWQxxViI0sXknK',
@@ -797,8 +811,13 @@ export function installCentralFetchInterceptor() {
   window.fetch = async function (resource, options = {}) {
     const urlStr = typeof resource === 'string' ? resource : resource?.url || '';
     
-    // Check if this is an API call for Central Admin or Backup
-    if (urlStr.startsWith('/api/auth') || urlStr.startsWith('/api/admin') || urlStr.startsWith('/api/backup')) {
+    // Check if this is an API call for Central Admin, Backup, or Sales Department
+    if (
+      urlStr.startsWith('/api/auth') ||
+      urlStr.startsWith('/api/admin') ||
+      urlStr.startsWith('/api/backup') ||
+      urlStr.startsWith('/api/sales')
+    ) {
       try {
         const method = (options.method || 'GET').toUpperCase();
         const headers = options.headers || {};
@@ -951,6 +970,248 @@ export function installCentralFetchInterceptor() {
 
           if (path === '/api/admin/profile' && method === 'PUT') {
             return createJsonResponse(centralStore.updateProfile(body, currentUser));
+          }
+        }
+
+        // --- SALES DEPARTMENT ROUTES (Strict User-Wise Isolation & Admin Full Control) ---
+        if (path.startsWith('/api/sales')) {
+          if (!currentUser) {
+            return createJsonResponse(
+              { success: false, error: 'Authentication required. No session token provided.', code: 'AUTH_REQUIRED' },
+              401
+            );
+          }
+
+          const hasSalesAccess =
+            currentUser.role === 'superadmin' ||
+            currentUser.role === 'admin' ||
+            (Array.isArray(currentUser.departments) && currentUser.departments.includes('sales'));
+
+          if (!hasSalesAccess) {
+            return createJsonResponse(
+              { success: false, error: 'Forbidden: Access to Sales Department revoked.', code: 'FORBIDDEN' },
+              403
+            );
+          }
+
+          const isSalesAdmin =
+            currentUser.role === 'superadmin' ||
+            currentUser.role === 'admin' ||
+            currentUser.departmentRoles?.sales === 'admin';
+
+          const { salesStorage } = await import('../../sales/services/salesStorage.js');
+
+          if (path === '/api/sales/status') {
+            return createJsonResponse({
+              success: true,
+              department: 'sales',
+              user: currentUser.userId,
+              isAdmin: isSalesAdmin,
+              status: 'operational',
+            });
+          }
+
+          if (path === '/api/sales/users') {
+            const allUsers = centralStore.getUsers();
+            const salesUsers = allUsers
+              .filter(
+                (u) =>
+                  u.role === 'superadmin' ||
+                  (Array.isArray(u.departments) && u.departments.includes('sales'))
+              )
+              .map((u) => ({
+                id: u.id,
+                userId: u.userId,
+                name: u.name,
+                role: u.role,
+                status: u.status,
+              }));
+            return createJsonResponse({ success: true, users: salesUsers });
+          }
+
+          // Clients / Leads
+          if (path === '/api/sales/clients') {
+            if (method === 'GET') {
+              const requestedUser = searchParams.get('userId') || searchParams.get('user_id');
+              const data = salesStorage.getData(currentUser, {
+                userId: isSalesAdmin ? requestedUser : currentUser.userId,
+              });
+              return createJsonResponse({ success: true, data: data.clients, total: data.clients.length });
+            }
+            if (method === 'POST') {
+              const newClient = salesStorage.addClient(body, currentUser);
+              return createJsonResponse({ success: true, data: newClient }, 201);
+            }
+            if (method === 'DELETE') {
+              try {
+                salesStorage.deleteClients(body.ids || [], currentUser);
+                return createJsonResponse({ success: true, message: 'Clients deleted.' });
+              } catch (err) {
+                return createJsonResponse({ success: false, error: err.message, code: 'FORBIDDEN' }, 403);
+              }
+            }
+          }
+
+          const clientMatch = path.match(/^\/api\/sales\/clients\/([^\/]+)$/);
+          if (clientMatch) {
+            const clientId = clientMatch[1];
+            const data = salesStorage.getData(currentUser);
+            const client = (data.clients || []).find((c) => String(c.id) === String(clientId));
+
+            if (!client) {
+              const allData = salesStorage.store.memory?.clients || [];
+              const existsOther = allData.find((c) => String(c.id) === String(clientId));
+              if (existsOther && !isSalesAdmin) {
+                return createJsonResponse(
+                  {
+                    success: false,
+                    error: 'Forbidden: You do not have permission to access this client record.',
+                    code: 'FORBIDDEN',
+                  },
+                  403
+                );
+              }
+              return createJsonResponse(
+                { success: false, error: 'Client record not found', code: 'NOT_FOUND' },
+                404
+              );
+            }
+
+            if (method === 'GET') {
+              return createJsonResponse({ success: true, data: client });
+            }
+            if (method === 'PUT' || method === 'PATCH') {
+              try {
+                salesStorage.updateClient(clientId, body, currentUser);
+                const updated = (salesStorage.getData(currentUser).clients || []).find(
+                  (c) => String(c.id) === String(clientId)
+                );
+                return createJsonResponse({ success: true, data: updated });
+              } catch (err) {
+                return createJsonResponse({ success: false, error: err.message, code: 'FORBIDDEN' }, 403);
+              }
+            }
+            if (method === 'DELETE') {
+              try {
+                salesStorage.deleteClient(clientId, currentUser);
+                return createJsonResponse({ success: true, message: 'Client deleted' });
+              } catch (err) {
+                return createJsonResponse({ success: false, error: err.message, code: 'FORBIDDEN' }, 403);
+              }
+            }
+          }
+
+          // Work / Tasks
+          if (path === '/api/sales/work') {
+            if (method === 'GET') {
+              const requestedUser = searchParams.get('userId') || searchParams.get('user_id');
+              const data = salesStorage.getData(currentUser, {
+                userId: isSalesAdmin ? requestedUser : currentUser.userId,
+              });
+              return createJsonResponse({ success: true, data: data.work, total: data.work.length });
+            }
+            if (method === 'POST') {
+              const newWork = salesStorage.addWork(body, currentUser);
+              return createJsonResponse({ success: true, data: newWork }, 201);
+            }
+          }
+
+          const workMatch = path.match(/^\/api\/sales\/work\/([^\/]+)$/);
+          if (workMatch) {
+            const workId = workMatch[1];
+            const data = salesStorage.getData(currentUser);
+            const work = (data.work || []).find((w) => String(w.id) === String(workId));
+
+            if (!work) {
+              const allWork = salesStorage.store.memory?.salesWork || [];
+              const existsOther = allWork.find((w) => String(w.id) === String(workId));
+              if (existsOther && !isSalesAdmin) {
+                return createJsonResponse(
+                  {
+                    success: false,
+                    error: 'Forbidden: You do not have permission to access this work task.',
+                    code: 'FORBIDDEN',
+                  },
+                  403
+                );
+              }
+              return createJsonResponse(
+                { success: false, error: 'Work task not found', code: 'NOT_FOUND' },
+                404
+              );
+            }
+
+            if (method === 'GET') {
+              return createJsonResponse({ success: true, data: work });
+            }
+            if (method === 'PUT' || method === 'PATCH') {
+              try {
+                salesStorage.updateWork(workId, body, currentUser);
+                return createJsonResponse({ success: true, message: 'Work task updated.' });
+              } catch (err) {
+                return createJsonResponse({ success: false, error: err.message, code: 'FORBIDDEN' }, 403);
+              }
+            }
+            if (method === 'DELETE') {
+              try {
+                salesStorage.deleteWork(workId, currentUser);
+                return createJsonResponse({ success: true, message: 'Work task deleted.' });
+              } catch (err) {
+                return createJsonResponse({ success: false, error: err.message, code: 'FORBIDDEN' }, 403);
+              }
+            }
+          }
+
+          // History
+          if (path === '/api/sales/history') {
+            if (method === 'GET') {
+              const requestedUser = searchParams.get('userId') || searchParams.get('user_id');
+              const data = salesStorage.getData(currentUser, {
+                userId: isSalesAdmin ? requestedUser : currentUser.userId,
+              });
+              return createJsonResponse({ success: true, data: data.history, total: data.history.length });
+            }
+            if (method === 'POST') {
+              const newH = salesStorage.addHistory(body, currentUser);
+              return createJsonResponse({ success: true, data: newH }, 201);
+            }
+          }
+
+          // Office
+          if (path === '/api/sales/office') {
+            const requestedUser = searchParams.get('userId') || searchParams.get('user_id');
+            const data = salesStorage.getData(currentUser, {
+              userId: isSalesAdmin ? requestedUser : currentUser.userId,
+            });
+            return createJsonResponse({ success: true, data: data.office, total: data.office.length });
+          }
+
+          if (path === '/api/sales/office/in' && method === 'POST') {
+            const entry = salesStorage.recordOfficeIn(body, currentUser);
+            return createJsonResponse({ success: true, data: entry }, 201);
+          }
+
+          if (path === '/api/sales/office/out' && method === 'POST') {
+            salesStorage.recordOfficeOut(body.date, body.out, currentUser);
+            return createJsonResponse({ success: true, message: 'Office OUT recorded.' });
+          }
+
+          // Dashboard
+          if (path === '/api/sales/dashboard' || path === '/api/sales/summary') {
+            const requestedUser = searchParams.get('userId') || searchParams.get('user_id');
+            const data = salesStorage.getData(currentUser, {
+              userId: isSalesAdmin ? requestedUser : currentUser.userId,
+            });
+            const tDate = new Date().toISOString().slice(0, 10);
+            return createJsonResponse({
+              success: true,
+              summary: {
+                totalClients: data.clients.length,
+                todayDueFollowups: data.clients.filter((c) => c.nextDate && c.nextDate <= tDate).length,
+                todayPendingWork: data.work.filter((w) => w.date === tDate && w.status === 'Pending').length,
+                totalCompletedHistory: data.history.length,
+              },
+            });
           }
         }
       } catch (err) {

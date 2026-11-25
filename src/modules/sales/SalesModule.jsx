@@ -27,9 +27,9 @@ import {
 } from 'lucide-react';
 
 export default function SalesModule({ initialPage = 'dashboard' }) {
-  const store = useDb();
-  const { db } = store;
   const { user } = useAuth();
+  const store = useDb(user);
+  const { db } = store;
   const [page, setPage] = useState(initialPage);
   const [printNode, setPrintNode] = useState(null);
   const location = useLocation();
@@ -154,6 +154,66 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
             );
           })}
         </div>
+
+        {/* User Scope / Admin Data Filter */}
+        {store.isAdmin ? (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '6px 14px',
+              borderRadius: 8,
+              background: 'rgba(30, 41, 59, 0.7)',
+              border: '1px solid rgba(56, 189, 248, 0.25)',
+            }}
+          >
+            <Users size={14} style={{ color: '#38bdf8' }} />
+            <span style={{ fontSize: 12, color: '#94a3b8', fontWeight: 600 }}>Viewing User:</span>
+            <select
+              value={store.selectedUserFilter}
+              onChange={(e) => store.setSelectedUserFilter(e.target.value)}
+              style={{
+                background: '#0f172a',
+                color: '#f8fafc',
+                border: '1px solid #334155',
+                borderRadius: 6,
+                padding: '4px 8px',
+                fontSize: 12,
+                fontWeight: 600,
+                outline: 'none',
+                cursor: 'pointer',
+              }}
+              title="Admin Sales User Data Filter"
+            >
+              <option value="all">All Sales Users ({db?.clients?.length || 0} clients)</option>
+              {store.salesUsers?.map((u) => (
+                <option key={u.userId} value={u.userId}>
+                  {u.name || u.userId} ({u.userId})
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 12px',
+              borderRadius: 8,
+              background: 'rgba(30, 41, 59, 0.5)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              fontSize: 12,
+              color: '#94a3b8',
+            }}
+          >
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }} />
+            <span>
+              Private Workspace: <strong style={{ color: '#f8fafc' }}>{user?.name || user?.userId}</strong>
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Main Page Rendering with 100% Genuine Data & Event Handlers */}

@@ -193,6 +193,13 @@ function FollowRow({ client: c, onDone, onUpdateNextDate }) {
       <td>
         <b>{c.name}</b>
         {c.desig && <div className="kicker">{c.desig}</div>}
+        {(c.createdByName || c.createdBy) && (
+          <div style={{ fontSize: 10, color: '#38bdf8', marginTop: 2, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+            <span style={{ padding: '1px 5px', borderRadius: 4, background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+              👤 {c.createdByName || c.createdBy}
+            </span>
+          </div>
+        )}
       </td>
       <td>
         <div>{c.company || '—'}</div>
@@ -436,6 +443,13 @@ function ActivityRow({ w, onDoneActivity, onSaveRow, onDeleteRow }) {
           title="Activity Description"
           subtitle={w.time ? formatTime12h(w.time) : ''}
         />
+        {(w.createdByName || w.createdBy) && (
+          <div style={{ fontSize: 10, color: '#38bdf8', marginTop: 2, display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+            <span style={{ padding: '1px 5px', borderRadius: 4, background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+              👤 {w.createdByName || w.createdBy}
+            </span>
+          </div>
+        )}
       </td>
       <td>
         {w.status === 'Completed' ? (

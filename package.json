@@ -17,7 +17,8 @@
     "test:service": "node tests/test_service_department_functionality.js",
     "test:functional": "node tests/test_functional_crud_and_connections.js",
     "test:marketing": "node tests/test_marketing_it_department.js",
-    "test:print": "node tests/test_print_system_and_header.js"
+    "test:print": "node tests/test_print_system_and_header.js",
+    "test:sales": "node tests/test_sales_user_isolation.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
