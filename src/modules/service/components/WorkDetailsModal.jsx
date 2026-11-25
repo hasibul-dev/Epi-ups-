@@ -5,6 +5,7 @@ import { clientTitle, clientContact, clientProduct, status } from '../services/d
 import { fmt, TODAY } from '../services/dates.js'
 import { printHtmlDocument } from '../../../services/reportExport.js'
 import { getCompanyPrintHeaderHtml } from '../../../components/CompanyPrintHeader.jsx'
+import { printIsolatedHtml } from '../services/servicePrintService.js'
 import {
   Printer,
   Edit2,
@@ -82,17 +83,23 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
             size: A4 portrait;
             margin: 12mm 10mm 15mm 10mm;
           }
-          * {
+          *, *::before, *::after {
             box-sizing: border-box;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif;
-            color: #111111;
-            background: #ffffff;
-            margin: 0;
-            padding: 0;
+          html, body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Kalpurush", "SolaimanLipi", Arial, sans-serif !important;
+            color: #111111 !important;
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+            background-image: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
             font-size: 11px;
             line-height: 1.4;
           }
@@ -268,7 +275,10 @@ export default function WorkDetailsModal({ work, onClose, onEdit, onComplete, on
       </html>
     `
 
-    printHtmlDocument(html, `Work-Order-${work.title}`)
+    const success = printIsolatedHtml(html, { title: `Work-Order-${work.title}` })
+    if (!success) {
+      printHtmlDocument(html, `Work-Order-${work.title}`)
+    }
   }
 
   return (

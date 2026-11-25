@@ -1623,14 +1623,29 @@ select option {
 }
 
 @page {
-  size: A4;
-  margin: 8mm;
+  size: A4 portrait;
+  margin: 12mm 10mm 15mm 10mm;
 }
 
 @media print {
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  html,
   body {
     background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
     color: #111111 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    min-height: 100% !important;
   }
   .app-sidebar,
   .topbar,
@@ -1639,37 +1654,60 @@ select option {
   .no-print,
   .top,
   .preview-bar,
-  .print-hide {
+  .print-hide,
+  button,
+  .btn {
     display: none !important;
   }
+  .app-layout,
+  .app-shell,
+  .app-main-viewport,
   .main,
   .service-module-root,
   .service-content-body {
     padding: 0 !important;
     margin: 0 !important;
     background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
     border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
   }
   .reports-stack {
     display: block !important;
     gap: 0 !important;
     width: 100% !important;
+    background: #ffffff !important;
   }
   .sheet {
-    margin: 0 !important;
+    margin: 0 auto !important;
     width: 100% !important;
+    max-width: 100% !important;
     min-height: auto !important;
-    padding: 6mm !important;
+    padding: 0 !important;
     box-shadow: none !important;
     background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
     color: #111111 !important;
     border: none !important;
+    outline: none !important;
+    border-radius: 0 !important;
   }
   .sheet table {
     border-collapse: collapse !important;
     width: 100% !important;
     border: 1px solid #999999 !important;
     color: #111111 !important;
+    page-break-inside: auto !important;
+  }
+  .sheet thead {
+    display: table-header-group !important;
+  }
+  .sheet tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
   .sheet th {
     border: 1px solid #999999 !important;
@@ -1678,14 +1716,22 @@ select option {
     color: #111827 !important;
     font-weight: 800 !important;
     padding: 6px 8px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   .sheet td {
     border: 1px solid #999999 !important;
     color: #111111 !important;
     background-color: #ffffff !important;
+    background-color: #ffffff !important;
     padding: 6px 8px !important;
   }
-  .sig div {
+  .sheet tbody tr:nth-child(even) td {
+    background-color: #f9fafb !important;
+  }
+  .sig div,
+  .sig-box,
+  .sig-col {
     border-top: 1.5px solid #111111 !important;
     color: #000000 !important;
     font-weight: 700 !important;

@@ -15,6 +15,7 @@ import {
 import { TODAY, addD, fmt } from '../services/dates.js'
 import { exportToPdf, exportToCsv, triggerPrint } from '../../../services/reportExport.js'
 import { CompanyPrintHeader, PrintSignatures } from '../../../components/CompanyPrintHeader.jsx'
+import { printIsolatedElement } from '../services/servicePrintService.js'
 import {
   Printer,
   Download,
@@ -263,6 +264,28 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
   }
 
   const runPrint = (filenameLabel, soloId = '') => {
+    let targetElements = []
+    if (soloId) {
+      const el = document.getElementById(`service-sheet-${soloId}`)
+      if (el) targetElements = [el]
+    } else {
+      targetElements = activeSheets
+        .map((rt) => document.getElementById(`service-sheet-${rt.id}`))
+        .filter(Boolean)
+      if (targetElements.length === 0) {
+        targetElements = Array.from(document.querySelectorAll('.reports-stack .sheet:not(.print-hide)'))
+      }
+    }
+
+    if (targetElements.length > 0) {
+      printIsolatedElement(targetElements, {
+        title: filenameLabel,
+        orientation: 'portrait',
+      })
+      return
+    }
+
+    // Fallback if not mounted
     const prevTitle = document.title
     document.title = filenameLabel
     if (soloId) {
@@ -677,6 +700,7 @@ export default function Report({ preselectClientId = '', preselectReport = '' })
             return (
               <div
                 key={rt.id}
+                id={`service-sheet-${rt.id}`}
                 className={'sheet' + (hiddenForSolo ? ' print-hide' : '')}
               >
                 {/* Sheet Top Action Bar (hidden during print) */}
