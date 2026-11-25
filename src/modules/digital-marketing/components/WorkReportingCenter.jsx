@@ -174,7 +174,7 @@ export default function WorkReportingCenter() {
         'Pending': pendingCount,
         'Overdue': overdueCount,
       },
-      orientation: 'landscape',
+      orientation: 'portrait',
       filename: `Digital_Marketing_${activeReport}_Report_${currentToday}.pdf`,
     });
   };
@@ -419,11 +419,11 @@ export default function WorkReportingCenter() {
 
       {/* 4. Dual View: Inline A4 Document Print Preview OR Live Work History Table */}
       {previewMode ? (
-        <div className="print-page-container bg-white p-4 sm:p-6 max-w-[1050px] mx-auto text-slate-900 border border-slate-200">
+        <div className="print-page-container bg-white p-4 sm:p-6 max-w-[210mm] mx-auto text-slate-900 border-0 outline-none shadow-sm">
           <WorkPrintDocument
             reportType={activeReport === 'completed' ? 'completion' : activeReport === 'employee' ? 'assignment' : 'history'}
             tasks={filteredTasks}
-            orientation="landscape"
+            orientation="portrait"
             filters={{ startDate: from, endDate: to, employee: employeeFilter }}
           />
         </div>
@@ -551,7 +551,7 @@ export default function WorkReportingCenter() {
           <WorkPrintDocument
             reportType={activeReport === 'completed' ? 'completion' : activeReport === 'employee' ? 'assignment' : 'history'}
             tasks={filteredTasks}
-            orientation="landscape"
+            orientation="portrait"
             filters={{ startDate: from, endDate: to, employee: employeeFilter }}
           />
         </div>

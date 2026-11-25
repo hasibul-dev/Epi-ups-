@@ -4,32 +4,32 @@
    ========================================================================== */
 
 :root {
-  --dm-bg-canvas: #060b17;
-  --dm-bg-surface: #0a1224;
-  --dm-bg-card: #0d172e;
-  --dm-bg-hover: #132244;
-  --dm-border: rgba(255, 255, 255, 0.08);
-  --dm-border-blue: rgba(37, 99, 235, 0.35);
-  --dm-border-purple: rgba(124, 58, 237, 0.35);
+  --dm-bg-canvas: #08111f;
+  --dm-bg-surface: #0d192b;
+  --dm-bg-card: #102039;
+  --dm-bg-hover: #172b46;
+  --dm-border: rgba(174, 198, 226, 0.12);
+  --dm-border-blue: rgba(47, 128, 237, 0.32);
+  --dm-border-purple: rgba(99, 102, 241, 0.28);
   --dm-border-red: rgba(239, 68, 68, 0.4);
 
-  --dm-blue-primary: #2563eb;
-  --dm-blue-hover: #1d4ed8;
-  --dm-blue-light: #60a5fa;
+  --dm-blue-primary: #2f80ed;
+  --dm-blue-hover: #1f6feb;
+  --dm-blue-light: #7cc4ff;
 
-  --dm-purple-accent: #7c3aed;
-  --dm-purple-hover: #6d28d9;
-  --dm-purple-light: #a78bfa;
+  --dm-purple-accent: #6366e8;
+  --dm-purple-hover: #4f52c9;
+  --dm-purple-light: #a5b4fc;
 
-  --dm-red-alert: #dc2626;
-  --dm-red-light: #ef4444;
+  --dm-red-alert: #dc4b55;
+  --dm-red-light: #f06b72;
 
-  --dm-green-success: #10b981;
-  --dm-amber-warning: #f59e0b;
+  --dm-green-success: #16a884;
+  --dm-amber-warning: #e9a23b;
 
   --dm-text-heading: #ffffff;
-  --dm-text-body: #e2e8f0;
-  --dm-text-muted: #94a3b8;
+  --dm-text-body: #e6edf6;
+  --dm-text-muted: #9aabc0;
 }
 
 /* ==========================================================================
@@ -51,7 +51,7 @@
   flex-wrap: wrap;
   gap: 12px;
   padding: 12px 18px;
-  background: linear-gradient(90deg, #0a1224 0%, #0d172e 100%);
+  background: linear-gradient(90deg, #0d192b 0%, #102039 100%);
   border: 1px solid var(--dm-border);
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
@@ -67,7 +67,7 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #2f80ed 0%, #6366e8 100%);
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
@@ -125,11 +125,11 @@
 .btn-mkt-primary,
 .btn-mkt-add-work,
 .btn-print-slip {
-  background: #2563eb !important;
-  background-color: #2563eb !important;
-  border: 1px solid #3b82f6 !important;
+  background: #2f80ed !important;
+  background-color: #2f80ed !important;
+  border: 1px solid #4b9bff !important;
   color: #ffffff !important;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 2px 8px rgba(47, 128, 237, 0.32);
   font-weight: 700 !important;
 }
 
@@ -137,9 +137,9 @@
 .btn-mkt-primary:hover,
 .btn-mkt-add-work:hover,
 .btn-print-slip:hover {
-  background: #1d4ed8 !important;
-  background-color: #1d4ed8 !important;
-  border-color: #60a5fa !important;
+  background: #1f6feb !important;
+  background-color: #1f6feb !important;
+  border-color: #7cc4ff !important;
   color: #ffffff !important;
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.5) !important;
   transform: translateY(-1px);
@@ -150,10 +150,10 @@
 .btn-mkt-secondary,
 .btn-mkt-navy,
 .btn-view-details {
-  background: #1e293b !important;
-  background-color: #1e293b !important;
-  border: 1px solid #334155 !important;
-  color: #f1f5f9 !important;
+  background: #1a2a40 !important;
+  background-color: #1a2a40 !important;
+  border: 1px solid #2a405c !important;
+  color: #f4f7fb !important;
   font-weight: 600 !important;
 }
 
@@ -161,22 +161,22 @@
 .btn-mkt-secondary:hover,
 .btn-mkt-navy:hover,
 .btn-view-details:hover {
-  background: #334155 !important;
-  background-color: #334155 !important;
-  border-color: #475569 !important;
+  background: #2a405c !important;
+  background-color: #2a405c !important;
+  border-color: #3b5675 !important;
   color: #ffffff !important;
   transform: translateY(-1px);
 }
 
-/* Preset Buttons: Solid Dark Navy #1e293b */
+/* Preset Buttons: Solid Dark Navy #1a2a40 */
 .dm-preset-btn {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background: #1e293b !important;
-  background-color: #1e293b !important;
-  color: #cbd5e1 !important;
-  border: 1px solid #334155 !important;
+  background: #1a2a40 !important;
+  background-color: #1a2a40 !important;
+  color: #d3deeb !important;
+  border: 1px solid #2a405c !important;
   padding: 4px 9px !important;
   border-radius: 6px !important;
   font-size: 11px !important;
@@ -188,35 +188,35 @@
 }
 
 .dm-preset-btn:hover {
-  background: #334155 !important;
-  background-color: #334155 !important;
+  background: #2a405c !important;
+  background-color: #2a405c !important;
   color: #ffffff !important;
-  border-color: #38bdf8 !important;
+  border-color: #67c7f5 !important;
 }
 
 .dm-preset-btn.active {
-  background: #2563eb !important;
-  background-color: #2563eb !important;
+  background: #2f80ed !important;
+  background-color: #2f80ed !important;
   color: #ffffff !important;
-  border-color: #60a5fa !important;
+  border-color: #7cc4ff !important;
 }
 
 /* Purple Accent Action */
 .dm-btn-purple,
 .btn-mkt-purple {
-  background: #7c3aed !important;
-  background-color: #7c3aed !important;
-  border: 1px solid #8b5cf6 !important;
+  background: #6366e8 !important;
+  background-color: #6366e8 !important;
+  border: 1px solid #818cf8 !important;
   color: #ffffff !important;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.28);
   font-weight: 700 !important;
 }
 
 .dm-btn-purple:hover,
 .btn-mkt-purple:hover {
-  background: #6d28d9 !important;
-  background-color: #6d28d9 !important;
-  border-color: #a78bfa !important;
+  background: #4f52c9 !important;
+  background-color: #4f52c9 !important;
+  border-color: #a5b4fc !important;
   color: #ffffff !important;
   box-shadow: 0 4px 14px rgba(124, 58, 237, 0.5) !important;
   transform: translateY(-1px);
@@ -227,9 +227,9 @@
 .btn-mkt-red,
 .btn-mkt-delete-red,
 .btn-mkt-danger {
-  background: #dc2626 !important;
-  background-color: #dc2626 !important;
-  border: 1px solid #ef4444 !important;
+  background: #dc4b55 !important;
+  background-color: #dc4b55 !important;
+  border: 1px solid #f06b72 !important;
   color: #ffffff !important;
   font-weight: 700 !important;
 }
@@ -238,10 +238,10 @@
 .btn-mkt-red:hover,
 .btn-mkt-delete-red:hover,
 .btn-mkt-danger:hover {
-  background: #b91c1c !important;
-  background-color: #b91c1c !important;
+  background: #bd3540 !important;
+  background-color: #bd3540 !important;
   color: #ffffff !important;
-  border-color: #f87171 !important;
+  border-color: #ff9298 !important;
 }
 
 /* Green Success */
@@ -250,7 +250,7 @@
 .btn-mkt-completed {
   background: rgba(16, 185, 129, 0.16) !important;
   border: 1px solid rgba(52, 211, 153, 0.4) !important;
-  color: #34d399 !important;
+  color: #54d6b0 !important;
 }
 
 .dm-btn-green:hover,
@@ -258,7 +258,7 @@
 .btn-mkt-completed:hover {
   background: var(--dm-green-success) !important;
   color: #ffffff !important;
-  border-color: #34d399 !important;
+  border-color: #54d6b0 !important;
 }
 
 /* Amber Warning */
@@ -267,7 +267,7 @@
 .btn-mkt-pending {
   background: rgba(245, 158, 11, 0.16) !important;
   border: 1px solid rgba(245, 158, 11, 0.4) !important;
-  color: #fbbf24 !important;
+  color: #f4c15d !important;
 }
 
 .dm-btn-amber:hover,
@@ -275,7 +275,7 @@
 .btn-mkt-pending:hover {
   background: var(--dm-amber-warning) !important;
   color: #ffffff !important;
-  border-color: #fbbf24 !important;
+  border-color: #f4c15d !important;
 }
 
 /* Table Row Action Buttons: 28px height */
@@ -327,7 +327,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 8px;
-  background: #0a1224;
+  background: #0d192b;
   border: 1px solid var(--dm-border);
   border-radius: 10px;
   padding: 6px 10px;
@@ -365,7 +365,7 @@
   background: var(--dm-blue-primary);
   color: #ffffff;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 2px 8px rgba(47, 128, 237, 0.32);
 }
 
 /* ==========================================================================
@@ -383,7 +383,7 @@
 /* KPI Summary Cards */
 .dm-kpi-card,
 .mkt-kpi-card {
-  background: linear-gradient(180deg, #0e1933 0%, #0a1224 100%);
+  background: linear-gradient(180deg, #122541 0%, #0d192b 100%);
   border: 1px solid var(--dm-border);
   border-radius: 12px;
   padding: 14px 16px;
@@ -421,7 +421,7 @@
 .dm-kpi-sub,
 .mkt-kpi-subtext {
   font-size: 11px;
-  color: #64748b;
+  color: #71849c;
 }
 
 /* ==========================================================================
@@ -437,7 +437,7 @@
 
 .dm-table thead,
 .mkt-table thead {
-  background: rgba(14, 25, 51, 0.85);
+  background: rgba(18, 37, 65, 0.92);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -482,7 +482,7 @@
 .mkt-badge-blue {
   background: rgba(37, 99, 235, 0.15);
   border: 1px solid rgba(37, 99, 235, 0.4);
-  color: #60a5fa;
+  color: #7cc4ff;
 }
 
 .dm-badge-purple,
@@ -496,28 +496,28 @@
 .mkt-badge-green {
   background: rgba(16, 185, 129, 0.15);
   border: 1px solid rgba(16, 185, 129, 0.4);
-  color: #34d399;
+  color: #54d6b0;
 }
 
 .dm-badge-red,
 .mkt-badge-red {
   background: rgba(239, 68, 68, 0.15);
   border: 1px solid rgba(239, 68, 68, 0.45);
-  color: #f87171;
+  color: #ff9298;
 }
 
 .dm-badge-amber,
 .mkt-badge-amber {
   background: rgba(245, 158, 11, 0.15);
   border: 1px solid rgba(245, 158, 11, 0.4);
-  color: #fbbf24;
+  color: #f4c15d;
 }
 
 .dm-badge-neutral,
 .mkt-badge-neutral {
   background: rgba(148, 163, 184, 0.12);
   border: 1px solid rgba(148, 163, 184, 0.25);
-  color: #cbd5e1;
+  color: #d3deeb;
 }
 
 /* ==========================================================================
@@ -528,8 +528,8 @@
   width: 100%;
   height: 36px;
   padding: 0 12px;
-  background: #060b17;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #08111f;
+  border: 1px solid rgba(174, 198, 226, 0.18);
   border-radius: 8px;
   color: #ffffff;
   font-size: 12px;
@@ -540,7 +540,7 @@
 
 .dm-input:focus,
 .mkt-input:focus {
-  border-color: #3b82f6;
+  border-color: #4b9bff;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25);
 }
 
@@ -549,8 +549,8 @@
   width: 100%;
   height: 36px;
   padding: 0 10px;
-  background: #060b17;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #08111f;
+  border: 1px solid rgba(174, 198, 226, 0.18);
   border-radius: 8px;
   color: #ffffff;
   font-size: 12px;
@@ -561,7 +561,7 @@
 
 .dm-select:focus,
 .mkt-select:focus {
-  border-color: #3b82f6;
+  border-color: #4b9bff;
 }
 
 /* ==========================================================================
@@ -585,7 +585,7 @@
 .dm-modal-card,
 .marketing-modal-card {
   width: 100%;
-  background: #0a1224;
+  background: #0d192b;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65);
@@ -595,28 +595,42 @@
 
 /* ==========================================================================
    PRINT ISOLATION & HIGH-CONTRAST CORPORATE A4 PREVIEW
-   Clean white A4 layout, zero outer borders, zero dark side strips, zero shadows
+   Clean white A4 portrait layout, zero outer borders, zero dark side strips, zero shadows
    ========================================================================== */
+.print-page-container {
+  display: block;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+  border-radius: 4px;
+  width: 100%;
+  max-width: 210mm;
+  margin: 0 auto;
+  padding: 20px 24px;
+  box-sizing: border-box;
+}
+
 .mkt-print-sheet {
   background-color: #ffffff !important;
   background: #ffffff !important;
   color: #000000 !important;
-  font-family: system-ui, -apple-system, sans-serif !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif !important;
   box-sizing: border-box;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
-}
-
-.mkt-print-sheet.mkt-portrait {
   width: 100%;
   max-width: 210mm;
   margin: 0 auto;
 }
 
+.mkt-print-sheet.mkt-portrait,
 .mkt-print-sheet.mkt-landscape {
   width: 100%;
-  max-width: 297mm;
+  max-width: 210mm;
   margin: 0 auto;
 }
 
@@ -627,14 +641,13 @@
 
 @media print {
 
-  /* 1. Page Dimension & Margin Setup */
-  /* 1. Page Dimension & Margin Setup */
+  /* 1. Page Dimension & Margin Setup — Clean A4 Portrait */
   @page {
-    size: auto;
-    margin: 8mm 10mm;
+    size: A4 portrait;
+    margin: 10mm 10mm 12mm 10mm;
   }
 
-  /* 2. Pure White Canvas for HTML, Body & System Wrappers */
+  /* 2. Pure White Canvas for HTML, Body & System Wrappers — Zero Outer Borders */
   html,
   body,
   #root,
@@ -645,7 +658,9 @@
   .main-viewport,
   .main-content,
   .dm-module-container,
-  .marketing-page-content {
+  .marketing-page-content,
+  .dm-module-container > div,
+  .space-y-4 {
     background: #ffffff !important;
     background-color: #ffffff !important;
     background-image: none !important;
@@ -658,7 +673,7 @@
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    min-height: 100% !important;
+    min-height: auto !important;
     overflow: visible !important;
     position: static !important;
   }
@@ -676,8 +691,13 @@
   .mkt-nav-bar,
   .dm-card:not(.print-container):not(.print-page-container),
   .mkt-card:not(.print-container):not(.print-page-container),
+  .dm-btn,
+  .dm-preset-btn,
+  .mkt-action-btn,
   .btn,
-  button {
+  button,
+  header,
+  nav {
     display: none !important;
   }
 
@@ -739,10 +759,12 @@
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
+    border-radius: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
+    height: auto !important;
   }
 
   /* 6. A4 Document Sheet: Fit Naturally with Zero Outer Border or Shadows */
@@ -776,7 +798,60 @@
     visibility: visible !important;
   }
 
-  /* 8. Solid Black High-Contrast Typography */
+  /* 8. Table Repeating Headers & Clean Column Gridlines */
+  .mkt-print-sheet table,
+  .print-page-container table,
+  #mkt-hidden-print-sheet table,
+  #dm-modal-print-sheet table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 9.5pt !important;
+    color: #111111 !important;
+    border: 1px solid #111111 !important;
+    page-break-inside: auto !important;
+  }
+
+  .mkt-print-sheet thead,
+  .print-page-container thead,
+  #mkt-hidden-print-sheet thead,
+  #dm-modal-print-sheet thead {
+    display: table-header-group !important;
+  }
+
+  .mkt-print-sheet tr,
+  .print-page-container tr,
+  #mkt-hidden-print-sheet tr,
+  #dm-modal-print-sheet tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .mkt-print-sheet th,
+  .print-page-container th,
+  #mkt-hidden-print-sheet th,
+  #dm-modal-print-sheet th {
+    background: #f1f5f9 !important;
+    background-color: #f1f5f9 !important;
+    color: #000000 !important;
+    border: 1px solid #111111 !important;
+    border-bottom: 2px solid #111111 !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .mkt-print-sheet td,
+  .print-page-container td,
+  #mkt-hidden-print-sheet td,
+  #dm-modal-print-sheet td {
+    border: 1px solid #999999 !important;
+    color: #111111 !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+  }
+
+  /* 9. Solid Black High-Contrast Typography */
   .mkt-print-sheet,
   .mkt-print-sheet *,
   #dm-modal-print-sheet,
@@ -812,7 +887,7 @@
     font-weight: 800 !important;
   }
 
-  /* 9. Eliminate all remaining container shadows & outlines */
+  /* 10. Eliminate all remaining container shadows & outlines */
   * {
     box-shadow: none !important;
     text-shadow: none !important;

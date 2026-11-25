@@ -301,7 +301,7 @@ export default function DigitalMarketingModule() {
   return (
     <div className="dm-module-container">
       {/* 1. Corporate Header */}
-      <header className="dm-topbar">
+      <header className="dm-topbar no-print">
         <div className="dm-brand-block">
           <div className="dm-brand-icon-box">
             <Megaphone size={20} />

@@ -235,11 +235,11 @@ export default function MarketingPrintDocument({
             dateRange={dateRangeStr}
           />
 
-          <div style={{ border: '1px solid #111111', padding: '8px 12px', backgroundColor: '#f1f5f9', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '15px', fontWeight: 900, textTransform: 'uppercase', margin: 0, color: '#000000' }}>
+          <div style={{ borderBottom: '2px solid #111111', padding: '4px 0 6px 0', textAlign: 'center', margin: '0 0 4px 0' }}>
+            <h2 style={{ fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', margin: 0, color: '#000000', letterSpacing: '0.02em' }}>
               DIGITAL MARKETING WORK HISTORY & ARCHIVE REPORT
             </h2>
-            <div style={{ fontSize: '11px', color: '#111111', fontWeight: 700, marginTop: '2px' }}>
+            <div style={{ fontSize: '10.5px', color: '#222222', fontWeight: 700, marginTop: '2px' }}>
               Audit Archive of Operational Deliverables ({allTasks.length} matching tasks recorded)
             </div>
           </div>
