@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCentralAuth } from '../context/CentralAuthContext.jsx';
 import {
   Users,
@@ -32,7 +33,24 @@ import {
 } from '../../../components/EnterpriseUI.jsx';
 
 export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
+  const navigate = useNavigate();
   const { token, user: currentUser } = useCentralAuth();
+
+  const handleDeptLaunch = (dept) => {
+    if (typeof onLaunchDept === 'function') {
+      onLaunchDept(dept);
+    } else {
+      const routes = {
+        sales: '/sales',
+        service: '/service',
+        accounts: '/accounts',
+        marketing: '/marketing',
+        'digital-marketing': '/marketing',
+      };
+      const target = routes[String(dept).toLowerCase()];
+      if (target) navigate(target);
+    }
+  };
 
   const [stats, setStats] = useState({
     totalEmployees: 0,
@@ -160,7 +178,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
           subtitle="CRM & pipeline"
           icon={Briefcase}
           color="blue"
-          onClick={() => onLaunchDept('sales')}
+          onClick={() => handleDeptLaunch('sales')}
         />
         <StatCard
           title="Service Team"
@@ -168,7 +186,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
           subtitle="Field technicians"
           icon={Wrench}
           color="cyan"
-          onClick={() => onLaunchDept('service')}
+          onClick={() => handleDeptLaunch('service')}
         />
         <StatCard
           title="Accounts & ERP"
@@ -176,7 +194,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
           subtitle="Finance & billing"
           icon={Landmark}
           color="amber"
-          onClick={() => onLaunchDept('accounts')}
+          onClick={() => handleDeptLaunch('accounts')}
         />
         <StatCard
           title="Marketing & IT"
@@ -184,7 +202,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
           subtitle="Growth & helpdesk"
           icon={Share2}
           color="purple"
-          onClick={() => onLaunchDept('marketing')}
+          onClick={() => handleDeptLaunch('marketing')}
         />
       </div>
 
@@ -368,7 +386,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
               variant="primary"
               size="sm"
               icon={ArrowRight}
-              onClick={() => onLaunchDept('sales')}
+              onClick={() => handleDeptLaunch('sales')}
             >
               Open Sales Workspace
             </ActionButton>
@@ -423,7 +441,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
               variant="secondary"
               size="sm"
               icon={ArrowRight}
-              onClick={() => onLaunchDept('service')}
+              onClick={() => handleDeptLaunch('service')}
               style={{
                 borderColor: 'rgba(52, 211, 153, 0.4)',
                 color: '#6ee7b7',
@@ -482,7 +500,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
               variant="secondary"
               size="sm"
               icon={ArrowRight}
-              onClick={() => onLaunchDept('accounts')}
+              onClick={() => handleDeptLaunch('accounts')}
               style={{
                 borderColor: 'rgba(251, 191, 36, 0.4)',
                 color: '#fde68a',
@@ -541,7 +559,7 @@ export default function ExecutiveDashboard({ onLaunchDept, onNavigateUsers }) {
               variant="purple"
               size="sm"
               icon={ArrowRight}
-              onClick={() => onLaunchDept('marketing')}
+              onClick={() => handleDeptLaunch('marketing')}
             >
               Open Marketing & IT
             </ActionButton>

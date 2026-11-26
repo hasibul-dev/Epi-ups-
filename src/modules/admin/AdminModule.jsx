@@ -24,9 +24,11 @@ export default function AdminModule({ initialTab = 'dashboard' }) {
   }, [location.pathname]);
 
   const handleLaunchDept = (dept) => {
-    if (dept === 'sales') navigate('/sales');
-    else if (dept === 'service') navigate('/service');
-    else if (dept === 'accounts') navigate('/accounts');
+    const d = String(dept || '').toLowerCase();
+    if (d === 'sales') navigate('/sales');
+    else if (d === 'service') navigate('/service');
+    else if (d === 'accounts' || d === 'erp') navigate('/accounts');
+    else if (d === 'marketing' || d === 'digital-marketing' || d === 'it') navigate('/marketing');
   };
 
   const handleTabChange = (tab) => {

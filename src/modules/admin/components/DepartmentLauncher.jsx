@@ -1,12 +1,30 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCentralAuth } from '../context/CentralAuthContext.jsx';
 import { Briefcase, Wrench, Landmark, ArrowRight, ShieldCheck, Lock, Share2 } from 'lucide-react';
 
 export default function DepartmentLauncher({ onLaunchDept }) {
+  const navigate = useNavigate();
   const { user, canAccessDept } = useCentralAuth();
   const isSuperAdmin = user?.role === 'superadmin';
 
   const depts = user?.departments || [];
+
+  const handleLaunch = (dept) => {
+    if (typeof onLaunchDept === 'function') {
+      onLaunchDept(dept);
+    } else {
+      const routes = {
+        sales: '/sales',
+        service: '/service',
+        accounts: '/accounts',
+        marketing: '/marketing',
+        'digital-marketing': '/marketing',
+      };
+      const target = routes[String(dept).toLowerCase()];
+      if (target) navigate(target);
+    }
+  };
 
   return (
     <div className="dept-launcher-page">
@@ -36,7 +54,7 @@ export default function DepartmentLauncher({ onLaunchDept }) {
               </p>
               <button
                 className="btn-launch-action sales-btn"
-                onClick={() => onLaunchDept('sales')}
+                onClick={() => handleLaunch('sales')}
               >
                 Launch Sales Workspace <ArrowRight size={16} />
               </button>
@@ -75,7 +93,7 @@ export default function DepartmentLauncher({ onLaunchDept }) {
               </p>
               <button
                 className="btn-launch-action service-btn"
-                onClick={() => onLaunchDept('service')}
+                onClick={() => handleLaunch('service')}
               >
                 Launch Service Workspace <ArrowRight size={16} />
               </button>
@@ -114,7 +132,7 @@ export default function DepartmentLauncher({ onLaunchDept }) {
               </p>
               <button
                 className="btn-launch-action accounts-btn"
-                onClick={() => onLaunchDept('accounts')}
+                onClick={() => handleLaunch('accounts')}
               >
                 Launch Accounts Workspace <ArrowRight size={16} />
               </button>
@@ -154,7 +172,7 @@ export default function DepartmentLauncher({ onLaunchDept }) {
               <button
                 className="btn-launch-action marketing-btn"
                 style={{ background: 'linear-gradient(135deg, #7e22ce, #a855f7)', color: '#fff' }}
-                onClick={() => onLaunchDept('marketing')}
+                onClick={() => handleLaunch('marketing')}
               >
                 Launch Marketing & IT Workspace <ArrowRight size={16} />
               </button>
