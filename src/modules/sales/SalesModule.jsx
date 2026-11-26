@@ -78,6 +78,7 @@ export default function SalesModule({ initialPage = 'dashboard' }) {
     { key: 'dashboard', label: 'Dashboard', icon: Briefcase, path: '/sales' },
     { key: 'today', label: "Today's Work", icon: CheckSquare, count: todayDueCount, path: '/sales/today' },
     { key: 'client', label: 'Add Client', icon: UserPlus, highlight: true, path: '/sales/new-client' },
+    { key: 'work', label: 'Add Work', icon: CalendarPlus, highlight: true, path: '/sales/new-work' },
   ];
 
   const handleNavClick = (btn) => {

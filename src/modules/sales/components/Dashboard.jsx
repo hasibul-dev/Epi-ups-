@@ -121,16 +121,6 @@ export default function Dashboard({ db, setPage }) {
             </ActionButton>
 
             <ActionButton
-              variant="secondary"
-              icon={CalendarPlus}
-              size="md"
-              onClick={() => setPage('work')}
-              title="Schedule a new sales activity or follow-up"
-            >
-              + Add Work
-            </ActionButton>
-
-            <ActionButton
               variant="primary"
               icon={UserPlus}
               size="md"
