@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import {
   X,
   CheckSquare,
@@ -170,7 +171,7 @@ export default function WorkModal() {
     closeTaskModal();
   };
 
-  return (
+  const modalContent = (
     <div className="dm-modal-backdrop" onClick={closeTaskModal}>
       <div className="dm-modal-card max-w-2xl" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
@@ -456,4 +457,9 @@ export default function WorkModal() {
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }

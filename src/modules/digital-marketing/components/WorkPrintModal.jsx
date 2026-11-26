@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import {
   X,
   Printer,
@@ -61,7 +62,7 @@ export default function WorkPrintModal() {
     });
   };
 
-  return (
+  const modalContent = (
     <div className="dm-modal-backdrop" onClick={closeTaskPrintModal}>
       <div
         className="dm-modal-card max-w-4xl max-h-[92vh] flex flex-col bg-[#0F1B2D] border border-[#25364B] rounded-xl shadow-2xl overflow-hidden"
@@ -134,4 +135,9 @@ export default function WorkPrintModal() {
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }

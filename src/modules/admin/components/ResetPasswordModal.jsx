@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, KeyRound, Sparkles, Copy, Check, AlertCircle } from 'lucide-react';
 import { useCentralAuth } from '../context/CentralAuthContext.jsx';
 
@@ -60,7 +61,7 @@ export default function ResetPasswordModal({ targetUser, onClose, onSuccess }) {
     }
   };
 
-  return (
+  const modalContent = (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-box modal-sm" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -142,4 +143,9 @@ export default function ResetPasswordModal({ targetUser, onClose, onSuccess }) {
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }

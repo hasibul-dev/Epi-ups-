@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -410,7 +411,7 @@ export function EnterpriseModal({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div className="enterprise-modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div
         className="enterprise-modal-container"
@@ -441,6 +442,11 @@ export function EnterpriseModal({
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }
 
 /**

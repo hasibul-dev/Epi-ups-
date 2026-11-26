@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   X,
   FileText,
@@ -75,7 +76,7 @@ export default function WorkUpdateModal() {
     closeTaskUpdateModal();
   };
 
-  return (
+  const modalContent = (
     <div className="dm-modal-backdrop" onClick={closeTaskUpdateModal}>
       <div className="dm-modal-card max-w-xl" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
@@ -293,4 +294,9 @@ export default function WorkUpdateModal() {
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }

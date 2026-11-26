@@ -642,27 +642,36 @@ textarea.mkt-input {
    ========================================================================== */
 .dm-modal-backdrop,
 .marketing-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: rgba(8, 17, 31, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  overflow-y: auto;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10000 !important;
+  background: rgba(8, 17, 31, 0.85) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px 16px !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  box-sizing: border-box !important;
 }
 
 .dm-modal-card,
 .marketing-modal-card {
+  position: relative !important;
+  z-index: 10001 !important;
+  margin: auto !important;
+  max-height: calc(100vh - 48px) !important;
+  max-height: calc(100dvh - 48px) !important;
+  display: flex !important;
+  flex-direction: column !important;
   width: 100%;
   background-color: var(--dm-bg-surface);
   border: 1px solid var(--dm-border);
   border-radius: 14px;
   box-shadow: 0 24px 56px rgba(0, 0, 0, 0.7);
-  box-sizing: border-box;
+  box-sizing: border-box !important;
   overflow: hidden;
 }
 

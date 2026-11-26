@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, UserPlus, UserCheck, KeyRound, Sparkles, Copy, Check, AlertCircle, Shield, Briefcase, Wrench, Landmark, Share2 } from 'lucide-react';
 import { useCentralAuth } from '../context/CentralAuthContext.jsx';
 
@@ -171,7 +172,7 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
     }
   };
 
-  return (
+  const modalContent = (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-box modal-md" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -462,4 +463,9 @@ export default function UserManagementModal({ userToEdit, onClose, onSaved }) {
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }

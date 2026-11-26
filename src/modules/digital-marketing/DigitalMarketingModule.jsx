@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Megaphone,
@@ -512,7 +513,7 @@ export default function DigitalMarketingModule() {
       />
 
       {/* Custom Delete Confirmation Modal */}
-      {taskToDelete && (
+      {taskToDelete && typeof document !== 'undefined' && createPortal(
         <div
           className="dm-modal-backdrop"
           onClick={() => setTaskToDelete(null)}
@@ -557,7 +558,8 @@ export default function DigitalMarketingModule() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

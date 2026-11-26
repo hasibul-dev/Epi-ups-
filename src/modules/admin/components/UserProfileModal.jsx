@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, User, ShieldCheck, KeyRound, Check, AlertCircle, Briefcase, Wrench, Landmark } from 'lucide-react';
 import { useCentralAuth } from '../context/CentralAuthContext.jsx';
 
@@ -73,7 +74,7 @@ export default function UserProfileModal({ onClose }) {
 
   const departments = user?.departments || [];
 
-  return (
+  const modalContent = (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-box modal-user-mgmt" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 540 }}>
         <div className="modal-header">
@@ -303,4 +304,9 @@ export default function UserProfileModal({ onClose }) {
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }

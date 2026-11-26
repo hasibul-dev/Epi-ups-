@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Clock, Shield, Globe, Monitor, RefreshCw, UserCheck } from 'lucide-react';
 import { useCentralAuth } from '../context/CentralAuthContext.jsx';
 
@@ -61,7 +62,7 @@ export default function LoginHistoryModal({ user, onClose }) {
     return 'Web Browser';
   };
 
-  return (
+  const modalContent = (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-box modal-md" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -151,4 +152,9 @@ export default function LoginHistoryModal({ user, onClose }) {
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }

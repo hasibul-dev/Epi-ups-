@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { CLIENTS_PER_PAGE, fmt, today, CATEGORIES, RULES } from '../utils/helpers.js';
 import ExpandableText from './ExpandableText.jsx';
 import { CompanyPrintHeader } from '../../../components/CompanyPrintHeader.jsx';
@@ -960,7 +961,7 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
       </div>
 
       {/* Full Client Edit Modal Form */}
-      {modalClient && modalFormData && (
+      {modalClient && modalFormData && typeof document !== 'undefined' && createPortal(
         <div
           className="modal-backdrop"
           onClick={() => {
@@ -969,7 +970,7 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
               setModalFormData(null);
             }
           }}
-          style={{ zIndex: 1200 }}
+          style={{ zIndex: 10000 }}
         >
           <div
             className="modal-dialog"
@@ -1130,7 +1131,8 @@ export default function ClientsMaster({ db, store, setPage, onPrint }) {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );

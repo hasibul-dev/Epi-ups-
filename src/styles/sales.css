@@ -2489,17 +2489,20 @@ tr:last-child td {
    ========================================================================== */
 
 .modal-overlay, .modal-backdrop, .view-more-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(4, 7, 15, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(4, 7, 15, 0.82) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px 16px !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
   animation: fadeInModal 0.2s ease-out;
+  box-sizing: border-box !important;
 }
 
 @keyframes fadeInModal {
@@ -2508,6 +2511,13 @@ tr:last-child td {
 }
 
 .modal-dialog, .modal-card, .view-more-dialog {
+  position: relative !important;
+  z-index: 10001 !important;
+  margin: auto !important;
+  max-height: calc(100vh - 48px) !important;
+  max-height: calc(100dvh - 48px) !important;
+  display: flex !important;
+  flex-direction: column !important;
   width: 480px;
   max-width: 100%;
   background: linear-gradient(135deg, rgba(14, 22, 38, 0.95) 0%, rgba(9, 14, 26, 0.95) 100%) !important;
@@ -2521,6 +2531,10 @@ tr:last-child td {
 }
 
 .modal-header, .view-more-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10002 !important;
+  flex-shrink: 0 !important;
   padding: 18px 24px;
   display: flex;
   align-items: center;

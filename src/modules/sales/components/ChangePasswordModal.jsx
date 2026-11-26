@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { KeyRound, X, Check } from 'lucide-react';
 
 export default function ChangePasswordModal({ onClose }) {
@@ -86,7 +87,7 @@ export default function ChangePasswordModal({ onClose }) {
     }
   };
 
-  return (
+  const modalContent = (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -153,4 +154,9 @@ export default function ChangePasswordModal({ onClose }) {
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 }

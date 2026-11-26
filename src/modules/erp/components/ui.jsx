@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { api } from '../lib/api.js';
 
 export function useApi(path, params, deps = []) {
@@ -68,12 +69,13 @@ export const statusTone = (s) => ({ paid: 'green', posted: 'green', active: 'gre
 
 export function Modal({ title, onClose, children, footer, wide }) {
   useEffect(() => {
-    const h = (e) => e.key === 'Escape' && onClose();
+    const h = (e) => e.key === 'Escape' && onClose && onClose();
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, [onClose]);
-  return (
-    <div className="modal-bg" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+
+  const modalNode = (
+    <div className="modal-bg" onMouseDown={(e) => e.target === e.currentTarget && onClose && onClose()}>
       <div className={`modal ${wide ? 'wide' : ''}`} role="dialog" aria-modal="true" aria-label={title}>
         <div className="modal-head"><h3 style={{ margin: 0 }}>{title}</h3><button className="x" onClick={onClose} aria-label="Close">×</button></div>
         <div className="modal-body">{children}</div>
@@ -81,6 +83,11 @@ export function Modal({ title, onClose, children, footer, wide }) {
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined' && document.body) {
+    return createPortal(modalNode, document.body);
+  }
+  return modalNode;
 }
 
 export function Field({ label, children, full, hint }) {

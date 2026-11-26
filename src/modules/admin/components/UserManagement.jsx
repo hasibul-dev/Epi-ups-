@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useCentralAuth } from '../context/CentralAuthContext.jsx';
 import {
   Users,
@@ -542,7 +543,7 @@ export default function UserManagement() {
       )}
 
       {/* View User Details Modal */}
-      {detailUser && (
+      {detailUser && typeof document !== 'undefined' && createPortal(
         <div className="modal-backdrop" onClick={() => setDetailUser(null)}>
           <div className="modal-box modal-md" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 520 }}>
             <div className="modal-header">
@@ -645,7 +646,8 @@ export default function UserManagement() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

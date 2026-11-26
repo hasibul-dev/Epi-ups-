@@ -2245,30 +2245,38 @@ img, svg, canvas, iframe {
 
 /* Modern Enterprise Modal Overlay & Shell */
 .enterprise-modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  background: rgba(3, 7, 18, 0.78);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10000 !important;
+  background: rgba(3, 7, 18, 0.78) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px 16px !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
   animation: modalFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box !important;
 }
 
 .enterprise-modal-container {
+  position: relative !important;
+  z-index: 10001 !important;
+  margin: auto !important;
   width: 100%;
   background: linear-gradient(135deg, rgba(14, 22, 42, 0.94) 0%, rgba(9, 14, 28, 0.96) 100%);
   border: 1px solid rgba(56, 189, 248, 0.28);
   border-radius: 16px;
   box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.8), 0 0 24px rgba(56, 189, 248, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  max-height: 90vh;
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: calc(100vh - 48px) !important;
+  max-height: calc(100dvh - 48px) !important;
   animation: modalSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box !important;
 }
 
 @keyframes modalFadeIn {
@@ -3092,6 +3100,107 @@ table tr:hover td, .t tr:hover td {
   .bangla-text, [lang="bn"], * {
     text-rendering: optimizeLegibility !important;
   }
+}
+
+/* ==========================================================================
+   GLOBAL UNIFIED MODAL & OVERLAY SYSTEM (ALL DEPARTMENTS)
+   Prevents any modal, form popup, dropdown, or overlay from hiding behind
+   the top navigation header (.topbar z-index: 100) or sidebar (z-index: 95).
+   ========================================================================== */
+.ov,
+.modal-bg,
+.modal-backdrop,
+.modal-overlay,
+.view-more-overlay,
+.dm-modal-backdrop,
+.mkt-modal-backdrop,
+.marketing-modal-backdrop,
+.enterprise-modal-overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  z-index: 10000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px 16px !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  box-sizing: border-box !important;
+}
+
+.ov > .modal,
+.modal-bg > .modal,
+.modal-box,
+.modal-dialog,
+.modal-card,
+.view-more-dialog,
+.dm-modal-card,
+.marketing-modal-card,
+.enterprise-modal-container {
+  position: relative !important;
+  z-index: 10001 !important;
+  margin: auto !important;
+  max-height: calc(100vh - 48px) !important;
+  max-height: calc(100dvh - 48px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+.modal-head,
+.modal-header,
+.view-more-header,
+.enterprise-modal-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10002 !important;
+  flex-shrink: 0 !important;
+}
+
+.modal-actions,
+.modal-actions-footer,
+.enterprise-modal-footer {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 10002 !important;
+  flex-shrink: 0 !important;
+}
+
+.modal-content-scroll,
+.modal-form-body,
+.modal-body,
+.enterprise-modal-body,
+.dm-modal-card form,
+.view-more-body {
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+}
+
+/* Ensure dropdown menus, select popups, and datepickers inside modals appear above modal content */
+.modal-dialog select,
+.modal-box select,
+.dm-modal-card select,
+.enterprise-modal-container select,
+.dropdown-menu,
+.custom-dropdown-menu,
+.popover-menu {
+  z-index: 10010 !important;
+}
+
+/* Toasts and system notifications stay above all modals */
+.toasts,
+.alert-toast,
+.toast,
+.toast-container,
+.notification-container {
+  z-index: 11000 !important;
 }
 
 
